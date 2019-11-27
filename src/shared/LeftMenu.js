@@ -3,32 +3,32 @@ import React from 'react';
 function LeftMenu() {
     return (
         <aside>
-            <div id="sidebar" class="nav-collapse">
-                <div class="leftside-navigation">
-                    <ul class="sidebar-menu" id="nav-accordion">
+            <div id="sidebar" className="nav-collapse">
+                <div className="leftside-navigation">
+                    <ul className="sidebar-menu" id="nav-accordion">
                         <li>
                             <a href="index-2.html">
-                                <i class="fa fa-dashboard"></i>
+                                <i className="fa fa-dashboard"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-laptop"></i>
+                        <li className="sub-menu">
+                            <a href="{#}">
+                                <i className="fa fa-laptop"></i>
                                 <span>Layouts</span>
                             </a>
-                            <ul class="sub">
+                            <ul className="sub">
                                 <li><a href="boxed_page.html">Boxed Page</a></li>
                                 <li><a href="horizontal_menu.html">Horizontal Menu</a></li>
                                 <li><a href="language_switch.html">Language Switch Bar</a></li>
                             </ul>
                         </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-book"></i>
+                        <li className="sub-menu">
+                            <a href="{#}">
+                                <i className="fa fa-book"></i>
                                 <span>UI Elements</span>
                             </a>
-                            <ul class="sub">
+                            <ul className="sub">
                                 <li><a href="general.html">General</a></li>
                                 <li><a href="buttons.html">Buttons</a></li>
                                 <li><a href="typography.html">Typography</a></li>
@@ -43,28 +43,28 @@ function LeftMenu() {
                         </li>
                         <li>
                             <a href="fontawesome.html">
-                                <i class="fa fa-bullhorn"></i>
+                                <i className="fa fa-bullhorn"></i>
                                 <span>Fontawesome </span>
                             </a>
                         </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-th"></i>
+                        <li className="sub-menu">
+                            <a href="{#}">
+                                <i className="fa fa-th"></i>
                                 <span>Data Tables</span>
                             </a>
-                            <ul class="sub">
+                            <ul className="sub">
                                 <li><a href="basic_table.html">Basic Table</a></li>
                                 <li><a href="responsive_table.html">Responsive Table</a></li>
                                 <li><a href="dynamic_table.html">Dynamic Table</a></li>
                                 <li><a href="editable_table.html">Editable Table</a></li>
                             </ul>
                         </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-tasks"></i>
+                        <li className="sub-menu">
+                            <a href="{#}">
+                                <i className="fa fa-tasks"></i>
                                 <span>Form Components</span>
                             </a>
-                            <ul class="sub">
+                            <ul className="sub">
                                 <li><a href="form_component.html">Form Elements</a></li>
                                 <li><a href="advanced_form.html">Advanced Components</a></li>
                                 <li><a href="form_wizard.html">Form Wizard</a></li>
@@ -76,46 +76,46 @@ function LeftMenu() {
 
                             </ul>
                         </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-envelope"></i>
+                        <li className="sub-menu">
+                            <a href="{#}">
+                                <i className="fa fa-envelope"></i>
                                 <span>Mail </span>
                             </a>
-                            <ul class="sub">
+                            <ul className="sub">
                                 <li><a href="mail.html">Inbox</a></li>
                                 <li><a href="mail_compose.html">Compose Mail</a></li>
                                 <li><a href="mail_view.html">View Mail</a></li>
                             </ul>
                         </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class=" fa fa-bar-chart-o"></i>
+                        <li className="sub-menu">
+                            <a href="{#}">
+                                <i className=" fa fa-bar-chart-o"></i>
                                 <span>Charts</span>
                             </a>
-                            <ul class="sub">
+                            <ul className="sub">
                                 <li><a href="morris.html">Morris</a></li>
                                 <li><a href="chartjs.html">Chartjs</a></li>
                                 <li><a href="flot_chart.html">Flot Charts</a></li>
                                 <li><a href="c3_chart.html">C3 Chart</a></li>
                             </ul>
                         </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class=" fa fa-bar-chart-o"></i>
+                        <li className="sub-menu">
+                            <a href="{#}">
+                                <i className=" fa fa-bar-chart-o"></i>
                                 <span>Maps</span>
                             </a>
-                            <ul class="sub">
+                            <ul className="sub">
                                 <li><a href="google_map.html">Google Map</a></li>
                                 <li><a href="vector_map.html">Vector Map</a></li>
                             </ul>
                         </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;" class="active">
-                                <i class="fa fa-glass"></i>
+                        <li className="sub-menu">
+                            <a href="{#}" className="active">
+                                <i className="fa fa-glass"></i>
                                 <span>Extra</span>
                             </a>
-                            <ul class="sub">
-                                <li class="active"><a href="blank.html">Blank Page</a></li>
+                            <ul className="sub">
+                                <li className="active"><a href="blank.html">Blank Page</a></li>
                                 <li><a href="lock_screen.html">Lock Screen</a></li>
                                 <li><a href="profile.html">Profile</a></li>
                                 <li><a href="invoice.html">Invoice</a></li>
@@ -128,7 +128,7 @@ function LeftMenu() {
                         </li>
                         <li>
                             <a href="login.html">
-                                <i class="fa fa-user"></i>
+                                <i className="fa fa-user"></i>
                                 <span>Login Page</span>
                             </a>
                         </li>

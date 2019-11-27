@@ -1,7 +1,8 @@
-import React from 'react';
-function PatientForm() {
-    return (
-        <div>Patient Form</div>
-    );
+import React,{Component} from 'react';
+export default class PatientForm extends Component {
+    render() {
+        return (
+            <div>Patient Form</div>
+        );
+    }
 }
-export default PatientForm;
