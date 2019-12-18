@@ -218,7 +218,7 @@ const DashboardLayout = ({ children, ...rest }) => {
 
                 </div>
             </header>
-            <LeftMenu></LeftMenu>
+            <LeftMenu/>
             <section id="main-content">
                 <section className="wrapper">
 
