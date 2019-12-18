@@ -20,9 +20,9 @@ export default class LeftMenu extends React.Component {
                                     <span>Add Data Entry</span>
                                 </a>
                                 <ul className="sub">
-                                    <li><NavLink to="/patient-form">Patient Registration</NavLink></li>
-                                    <li><a href="horizontal_menu.html">Opd Entry</a></li>
-                                    <li><a href="language_switch.html">Ipd Entry</a></li>
+                                    <li><NavLink to="/add-patient">Patient Registration</NavLink></li>
+                                    <li><NavLink to="/add-opd">Opd Entry</NavLink></li>
+                                    <li><NavLink to="/add-ipd">Ipd Entry</NavLink></li>
                                 </ul>
                             </li>
                             <li className="sub-menu">
