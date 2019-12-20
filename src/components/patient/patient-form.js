@@ -1,5 +1,22 @@
 import React, { Component } from 'react';
 export default class PatientForm extends Component {
+    state = {
+        Firstname="",
+        Middlename="",
+        Lastname="",
+        Age="",
+        Mobile="",
+        Address=""
+    }
+    handleChange = (e) => {
+        this.setState({
+            name=e.target.value
+        });
+    }
+    handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(this.state);
+    }
     render() {
         return (
             <div className="panel" data-collapsed="0">
@@ -18,22 +35,22 @@ export default class PatientForm extends Component {
                         <div className="row">
                             <div className="col-md-4">
                                 <div className="form-group">
-                                    <label htmlFor="field-4" className="control-label">Firstname</label>
-                                    <input className="form-control Capitalize" placeholder="Enter Firstname" type="text" />
+                                    <label className="control-label">Firstname</label>
+                                    <input className="form-control Capitalize" placeholder="Enter Firstname" type="text" onChange={this.handleChange} />
                                     {/* <span className="field-validation-valid" data-valmsg-htmlFor="Firstname" data-valmsg-replace="true"></span> */}
                                 </div>
                             </div>
                             <div className="col-md-4">
                                 <div className="form-group">
-                                    <label htmlFor="field-5" className="control-label">Middlename</label>
-                                    <input className="form-control Capitalize" placeholder="Enter Middlename" type="text" />
+                                    <label className="control-label">Middlename</label>
+                                    <input className="form-control Capitalize" placeholder="Enter Middlename" type="text" onChange={this.handleChange} />
                                     {/* <span className="field-validation-valid" data-valmsg-htmlFor="Middlename" data-valmsg-replace="true"></span> */}
                                 </div>
                             </div>
                             <div className="col-md-4">
                                 <div className="form-group">
-                                    <label htmlFor="field-6" className="control-label">Lastname</label>
-                                    <input className="form-control Capitalize" placeholder="Enter Lastname" type="text" />
+                                    <label className="control-label">Lastname</label>
+                                    <input className="form-control Capitalize" placeholder="Enter Lastname" type="text" onChange={this.handleChange} />
                                     {/* <span className="field-validation-valid" data-valmsg-htmlFor="Lastname" data-valmsg-replace="true"></span> */}
                                 </div>
                             </div>
@@ -41,15 +58,15 @@ export default class PatientForm extends Component {
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label htmlFor="field-1" className="control-label">Age</label>
-                                    <input className="form-control" placeholder="Enter Age" type="text" />
+                                    <label className="control-label">Age</label>
+                                    <input className="form-control" placeholder="Enter Age" type="text" onChange={this.handleChange} />
                                     {/* <span className="field-validation-valid" data-valmsg-htmlFor="Age" data-valmsg-replace="true"></span> */}
                                 </div>
                             </div>
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label htmlFor="field-2" className="control-label">Mobile</label>
-                                    <input className="form-control" placeholder="Enter Mobile" type="text" />
+                                    <label className="control-label">Mobile</label>
+                                    <input className="form-control" placeholder="Enter Mobile" type="text" onChange={this.handleChange} />
                                     {/* <span className="field-validation-valid" data-valmsg-htmlFor="Mobile" data-valmsg-replace="true"></span> */}
                                 </div>
                             </div>
@@ -58,7 +75,7 @@ export default class PatientForm extends Component {
                             <div className="col-md-12">
                                 <div className="form-group">
                                     <label htmlFor="field-3" className="control-label">Address</label>
-                                    <input className="form-control typeahead Capitalize" placeholder="Enter Address" type="text" />
+                                    <input className="form-control typeahead Capitalize" placeholder="Enter Address" type="text" onChange={this.handleChange} />
                                     {/* <span className="field-validation-valid" data-valmsg-htmlFor="Address" data-valmsg-replace="true"></span> */}
                                 </div>
                             </div>
