@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
 export default class PatientForm extends Component {
-    state = {
-        Firstname="",
-        Middlename="",
-        Lastname="",
-        Age="",
-        Mobile="",
-        Address=""
-    }
-    handleChange = (e) => {
-        this.setState({
-            name=e.target.value
-        });
-    }
-    handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(this.state);
-    }
+    // state = {
+    //     Firstname="",
+    //     Middlename="",
+    //     Lastname="",
+    //     Age="",
+    //     Mobile="",
+    //     Address=""
+    // }
+    // handleChange = (e) => {
+    //     this.setState({
+    //         name=e.target.value
+    //     });
+    // }
+    // handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     console.log(this.state);
+    // }
     render() {
         return (
             <div className="panel" data-collapsed="0">
