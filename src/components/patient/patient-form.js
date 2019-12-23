@@ -18,7 +18,6 @@ export default class PatientForm extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         if (this.handleValidation()) {            
-            
             e.target.reset();
             this.setState(initialState);
             alert("Form submitted");            
@@ -60,7 +59,6 @@ export default class PatientForm extends Component {
     }
     handleReset = (e) => {        
         this.setState(initialState);
-        console.log(this.state);
     }
     render() {
         return (
@@ -76,7 +74,7 @@ export default class PatientForm extends Component {
                     </div>
                 </div>
                 <div className="panel-body">
-                    <form onSubmit={this.handleSubmit}>
+                    <form onSubmit={this.handleSubmit} onClick={this.handleReset}>
                         <div className="row">
                             <div className="col-md-4">
                                 <div className="form-group">
@@ -126,7 +124,7 @@ export default class PatientForm extends Component {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="reset" className="btn btn-default" onClick={this.handleReset}>Reset</button>
+                            <button type="reset" className="btn btn-default">Reset</button>
                             <button type="submit" className="btn btn-info">Save changes</button>
                         </div>
                     </form>
