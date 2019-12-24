@@ -1,0 +1,7 @@
+.p-dropdown,.p-inputtext,.p-autocomplete,.p-calendar,.p-dropdown-filter-container {
+    width: 100%;
+  }
+  .p-inputtext.error,.p-autocomplete.error input,.p-dropdown.error{
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+  }
