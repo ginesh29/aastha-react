@@ -3,11 +3,18 @@ export const initialState = {
   validationError: {},
   isValidationFired: false
 };
+export const baseApiUrl = "http://localhost:61194/api"
 export const caseTypes = [
-  { id: 1, value: "Old" },
-  { id: 2, value: "New" }
+  { value: 1, label: "Old" },
+  { value: 2, label: "New" }
 ];
-export const patientNames = [
-  { id: 1, value: "Kamiya Vipul Patel" },
-  { id: 2, value: "New" }
+export const roomTypes = [
+  { value: 1, label: "General" },
+  { value: 2, label: "Special" },
+  { value: 3, label: "Semi-Special" }
+];
+export const departmentTypes = [
+  { value: 1, label: "Delivery" },
+  { value: 2, label: "Operation" },
+  { value: 3, label: "General" }
 ];

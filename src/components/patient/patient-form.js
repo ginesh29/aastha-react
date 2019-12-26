@@ -1,29 +1,57 @@
 import React, { Component } from "react";
+import { Panel } from 'primereact/panel';
 import InputField from "../shared/InputField";
-import * as Constants from "../../common/constants";
-import * as Helpers from "../../common/helpers";
+import { initialState, baseApiUrl } from "../../common/constants";
+import { toSentenceCase } from "../../common/helpers";
+import axios from 'axios';
+import { Growl } from 'primereact/growl';
 
+const title = "Patient Registration";
 export default class PatientForm extends Component {
-  state = Constants.initialState;
+  state = initialState;
   handleChange = e => {
-    let fields = this.state.formFields;
-    fields[e.target.name] = e.target.value;
+    const { isValidationFired, formFields } = this.state;
+    let currentObj = e.target;
+    let fields = formFields;
+    fields[currentObj.name] = currentObj.value;
+    if (currentObj.className && currentObj.className.includes("SentenceCase"))
+      toSentenceCase(e);
     this.setState({
       formFields: fields
     });
-    if (this.state.isValidationFired) this.handleValidation();
+    if (isValidationFired)
+      this.handleValidation();
   };
   handleSubmit = e => {
+    const { formFields } = this.state;
     e.preventDefault();
     if (this.handleValidation()) {
-      e.target.reset();
-      this.setState(Constants.initialState);
-      alert("Form submitted");
+      const patient = {
+        firstname: formFields.Firstname,
+        middlename: formFields.middlename,
+        lastname: formFields.lastname,
+        age: formFields.age,
+        mobile: formFields.mobile,
+        address: formFields.address
+      };
+      console.log(patient)
+      let form = e.target;
+      axios.post(`${baseApiUrl}/patients`, patient)
+        .then(res => {
+          form.reset();
+          this.setState(initialState);
+          this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
+        })
+        .catch(error => {
+          this.setState({
+            validationError: error.response.data.ValidationSummary
+          });
+        });
     }
   };
   handleValidation = e => {
+    const { formFields } = this.state;
     let errors = {};
-    let formFields = this.state.formFields;
     let isValid = true;
     if (!formFields.firstname) {
       isValid = false;
@@ -56,61 +84,76 @@ export default class PatientForm extends Component {
     return isValid;
   };
   handleReset = e => {
-    this.setState(Constants.initialState);
+    this.setState(initialState);
   };
   suggestAddresses = e => {
-    this.brands = ["Audi", "BMW", "Fiat", "Ford", "Honda", "Jaguar", "Mercedes", "Renault", "Volvo"];
-    let results = this.brands.filter(brand => {
-      return brand.toLowerCase().startsWith(e.query.toLowerCase());
-    });
-
-    this.setState({ addressSuggestions: results });
+    let query = e.query.toLowerCase();
+    axios.get(`${baseApiUrl}/patients?filter=Address.startswith({${query}})&fields=Address`)
+      .then(res => {
+        let data = res.data.Result.data;
+        let addresses = data.map(function (item) {
+          return item.address;
+        });
+        this.addresses = addresses;
+        let results = this.addresses.filter(address => {
+          return address.toLowerCase().startsWith(query);
+        });
+        this.setState({ addressSuggestions: results });
+      })
   };
   render() {
+    const { validationErrors, formFields, addressSuggestions } = this.state;
     return (
+
       <div className="col-md-8">
+        <Growl ref={(el) => this.growl = el} />
         <div className="row">
-          <div className="panel">
-            <div className="panel-heading">
-              <div className="panel-title">Patient Registration</div>
+          <Panel header={title} toggleable={true}>
+            <div className="alert alert-danger" role="alert" style={{ display: validationErrors ? "" : "none" }}>
+              <ol>
+                {validationErrors && Object.keys(validationErrors).map((keyName, i) => (
+                  <li className="travelcompany-input" key={i}>
+                    key: {i} Name: {validationErrors[keyName]}
+                  </li>
+                ))}
+              </ol>
             </div>
-            <div className="panel-body">
-              <form onSubmit={this.handleSubmit} onReset={this.handleReset} autoComplete="disabled">
-                <div className="row">
-                  <div className="col-md-4">
-                    <InputField name="firstname" title="Firstname" onChange={this.handleChange} onInput={Helpers.toSentenceCase} {...this.state} />
-                  </div>
-                  <div className="col-md-4">
-                    <InputField name="middlename" title="Middlename" onChange={this.handleChange} onInput={Helpers.toSentenceCase} {...this.state} />
-                  </div>
-                  <div className="col-md-4">
-                    <InputField name="lastname" title="Lastname" onChange={this.handleChange} onInput={Helpers.toSentenceCase} {...this.state} />
-                  </div>
+            <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
+              <div className="row">
+                <div className="col-md-4">
+                  <InputField name="firstname" title="Firstname" className="SentenceCase" onChange={this.handleChange} {...this.state} />
                 </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <InputField name="age" title="Age" onChange={this.handleChange} {...this.state} keyfilter="pint" maxLength="2" />
-                  </div>
-                  <div className="col-md-6">
-                    <InputField name="mobile" title="Mobile" onChange={this.handleChange} {...this.state} keyfilter="pint" />
-                  </div>
+                <div className="col-md-4">
+                  <InputField name="middlename" title="Middlename" className="SentenceCase" onChange={this.handleChange} {...this.state} />
                 </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    <InputField name="address" title="Address" value={this.state.formFields.address} suggestions={this.state.addressSuggestions} completeMethod={this.suggestAddresses} onChange={this.handleChange} {...this.state} controlType="autocomplete" />
-                  </div>
+                <div className="col-md-4">
+                  <InputField name="lastname" title="Lastname" className="SentenceCase" onChange={this.handleChange} {...this.state} />
                 </div>
-                <div className="modal-footer">
-                  <button type="reset" className="btn btn-default">
-                    Reset
+              </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <InputField name="age" title="Age" onChange={this.handleChange} {...this.state} keyfilter="pint" maxLength="2" />
+                </div>
+                <div className="col-md-6">
+                  <InputField name="mobile" title="Mobile" onChange={this.handleChange} {...this.state} keyfilter="pint" />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-12">
+                  <InputField name="address" title="Address" value={formFields.address} suggestions={addressSuggestions} completeMethod={this.suggestAddresses} onChange={this.handleChange} {...this.state} controlType="autocomplete" minLength="0" onFocus={this.handleFocus} />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="reset" className="btn btn-default">
+                  Reset
                   </button>
-                  <button type="submit" className="btn btn-info">
-                    Save changes
+                <button type="submit" className="btn btn-info">
+                  Save changes
                   </button>
-                </div>
-              </form>
-            </div>
-          </div>
+              </div>
+            </form>
+
+          </Panel>
         </div>
       </div>
     );

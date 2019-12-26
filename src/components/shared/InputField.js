@@ -3,10 +3,11 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { AutoComplete } from "primereact/autocomplete";
+import { MultiSelect } from 'primereact/multiselect';
 
 export default class InputField extends Component {
   render() {
-    const { title, name, value, onChange, onInput, disabled, validationError, showClear, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className } = this.props;
+    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, disabled, validationError, showClear, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className } = this.props;
     let errorClass = validationError[name] ? "error" : "";
 
     if (controlType === "input-group-addon") {
@@ -24,27 +25,40 @@ export default class InputField extends Component {
           <span className="error">{validationError[name]}</span>
         </div>
       );
-    } else if (controlType === "dropdown") {
+    }
+    else if (controlType === "dropdown") {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <Dropdown name={name} value={value} options={options} className={className + " " + errorClass} panelClassName="error" placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Search " + title} filterBy={filterBy} showClear={showClear} />
+          <Dropdown name={name} value={value} options={options} className={errorClass} panelClassName="error" placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={showClear} />
           <span className="error">{validationError[name]}</span>
         </div>
       );
-    } else if (controlType === "datepicker") {
+    }
+    else if (controlType === "datepicker") {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <Calendar name={name} value={value} showIcon={true} className={className} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} />
+          <Calendar name={name} value={value} showIcon={true} className={className} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat="12" icon={icon} />
           <span className="error">{validationError[name]}</span>
         </div>
       );
-    } else if (controlType === "autocomplete") {
+    }
+    else if (controlType === "autocomplete") {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <AutoComplete name={name} value={value} className={className + " " + errorClass} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} suggestions={suggestions} completeMethod={completeMethod} />
+          <AutoComplete name={name} value={value} className={className + " " + errorClass} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} suggestions={suggestions} completeMethod={completeMethod} onFocus={onFocus} />
+          <span className="error">{validationError[name]}</span>
+        </div>
+      );
+    }
+    else if (controlType === "multiselect") {
+      return (
+        <div className="form-group">
+          <label className="control-label">{title}</label>
+          <MultiSelect value={value} options={options} onChange={onChange} />
+          {/* <AutoComplete name={name} value={value} className={className + " " + errorClass} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} suggestions={suggestions} completeMethod={completeMethod} minLength={minLength} onFocus={onFocus} /> */}
           <span className="error">{validationError[name]}</span>
         </div>
       );
@@ -52,7 +66,7 @@ export default class InputField extends Component {
     return (
       <div className="form-group">
         <label className="control-label">{title}</label>
-        <InputText name={name} value={value} className={className + " " + errorClass} placeholder={"Enter " + title} onChange={onChange} onInput={onInput} disabled={disabled} keyfilter={keyfilter} maxLength={maxLength} />
+        <InputText name={name} value={value} className={className + " " + errorClass} placeholder={"Enter " + title} onChange={onChange} onInput={onInput} disabled={disabled} keyfilter={keyfilter} maxLength={maxLength} onFocus={this.onFocus} autoFocus={this.autoFocus} />
         <span className="error">{validationError[name]}</span>
       </div>
     );

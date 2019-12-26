@@ -1,7 +1,10 @@
-.p-dropdown,.p-inputtext,.p-autocomplete,.p-calendar,.p-dropdown-filter-container {
+.p-dropdown,.p-inputtext,.p-autocomplete,.p-calendar,.p-dropdown-filter-container,.p-multiselect {
     width: 100%;
   }
   .p-inputtext.error,.p-autocomplete.error input,.p-dropdown.error{
     border: 1px solid #ff0000;
     background-color: #ffeeee;
   }
+  .p-growl {
+    z-index: 9999 !important;
+}
