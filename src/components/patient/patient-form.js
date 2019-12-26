@@ -104,7 +104,6 @@ export default class PatientForm extends Component {
   render() {
     const { validationErrors, formFields, addressSuggestions } = this.state;
     return (
-
       <div className="col-md-8">
         <Growl ref={(el) => this.growl = el} />
         <div className="row">
