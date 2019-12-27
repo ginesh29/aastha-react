@@ -7,8 +7,8 @@ import { MultiSelect } from 'primereact/multiselect';
 
 export default class InputField extends Component {
   render() {
-    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, disabled, validationError, showClear, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className } = this.props;
-    let errorClass = validationError[name] ? "error" : "";
+    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, showClear, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength } = this.props;
+    let errorClass = validationErrors[name] ? "error" : "";
 
     if (controlType === "input-group-addon") {
       return (
@@ -22,7 +22,7 @@ export default class InputField extends Component {
               </span>
             </div>
           </div>
-          <span className="error">{validationError[name]}</span>
+          <span className="error">{validationErrors[name]}</span>
         </div>
       );
     }
@@ -31,7 +31,7 @@ export default class InputField extends Component {
         <div className="form-group">
           <label className="control-label">{title}</label>
           <Dropdown name={name} value={value} options={options} className={errorClass} panelClassName="error" placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={showClear} />
-          <span className="error">{validationError[name]}</span>
+          <span className="error">{validationErrors[name]}</span>
         </div>
       );
     }
@@ -39,8 +39,8 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <Calendar name={name} value={value} showIcon={true} className={className} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat="12" icon={icon} />
-          <span className="error">{validationError[name]}</span>
+          <Calendar name={name} value={value} showIcon={true} className={className} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} />
+          <span className="error">{validationErrors[name]}</span>
         </div>
       );
     }
@@ -48,8 +48,8 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <AutoComplete name={name} value={value} className={className + " " + errorClass} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} suggestions={suggestions} completeMethod={completeMethod} onFocus={onFocus} />
-          <span className="error">{validationError[name]}</span>
+          <AutoComplete name={name} value={value} className={className + " " + errorClass} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} suggestions={suggestions} completeMethod={completeMethod} onFocus={onFocus} minLength={minLength} />
+          <span className="error">{validationErrors[name]}</span>
         </div>
       );
     }
@@ -57,9 +57,8 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <MultiSelect value={value} options={options} onChange={onChange} />
-          {/* <AutoComplete name={name} value={value} className={className + " " + errorClass} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} suggestions={suggestions} completeMethod={completeMethod} minLength={minLength} onFocus={onFocus} /> */}
-          <span className="error">{validationError[name]}</span>
+          <MultiSelect name={name} value={value} className={className + " " + errorClass} options={options} onChange={onChange} filter={filter} placeholder={"Select " + title} />
+          <span className="error">{validationErrors[name]}</span>
         </div>
       );
     }
@@ -67,7 +66,7 @@ export default class InputField extends Component {
       <div className="form-group">
         <label className="control-label">{title}</label>
         <InputText name={name} value={value} className={className + " " + errorClass} placeholder={"Enter " + title} onChange={onChange} onInput={onInput} disabled={disabled} keyfilter={keyfilter} maxLength={maxLength} onFocus={this.onFocus} autoFocus={this.autoFocus} />
-        <span className="error">{validationError[name]}</span>
+        <span className="error">{validationErrors[name]}</span>
       </div>
     );
   }

@@ -1,20 +1,28 @@
 import React, { Component } from "react";
 import { Panel } from 'primereact/panel';
 import InputField from "../shared/InputField";
-import { initialState, baseApiUrl } from "../../common/constants";
+import { baseApiUrl } from "../../common/constants";
 import { toSentenceCase } from "../../common/helpers";
 import axios from 'axios';
 import { Growl } from 'primereact/growl';
 
 const title = "Patient Registration";
+
 export default class PatientForm extends Component {
-  state = initialState;
+  constructor(props) {
+    super(props);
+    this.state = this.getInitialState();
+  }
+  getInitialState = () => ({
+    formFields: { firstname: "", middlename: "", lastname: "", age: "", address: "", mobile: "" },
+    validationErrors: {}
+  })
   handleChange = e => {
     const { isValidationFired, formFields } = this.state;
     let currentObj = e.target;
     let fields = formFields;
     fields[currentObj.name] = currentObj.value;
-    if (currentObj.className && currentObj.className.includes("SentenceCase"))
+    if (currentObj.className && currentObj.className.includes("sentenceCase"))
       toSentenceCase(e);
     this.setState({
       formFields: fields
@@ -22,124 +30,111 @@ export default class PatientForm extends Component {
     if (isValidationFired)
       this.handleValidation();
   };
+
   handleSubmit = e => {
-    const { formFields } = this.state;
+    const { firstname, middlename, lastname, age, address, mobile } = this.state.formFields;
     e.preventDefault();
     if (this.handleValidation()) {
       const patient = {
-        firstname: formFields.Firstname,
-        middlename: formFields.middlename,
-        lastname: formFields.lastname,
-        age: formFields.age,
-        mobile: formFields.mobile,
-        address: formFields.address
+        firstname: firstname,
+        middlename: middlename,
+        lastname: lastname,
+        age: age,
+        mobile: mobile,
+        address: address
       };
-      console.log(patient)
-      let form = e.target;
       axios.post(`${baseApiUrl}/patients`, patient)
         .then(res => {
-          form.reset();
-          this.setState(initialState);
+          this.handleReset();
           this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
         })
         .catch(error => {
+          let errors = error.response.data.ValidationSummary;
           this.setState({
-            validationError: error.response.data.ValidationSummary
+            validationErrors: errors
           });
         });
     }
   };
+
   handleValidation = e => {
-    const { formFields } = this.state;
+    const { firstname, middlename, lastname, age, address } = this.state.formFields;
     let errors = {};
     let isValid = true;
-    if (!formFields.firstname) {
+    if (!firstname) {
       isValid = false;
       errors.firstname = "Firstname is required";
     }
-    if (!formFields.middlename) {
+    if (!middlename) {
       isValid = false;
       errors.middlename = "Middlename is required";
     }
-    if (!formFields.lastname) {
+    if (!lastname) {
       isValid = false;
       errors.lastname = "Lastname is required";
     }
-    if (!formFields.age) {
+    if (!age) {
       isValid = false;
       errors.age = "Age is required";
     }
-    if (!formFields.mobile) {
-      isValid = false;
-      errors.mobile = "Mobile is required";
-    }
-    if (!formFields.address) {
+    if (!address) {
       isValid = false;
       errors.address = "Address is required";
     }
     this.setState({
-      validationError: errors,
+      validationErrors: errors,
       isValidationFired: true
     });
     return isValid;
   };
+
   handleReset = e => {
-    this.setState(initialState);
+    this.setState(this.getInitialState());
   };
+
   suggestAddresses = e => {
-    let query = e.query.toLowerCase();
-    axios.get(`${baseApiUrl}/patients?filter=Address.startswith({${query}})&fields=Address`)
+    let query = e ? e.query.toLowerCase() : "";
+    axios.get(`${baseApiUrl}/patients?filter=address.startswith({${query}})&fields=address`)
       .then(res => {
         let data = res.data.Result.data;
         let addresses = data.map(function (item) {
           return item.address;
         });
-        this.addresses = addresses;
-        let results = this.addresses.filter(address => {
-          return address.toLowerCase().startsWith(query);
-        });
-        this.setState({ addressSuggestions: results });
+        this.setState({ addressSuggestions: addresses });
       })
   };
+
   render() {
-    const { validationErrors, formFields, addressSuggestions } = this.state;
+    const { addressSuggestions } = this.state;
+    const { firstname, middlename, lastname, age, address, mobile } = this.state.formFields;
     return (
       <div className="col-md-8">
         <Growl ref={(el) => this.growl = el} />
         <div className="row">
           <Panel header={title} toggleable={true}>
-            <div className="alert alert-danger" role="alert" style={{ display: validationErrors ? "" : "none" }}>
-              <ol>
-                {validationErrors && Object.keys(validationErrors).map((keyName, i) => (
-                  <li className="travelcompany-input" key={i}>
-                    key: {i} Name: {validationErrors[keyName]}
-                  </li>
-                ))}
-              </ol>
-            </div>
             <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
               <div className="row">
                 <div className="col-md-4">
-                  <InputField name="firstname" title="Firstname" className="SentenceCase" onChange={this.handleChange} {...this.state} />
+                  <InputField name="firstname" title="Firstname" value={firstname} className="sentenceCase" onChange={this.handleChange} {...this.state} />
                 </div>
                 <div className="col-md-4">
-                  <InputField name="middlename" title="Middlename" className="SentenceCase" onChange={this.handleChange} {...this.state} />
+                  <InputField name="middlename" title="Middlename" value={middlename} className="sentenceCase" onChange={this.handleChange} {...this.state} />
                 </div>
                 <div className="col-md-4">
-                  <InputField name="lastname" title="Lastname" className="SentenceCase" onChange={this.handleChange} {...this.state} />
+                  <InputField name="lastname" title="Lastname" value={lastname} className="sentenceCase" onChange={this.handleChange} {...this.state} />
                 </div>
               </div>
               <div className="row">
                 <div className="col-md-6">
-                  <InputField name="age" title="Age" onChange={this.handleChange} {...this.state} keyfilter="pint" maxLength="2" />
+                  <InputField name="age" title="Age" value={age} onChange={this.handleChange} {...this.state} keyfilter="pint" maxLength="2" />
                 </div>
                 <div className="col-md-6">
-                  <InputField name="mobile" title="Mobile" onChange={this.handleChange} {...this.state} keyfilter="pint" />
+                  <InputField name="mobile" title="Mobile" value={mobile} onChange={this.handleChange} {...this.state} keyfilter="pint" />
                 </div>
               </div>
               <div className="row">
                 <div className="col-md-12">
-                  <InputField name="address" title="Address" value={formFields.address} suggestions={addressSuggestions} completeMethod={this.suggestAddresses} onChange={this.handleChange} {...this.state} controlType="autocomplete" minLength="0" onFocus={this.handleFocus} />
+                  <InputField name="address" title="Address" value={address} suggestions={addressSuggestions} completeMethod={this.suggestAddresses} onChange={this.handleChange} {...this.state} controlType="autocomplete" />
                 </div>
               </div>
               <div className="modal-footer">
@@ -151,7 +146,6 @@ export default class PatientForm extends Component {
                   </button>
               </div>
             </form>
-
           </Panel>
         </div>
       </div>

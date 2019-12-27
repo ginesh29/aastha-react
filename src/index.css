@@ -8,3 +8,6 @@
   .p-growl {
     z-index: 9999 !important;
 }
+.p-multiselect .p-multiselect-label {
+  padding: -0.571em !important;
+}
