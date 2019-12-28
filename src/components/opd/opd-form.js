@@ -1,9 +1,9 @@
 import React from "react";
 import InputField from "../shared/InputField";
 import { baseApiUrl, caseTypeOptions } from "../../common/constants";
-import { Panel } from 'primereact/panel';
-import axios from 'axios';
-import { Growl } from 'primereact/growl';
+import { Panel } from "primereact/panel";
+import axios from "axios";
+import { Growl } from "primereact/growl";
 
 const title = "Opd Entry";
 
@@ -16,7 +16,7 @@ export default class OpdForm extends React.Component {
   getInitialState = () => ({
     formFields: { opdDate: "", caseType: "", patientId: null, consultCharge: "", usgCharge: "", uptCharge: "", injectionCharge: "", otherCharge: "", totalCharge: "" },
     validationErrors: {}
-  })
+  });
 
   handleChange = e => {
     const { isValidationFired, formFields } = this.state;
@@ -47,12 +47,13 @@ export default class OpdForm extends React.Component {
         usgCharge: usgCharge,
         uptCharge: uptCharge,
         injectionCharge: injectionCharge,
-        otherCharge: otherCharge,
+        otherCharge: otherCharge
       };
-      axios.post(`${baseApiUrl}/opds`, opd)
+      axios
+        .post(`${baseApiUrl}/opds`, opd)
         .then(res => {
           this.handleReset();
-          this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
+          this.growl.show({ severity: "success", summary: "Success Message", detail: res.data.Message });
         })
         .catch(error => {
           let errors = error.response.data.ValidationSummary;
@@ -91,21 +92,20 @@ export default class OpdForm extends React.Component {
   };
 
   componentDidMount() {
-    axios.get(`${baseApiUrl}/patients?fields=id,fullname`)
-      .then(res => {
-        let patientsRes = res.data.Result.data;
-        let patients = patientsRes.map(function (item) {
-          return { value: item["id"], label: item["fullname"] };
-        })
-        this.setState({ patientNames: patients })
-      })
+    axios.get(`${baseApiUrl}/patients?fields=id,fullname`).then(res => {
+      let patientsRes = res.data.Result.data;
+      let patients = patientsRes.map(function (item) {
+        return { value: item["id"], label: item["fullname"] };
+      });
+      this.setState({ patientNames: patients });
+    });
   }
   render() {
     const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields;
     const { patientNames } = this.state;
     return (
       <div className="col-md-8">
-        <Growl ref={(el) => this.growl = el} />
+        <Growl ref={el => (this.growl = el)} />
         <div className="row">
           <Panel header={title} toggleable={true}>
             <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
@@ -115,10 +115,10 @@ export default class OpdForm extends React.Component {
                 </div>
               </div>
               <div className="row">
-                <div className="col-md-3">
+                <div className="col-md-4">
                   <InputField name="caseType" title="Case Type" value={caseType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
                 </div>
-                <div className="col-md-9">
+                <div className="col-md-8">
                   <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="dropdown" options={patientNames} filter={true} filterPlaceholder="Select Car" filterBy="label,value" showClear={true} onFocus={this.handleChange} />
                 </div>
               </div>
@@ -147,10 +147,10 @@ export default class OpdForm extends React.Component {
               <div className="modal-footer">
                 <button type="reset" className="btn btn-default">
                   Reset
-                  </button>
+                </button>
                 <button type="submit" className="btn btn-info">
                   Save changes
-                  </button>
+                </button>
               </div>
             </form>
           </Panel>

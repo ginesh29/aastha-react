@@ -1,25 +1,32 @@
-export const baseApiUrl = "http://localhost:61194/api"
+export const baseApiUrl = "http://localhost:61194/api";
+
 export const caseTypeOptions = [
   { value: 1, label: "Old" },
   { value: 2, label: "New" }
 ];
+
 export const roomTypeOptions = [
   { value: 1, label: "General" },
   { value: 2, label: "Special" },
   { value: 3, label: "Semi-Special" }
 ];
-export const departmentTypeOptions = [
-  { value: 1, label: "Delivery" },
-  { value: 2, label: "Operation" },
-  { value: 3, label: "General" }
-];
+
+export const departmentTypeEnum = {
+  DELIVERY: { value: 1, label: "Delivery" },
+  OPERATION: { value: 2, label: "Operation" },
+  GENERAL: { value: 3, label: "General" }
+};
+
+export const departmentTypeOptions = function() {
+  return { value: 1, label: "Delivery" };
+};
 export const deliveryDiganosisOptions = [
   { value: 1, label: "Labour Pain" },
-  { value: 2, label: "Licking P/V" },
+  { value: 2, label: "Licking P/V" }
 ];
 export const genderOptions = [
   { value: 1, label: "Boy" },
-  { value: 2, label: "Girl" },
+  { value: 2, label: "Girl" }
 ];
 
 export const lookupTypesOptions = [

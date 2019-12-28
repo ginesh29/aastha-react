@@ -14,13 +14,11 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <div className="p-col-12 p-md-4">
-            <div className="p-inputgroup">
-              <InputText name={name} value={value} className={className + " " + errorClass} placeholder={"Enter " + title} onChange={onChange} readOnly={readOnly} keyfilter={keyfilter} maxLength={maxLength} />
-              <span className="p-inputgroup-addon">
-                <i className={"fa " + groupIcon}></i>
-              </span>
-            </div>
+          <div className="p-inputgroup">
+            <InputText name={name} value={value} className={className + " " + errorClass} placeholder={"Enter " + title} onChange={onChange} readOnly={readOnly} keyfilter={keyfilter} maxLength={maxLength} />
+            <span className="p-inputgroup-addon">
+              <i className={"fa " + groupIcon}></i>
+            </span>
           </div>
           <span className="error">{validationErrors[name]}</span>
         </div>
@@ -39,7 +37,12 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <Calendar name={name} value={value} showIcon={true} className={className} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} />
+          <div className="p-inputgroup">
+            <Calendar name={name} value={value} showIcon={true} className={className} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} />
+            <span className="p-inputgroup-addon">
+              <i className={"fa " + groupIcon}></i>
+            </span>
+          </div>
           <span className="error">{validationErrors[name]}</span>
         </div>
       );

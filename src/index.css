@@ -1,13 +1,21 @@
-.p-dropdown,.p-inputtext,.p-autocomplete,.p-calendar,.p-dropdown-filter-container,.p-multiselect {
-    width: 100%;
-  }
-  .p-inputtext.error,.p-autocomplete.error input,.p-dropdown.error{
-    border: 1px solid #ff0000;
-    background-color: #ffeeee;
-  }
-  .p-growl {
-    z-index: 9999 !important;
+.p-dropdown,
+.p-dropdown-filter,
+.p-inputtext,
+.p-autocomplete,
+.p-calendar,
+.p-dropdown-filter-container,
+.p-multiselect {
+  width: 100%;
 }
-.p-multiselect .p-multiselect-label {
+.p-inputtext.error,
+.p-autocomplete.error input,
+.p-dropdown.error {
+  border: 1px solid #ff0000;
+  background-color: #ffeeee;
+}
+.p-growl {
+  z-index: 9999 !important;
+}
+.p-multiselect-label-container {
   padding: -0.571em !important;
 }
