@@ -5,7 +5,7 @@ import { Panel } from "primereact/panel";
 import axios from "axios";
 import { Growl } from "primereact/growl";
 import { enumToObject } from "../../common/helpers";
-import Moment from 'react-moment';
+import moment from 'moment';
 
 
 const title = "Ipd Entry";
@@ -38,12 +38,22 @@ export default class IpdForm extends React.Component {
   handleChange = e => {
     const { isValidationFired, formFields } = this.state;
     formFields[e.target.name] = e.target.value;
+    if (e.target.name === "departmentType") {
+      formFields.deliveryDate = "";
+      formFields.deliveryTime = "";
+      formFields.typesOfDelivery = [];
+      formFields.deliveryDiagnosis = "";
+      formFields.babyGender = "";
+      formFields.babyWeight = "";
+      formFields.operationDate = "";
+      formFields.operationDiagnosis = [];
+      formFields.typesOfOperation = [];
+      formFields.generalDiagnosis = [];
+    }
+
     this.setState({
       formFields: formFields
     });
-
-    // let time = Moment(formFields.deliveryTime).format('hh:mm');
-    // console.log(time)
     // let total = Number(fields.consultCharge) + Number(fields.usgCharge) + Number(fields.uptCharge) + Number(fields.injectionCharge) + Number(fields.otherCharge);
     // totalCharge = total > 0 ? total : "";
     if (isValidationFired) this.handleValidation();
@@ -54,17 +64,14 @@ export default class IpdForm extends React.Component {
       typesOfOperation, generalDiagnosis, operationDate } = this.state.formFields;
     e.preventDefault();
     if (this.handleValidation()) {
-      const deliveryLookupArray = typesOfDelivery
-      const operationLookupArray = [...operationDiagnosis, ...typesOfOperation]
-      const generalLookupArray = generalDiagnosis
-      const lookupArray = departmentType === departmentTypeEnum.DELIVERY ? deliveryLookupArray : departmentType === departmentTypeEnum.OPERATION ? operationLookupArray : departmentType === departmentTypeEnum.GENERAL ? generalLookupArray : [];
+      const lookupArray = [...typesOfDelivery, ...operationDiagnosis, ...typesOfOperation, ...generalDiagnosis];
       const ipdLookups = lookupArray.map(item => {
         return { lookupId: item };
       });
-
+      console.log(ipdLookups);
       const deliveryDetail = {
         date: deliveryDate,
-        time: deliveryTime,
+        time: moment(deliveryTime).format("HH:mm"),
         gender: babyGender,
         babyWeight: babyWeight
       }
