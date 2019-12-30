@@ -17,25 +17,18 @@ export const departmentTypeEnum = {
   GENERAL: { value: 3, label: "General" }
 };
 
-export const departmentTypeOptions = function() {
-  return { value: 1, label: "Delivery" };
-};
-export const deliveryDiganosisOptions = [
-  { value: 1, label: "Labour Pain" },
-  { value: 2, label: "Licking P/V" }
-];
 export const genderOptions = [
   { value: 1, label: "Boy" },
   { value: 2, label: "Girl" }
 ];
 
-export const lookupTypesOptions = [
-  { value: 1, label: "DeliveryType" },
-  { value: 2, label: "OperationType" },
-  { value: 3, label: "OperationDiagnosis" },
-  { value: 4, label: "GeneralDiagnosis" },
-  { value: 5, label: "MedicinType" },
-  { value: 6, label: "Medicine" },
-  { value: 7, label: "ChargeType" },
-  { value: 8, label: "DeliveryDiagnosis" }
-];
+export const lookupTypesOptions = {
+  DELIVERYTYPE: { value: 1, label: "DeliveryType" },
+  OPERATIONTYPE: { value: 2, label: "OperationType" },
+  OPERATIONDIAGNOSIS: { value: 3, label: "OperationDiagnosis" },
+  GENERALDIAGNOSIS: { value: 4, label: "GeneralDiagnosis" },
+  MEDICINTYPE: { value: 5, label: "MedicinType" },
+  MEDICINE: { value: 6, label: "Medicine" },
+  CHARGENAME: { value: 7, label: "ChargeName" },
+  DELIVERYDIAGNOSIS: { value: 8, label: "DeliveryDiagnosis" }
+};

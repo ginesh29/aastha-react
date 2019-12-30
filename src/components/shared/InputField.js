@@ -7,7 +7,7 @@ import { MultiSelect } from 'primereact/multiselect';
 
 export default class InputField extends Component {
   render() {
-    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, showClear, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength } = this.props;
+    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, showClear, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey } = this.props;
     let errorClass = validationErrors[name] ? "error" : "";
 
     if (controlType === "input-group-addon") {
@@ -38,7 +38,7 @@ export default class InputField extends Component {
         <div className="form-group">
           <label className="control-label">{title}</label>
           <div className="p-inputgroup">
-            <Calendar name={name} value={value} showIcon={true} className={className} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} />
+            <Calendar name={name} value={value} showIcon={true} className={className} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} dataKey={dataKey} />
             <span className="p-inputgroup-addon">
               <i className={"fa " + groupIcon}></i>
             </span>
