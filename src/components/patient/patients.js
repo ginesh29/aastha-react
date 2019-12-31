@@ -12,7 +12,7 @@ export default class Patients extends Component {
     loading: true
   };
   getPatients = e => {
-    const { rows, first } = this.state;
+    //const { rows, first } = this.state;
     return axios.get(`${baseApiUrl}/patients`).then(res => res.data.Result);
   };
   componentDidMount() {

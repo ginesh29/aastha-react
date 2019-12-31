@@ -56,6 +56,7 @@ export default class IpdForm extends React.Component {
         if (isValidationFired)
             this.handleValidation();
     };
+
     handleChargeChange = e => {
         const { chargeFormFields } = this.state;
         const name = e.target.name;
@@ -72,7 +73,8 @@ export default class IpdForm extends React.Component {
         }).map(item => {
             item.rate = rate ? rate : item.rate;
             item.days = days ? days : item.days;
-            item.amount = item.rate * item.days;
+            let amount = item.rate * item.days;
+            this.setState({ [`${item.lookupId}Amount`]: amount ? amount : "" });
             return item;
         });
 
@@ -81,6 +83,7 @@ export default class IpdForm extends React.Component {
         const { departmentType, roomType, patientId, addmissionDate, dischargeDate,
             deliveryDate, deliveryTime, babyGender, babyWeight, typesOfDelivery, operationDiagnosis,
             typesOfOperation, generalDiagnosis, operationDate, deliveryDiagnosis } = this.state.formFields;
+        const { chargeFormFields } = this.state;
         e.preventDefault();
         if (this.handleValidation()) {
             let lookupArray = [...typesOfDelivery, ...operationDiagnosis, ...typesOfOperation, ...generalDiagnosis];
@@ -98,7 +101,7 @@ export default class IpdForm extends React.Component {
             const operationDetail = {
                 date: operationDate
             }
-            const charges = this.state.chargeFormFields.filter(item => item.amount > 0)
+            const charges = chargeFormFields.filter(item => item.rate > 0 && item.day > 0)
             const ipd = {
                 type: departmentType.value,
                 roomType: roomType,
@@ -202,9 +205,11 @@ export default class IpdForm extends React.Component {
         });
         return isValid;
     };
+    // getGrandTotal = e => {
 
+    // }
     getPatients = e => {
-        return axios.get(`${baseApiUrl}/patients?fields=id,fullname`).then(res => res.data.Result.data);
+        return axios.get(`${baseApiUrl}/patients?fields=id,fullname&take=100`).then(res => res.data.Result.data);
     };
 
     bindLookups = e => {
@@ -230,7 +235,7 @@ export default class IpdForm extends React.Component {
             this.setState({ departmentTypeOptions: enumToObject(departmentTypeEnum) });
 
             let charges = chargeNames.map(item => {
-                return { lookupId: item.value, rate: 0, days: 0, amount: 0 }
+                return { lookupId: item.value, rate: "", days: "" }
             })
             this.setState({ chargeFormFields: charges });
         });
@@ -238,7 +243,6 @@ export default class IpdForm extends React.Component {
     handleReset = e => {
         this.setState(this.getInitialState());
     };
-
     componentDidMount = e => {
         this.getPatients().then(data => {
             let patients = data.map(function (item) {
@@ -251,7 +255,7 @@ export default class IpdForm extends React.Component {
 
     render() {
         const { id, patientId, roomType, departmentType, addmissionDate, dischargeDate, deliveryDate, deliveryTime, typesOfDelivery, deliveryDiagnosis, babyGender, babyWeight, operationDate, operationDiagnosis, typesOfOperation, generalDiagnosis } = this.state.formFields;
-        const { patientNameOptions, departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames } = this.state;
+        const { patientNameOptions, departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal } = this.state;
         return (
             <div className="col-md-8" >
                 <Growl ref={el => (this.growl = el)} />
@@ -337,40 +341,20 @@ export default class IpdForm extends React.Component {
                                 </thead>
                                 <tbody>
                                     {chargeNames && chargeNames.map((item, index) => {
-
-                                        // let rate = "";
-                                        // let days = "";
-                                        // let amount = "";
-                                        // if (chargeFormFields) {
-                                        //     let charge = chargeFormFields.filter(obj => {
-                                        //         return obj.lookupId === item.value;
-                                        //     });
-                                        //     let chargeObj = charge[0];
-                                        //     if (chargeObj) {
-                                        //         console.log(chargeObj.rate)
-                                        //         rate = chargeObj.rate;
-                                        //         days = chargeObj.days;
-                                        //         amount = chargeObj.amount;
-                                        //     }
-
-                                        //     // debugger
-                                        // }
                                         return (
                                             <tr key={index} >
                                                 <th>{index + 1}</th>
                                                 <td>{item.label}</td>
                                                 <td><input className="form-control input-sm" name={`rate-${item.value}`} onChange={this.handleChargeChange} /></td>
                                                 <td><input className="form-control input-sm" name={`days-${item.value}`} onChange={this.handleChargeChange} /></td>
-                                                <td></td>
+                                                <td>{this.state[`${item.value}Amount`]}</td>
                                             </tr>)
                                     })}
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td colSpan="2">Grand Total</td>
-                                        {/* <td colSpan="3">
-                                            {gtotal}
-                                        </td> */}
+                                        <td>{grandTotal}</td>
                                     </tr>
                                     <tr>
                                         <td colSpan="2">Amount Paid</td>
