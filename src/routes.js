@@ -20,8 +20,8 @@ const routes = (
       </Route>
       <Route path="/dashboard" component={Dashboard} />
 
-      <Route path="/patients" component={Patients} />
       <Route path="/add-patient" component={PatientForm} />
+      <Route path="/patients" component={Patients} />
 
       <Route path="/add-opd" component={OpdForm} />
 

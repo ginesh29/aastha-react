@@ -1,10 +1,10 @@
-.p-dropdown,
-.p-dropdown-filter,
-.p-inputtext,
-.p-autocomplete,
-.p-calendar,
-.p-dropdown-filter-container,
-.p-multiselect {
+form .p-dropdown,
+form .p-dropdown-filter,
+form .p-inputtext,
+form .p-autocomplete,
+form .p-calendar,
+form .p-dropdown-filter-container,
+form .p-multiselect {
   width: 100%;
 }
 .p-inputtext.error,

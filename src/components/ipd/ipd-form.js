@@ -8,9 +8,6 @@ import { enumToObject } from "../../common/helpers";
 import moment from 'moment';
 
 const title = "Ipd Entry";
-// let rate = "";
-// let days = "";
-// let gtotal = "";
 export default class IpdForm extends React.Component {
     constructor(props) {
         super(props);
@@ -34,8 +31,8 @@ export default class IpdForm extends React.Component {
             operationDiagnosis: [],
             typesOfOperation: [],
             generalDiagnosis: [],
-            charges: []
         },
+        chargeFormFields: [],
         validationErrors: {}
     });
     handleChange = e => {
@@ -60,61 +57,35 @@ export default class IpdForm extends React.Component {
             this.handleValidation();
     };
     handleChargeChange = e => {
-        const { charges } = this.state;
+        const { chargeFormFields } = this.state;
         const name = e.target.name;
-        let c = charges;
         const lookupId = e.target.name.replace("rate-", "").replace("days-", "");
         let rate = "";
         let days = "";
-        if (name.includes("rate")) {
+        if (name.includes("rate"))
             rate = e.target.value;
-            days = c[0][lookupId].days
-        }
-
-        else if (name.includes("days")) {
+        else if (name.includes("days"))
             days = e.target.value;
-            rate = c[0][lookupId].rate
-        }
-        let amount = rate * days;
-        c[0][lookupId].rate = rate;
-        c[0][lookupId].days = days;
-        c[0][lookupId].amount = amount;
-        console.log(c);
 
-        // if (name.includes("rate"))
-        //     rate = e.target.value;
-        // else if (name.includes("days"))
-        //     days = e.target.value;
-        // let amount = rate || days ? rate * days : "";
+        chargeFormFields.filter(obj => {
+            return obj.lookupId.toString() === lookupId;
+        }).map(item => {
+            item.rate = rate ? rate : item.rate;
+            item.days = days ? days : item.days;
+            item.amount = item.rate * item.days;
+            return item;
+        });
 
-        // let obj = { [lookupId]: { "rate": rate, "days": days, "total": amount } };// { rate: rate, days: days, amount: rate * days };
-
-        //if (isExist.length < 1)
-        //charges.push(obj)
-        // else {
-        //     charges.map((item, i) => {
-
-        //         if (item.lookupId === lookupId) {
-        //             item.rate = obj.rate;
-        //             item.days = obj.days;
-        //             item.amount = obj.amount;
-        //         }
-        //     });
-        // }
-        //console.log(charges)
-        // this.setState({
-        //     charges: charges
-        // });
     }
     handleSubmit = e => {
         const { departmentType, roomType, patientId, addmissionDate, dischargeDate,
             deliveryDate, deliveryTime, babyGender, babyWeight, typesOfDelivery, operationDiagnosis,
-            typesOfOperation, generalDiagnosis, operationDate, deliveryDiagnosis, charges } = this.state.formFields;
+            typesOfOperation, generalDiagnosis, operationDate, deliveryDiagnosis } = this.state.formFields;
         e.preventDefault();
         if (this.handleValidation()) {
             let lookupArray = [...typesOfDelivery, ...operationDiagnosis, ...typesOfOperation, ...generalDiagnosis];
 
-            lookupArray = departmentType === departmentTypeEnum.DELIVERY.value ? lookupArray.concat(deliveryDiagnosis) : [];
+            lookupArray = departmentType === departmentTypeEnum.DELIVERY.value ? lookupArray.concat(deliveryDiagnosis) : lookupArray;
             const ipdLookups = lookupArray.map(item => {
                 return { lookupId: item };
             });
@@ -127,6 +98,7 @@ export default class IpdForm extends React.Component {
             const operationDetail = {
                 date: operationDate
             }
+            const charges = this.state.chargeFormFields.filter(item => item.amount > 0)
             const ipd = {
                 type: departmentType.value,
                 roomType: roomType,
@@ -145,10 +117,10 @@ export default class IpdForm extends React.Component {
                 })
                 .catch(error => {
                     let errors = error.response.data.ValidationSummary;
+                    this.setState({
+                        validationErrors: errors
+                    });
                     console.log(errors);
-                    // this.setState({
-                    //     validationErrors: errors
-                    // });
                 });
         }
     };
@@ -231,14 +203,8 @@ export default class IpdForm extends React.Component {
         return isValid;
     };
 
-    bindPatients = e => {
-        axios.get(`${baseApiUrl}/patients?fields=id,fullname`).then(res => {
-            let data = res.data.Result.data;
-            let patients = data.map(function (item) {
-                return { value: item["id"], label: item["fullname"] };
-            });
-            this.setState({ patientNameOptions: patients });
-        });
+    getPatients = e => {
+        return axios.get(`${baseApiUrl}/patients?fields=id,fullname`).then(res => res.data.Result.data);
     };
 
     bindLookups = e => {
@@ -264,24 +230,30 @@ export default class IpdForm extends React.Component {
             this.setState({ departmentTypeOptions: enumToObject(departmentTypeEnum) });
 
             let charges = chargeNames.map(item => {
-                return { [item.value]: { rate: "", days: "", amount: "" } }
+                return { lookupId: item.value, rate: 0, days: 0, amount: 0 }
             })
-            this.setState({ charges: charges });
+            this.setState({ chargeFormFields: charges });
         });
     };
     handleReset = e => {
         this.setState(this.getInitialState());
     };
+
     componentDidMount = e => {
-        this.bindPatients();
+        this.getPatients().then(data => {
+            let patients = data.map(function (item) {
+                return { value: item["id"], label: item["fullname"] };
+            });
+            this.setState({ patientNameOptions: patients });
+        });
         this.bindLookups();
     };
 
     render() {
         const { id, patientId, roomType, departmentType, addmissionDate, dischargeDate, deliveryDate, deliveryTime, typesOfDelivery, deliveryDiagnosis, babyGender, babyWeight, operationDate, operationDiagnosis, typesOfOperation, generalDiagnosis } = this.state.formFields;
-        const { patientNameOptions, departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, charges } = this.state;
+        const { patientNameOptions, departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames } = this.state;
         return (
-            <div className="col-md-8">
+            <div className="col-md-8" >
                 <Growl ref={el => (this.growl = el)} />
                 <div className="row">
                     <Panel header={title} toggleable={true}>
@@ -365,7 +337,24 @@ export default class IpdForm extends React.Component {
                                 </thead>
                                 <tbody>
                                     {chargeNames && chargeNames.map((item, index) => {
-                                        console.log(charges[index])
+
+                                        // let rate = "";
+                                        // let days = "";
+                                        // let amount = "";
+                                        // if (chargeFormFields) {
+                                        //     let charge = chargeFormFields.filter(obj => {
+                                        //         return obj.lookupId === item.value;
+                                        //     });
+                                        //     let chargeObj = charge[0];
+                                        //     if (chargeObj) {
+                                        //         console.log(chargeObj.rate)
+                                        //         rate = chargeObj.rate;
+                                        //         days = chargeObj.days;
+                                        //         amount = chargeObj.amount;
+                                        //     }
+
+                                        //     // debugger
+                                        // }
                                         return (
                                             <tr key={index} >
                                                 <th>{index + 1}</th>

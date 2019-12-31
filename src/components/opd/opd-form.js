@@ -91,10 +91,13 @@ export default class OpdForm extends React.Component {
     this.setState(this.getInitialState());
   };
 
+  getPatients = e => {
+    return axios.get(`${baseApiUrl}/patients?fields=id,fullname`).then(res => res.data.Result.data);
+  };
+
   componentDidMount() {
-    axios.get(`${baseApiUrl}/patients?fields=id,fullname`).then(res => {
-      let patientsRes = res.data.Result.data;
-      let patients = patientsRes.map(function (item) {
+    this.getPatients().then(data => {
+      let patients = data.map(function (item) {
         return { value: item["id"], label: item["fullname"] };
       });
       this.setState({ patientNames: patients });

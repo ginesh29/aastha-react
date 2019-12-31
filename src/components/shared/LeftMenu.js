@@ -31,7 +31,7 @@ export default class LeftMenu extends React.Component {
                                     <span>Manage Entry</span>
                                 </a>
                                 <ul className="sub">
-                                    <li><a href="general.html">Manage Patient</a></li>
+                                    <li><NavLink to="/patients">Manage Patient</NavLink></li>
                                     <li><a href="buttons.html">Manage Opd</a></li>
                                     <li><a href="typography.html">Manage Ipd</a></li>
                                 </ul>
