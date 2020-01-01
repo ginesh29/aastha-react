@@ -18,6 +18,9 @@ form .p-multiselect {
 .p-dropdown.error .p-inputtext {
   background-color: #ffeeee !important;
 }
+.p-multiselect .p-multiselect-trigger { 
+  background-color:transparent !important;
+}
 .p-growl {
   z-index: 9999 !important;
 }

@@ -15,7 +15,17 @@ export default class OpdForm extends React.Component {
   }
 
   getInitialState = () => ({
-    formFields: { opdDate: "", caseType: "", patientId: null, consultCharge: "", usgCharge: "", uptCharge: "", injectionCharge: "", otherCharge: "", totalCharge: "" },
+    formFields: {
+      opdDate: "",
+      caseType: null,
+      patientId: null,
+      consultCharge: "",
+      usgCharge: "",
+      uptCharge: "",
+      injectionCharge: "",
+      otherCharge: "",
+      totalCharge: ""
+    },
     validationErrors: {}
   });
 
@@ -114,7 +124,7 @@ export default class OpdForm extends React.Component {
     const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields;
     const { patientNames } = this.state;
     return (
-      <div className="col-md-8">
+      <div className="col-md-10">
         <Growl ref={el => (this.growl = el)} />
         <div className="row">
           <Panel header={title} toggleable={true}>

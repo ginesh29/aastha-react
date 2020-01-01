@@ -7,7 +7,7 @@ import { MultiSelect } from 'primereact/multiselect';
 
 export default class InputField extends Component {
   render() {
-    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, showClear, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate } = this.props;
+    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate } = this.props;
     let errorClass = validationErrors[name] ? "error" : "";
     let preClassName = className ? className : "";
     if (controlType === "input-group-addon") {
@@ -28,7 +28,7 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <Dropdown name={name} value={value} options={options} className={preClassName + " " + errorClass} placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={showClear} />
+          <Dropdown name={name} value={value} options={options} className={preClassName + " " + errorClass} placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={true} />
           <span className="error">{validationErrors[name]}</span>
         </div>
       );

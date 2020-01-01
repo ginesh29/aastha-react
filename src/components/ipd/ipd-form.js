@@ -19,15 +19,15 @@ export default class IpdForm extends React.Component {
         formFields: {
             uniqueId: "",
             patientId: null,
-            roomType: "",
-            departmentType: [],
+            roomType: null,
+            departmentType: null,
             addmissionDate: "",
             dischargeDate: "",
             deliveryDate: "",
             deliveryTime: "",
             typesOfDelivery: [],
-            deliveryDiagnosis: "",
-            babyGender: "",
+            deliveryDiagnosis: null,
+            babyGender: null,
             babyWeight: "",
             operationDate: "",
             operationDiagnosis: [],
@@ -48,8 +48,8 @@ export default class IpdForm extends React.Component {
             formFields.deliveryDate = "";
             formFields.deliveryTime = "";
             formFields.typesOfDelivery = [];
-            formFields.deliveryDiagnosis = "";
-            formFields.babyGender = "";
+            formFields.deliveryDiagnosis = null;
+            formFields.babyGender = null;
             formFields.babyWeight = "";
             formFields.operationDate = "";
             formFields.operationDiagnosis = [];
@@ -75,14 +75,16 @@ export default class IpdForm extends React.Component {
             days = e.target.value;
         else
             formFields[e.target.name] = e.target.value;
+
         chargeFormFields.filter(obj => {
-            return obj.lookupId.toString() === lookupId;
+            return obj.lookupId === Number(lookupId);
         }).map(item => {
             item.rate = rate ? rate : item.rate;
             item.days = days ? days : item.days;
             item.amount = item.rate && item.days ? item.rate * item.days : "";
             return item;
         });
+
         const grandTotal = chargeFormFields.reduce((total, item) => total + Number(item.amount), 0);
         const amountPaid = grandTotal - formFields.discountAmount;
         this.setState({
@@ -171,11 +173,11 @@ export default class IpdForm extends React.Component {
             isValid = false;
             errors.dischargeDate = "Dishcharge Date is required";
         }
-        if (!departmentType.value) {
+        if (!departmentType) {
             isValid = false;
             errors.departmentType = "Select Department Type";
         } else {
-            if (departmentType.label === departmentTypeEnum.DELIVERY.label) {
+            if (departmentType && departmentType.label === departmentTypeEnum.DELIVERY.label) {
                 if (!deliveryDate) {
                     isValid = false;
                     errors.deliveryDate = "Delivery Date is required";
@@ -201,7 +203,7 @@ export default class IpdForm extends React.Component {
                     errors.babyWeight = "Baby Weight is required";
                 }
             }
-            if (departmentType.label === departmentTypeEnum.OPERATION.label) {
+            if (departmentType && departmentType.label === departmentTypeEnum.OPERATION.label) {
                 if (!operationDate) {
                     isValid = false;
                     errors.operationDate = "Operation Date is required";
@@ -215,7 +217,7 @@ export default class IpdForm extends React.Component {
                     errors.typesOfOperation = "Types of Operation is required";
                 }
             }
-            if (departmentType.label === departmentTypeEnum.GENERAL.label) {
+            if (departmentType && departmentType.label === departmentTypeEnum.GENERAL.label) {
                 if (!generalDiagnosis.length) {
                     isValid = false;
                     errors.generalDiagnosis = "General Diagnosis is required";
@@ -284,7 +286,7 @@ export default class IpdForm extends React.Component {
         const { patientNameOptions, departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields } = this.state;
 
         return (
-            <div className="col-md-8" >
+            <div className="col-md-12" >
                 <Growl ref={el => (this.growl = el)} />
                 <div className="row">
                     <Panel header={title} toggleable={true}>
@@ -312,8 +314,7 @@ export default class IpdForm extends React.Component {
                                     <InputField name="dischargeDate" title="Discharge Date" value={dischargeDate} onChange={this.handleChange} {...this.state} controlType="datepicker" minDate={addmissionDate} />
                                 </div>
                             </div>
-                            <label>dew</label>
-                            <div style={{ display: departmentType.label === departmentTypeEnum.DELIVERY.label ? "" : "none" }}>
+                            <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.DELIVERY.label ? "" : "none" }}>
                                 <div className="row">
                                     <div className="col-md-4">
                                         <InputField name="deliveryDate" title="Delivery Date" value={deliveryDate} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-calendar" />
@@ -337,7 +338,7 @@ export default class IpdForm extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ display: departmentType.label === departmentTypeEnum.OPERATION.label ? "" : "none" }}>
+                            <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.OPERATION.label ? "" : "none" }}>
                                 <div className="row">
                                     <div className="col-md-4">
                                         <InputField name="operationDate" title="Operation Date" value={operationDate} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-calendar" />
@@ -350,7 +351,7 @@ export default class IpdForm extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <div style={{ display: departmentType.label === departmentTypeEnum.GENERAL.label ? "" : "none" }}>
+                            <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.GENERAL.label ? "" : "none" }}>
                                 <div className="row">
                                     <div className="col-md-4">
                                         <InputField name="generalDiagnosis" title="General Diagnosis" value={generalDiagnosis} onChange={this.handleChange} {...this.state} controlType="multiselect" options={generalDiagnosisOptions} filter={true} />

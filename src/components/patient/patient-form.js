@@ -121,13 +121,13 @@ export default class PatientForm extends Component {
             <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
               <div className="row">
                 <div className="col-md-4">
-                  <InputField name="firstname" title="Firstname" value={firstname} className="sentenceCase" onChange={this.handleChange} {...this.state} />
+                  <InputField name="firstname" title="Firstname" value={firstname} onChange={this.handleChange} onInput={toSentenceCase} {...this.state} />
                 </div>
                 <div className="col-md-4">
-                  <InputField name="middlename" title="Middlename" value={middlename} className="sentenceCase" onChange={this.handleChange} {...this.state} />
+                  <InputField name="middlename" title="Middlename" value={middlename} onChange={this.handleChange} onInput={toSentenceCase} {...this.state} />
                 </div>
                 <div className="col-md-4">
-                  <InputField name="lastname" title="Lastname" value={lastname} className="sentenceCase" onChange={this.handleChange} {...this.state} />
+                  <InputField name="lastname" title="Lastname" value={lastname} onChange={this.handleChange} onInput={toSentenceCase} {...this.state} />
                 </div>
               </div>
               <div className="row">
