@@ -7,11 +7,16 @@ form .p-dropdown-filter-container,
 form .p-multiselect {
   width: 100%;
 }
+
 .p-inputtext.error,
 .p-autocomplete.error input,
+.p-multiselect.error,
 .p-dropdown.error {
-  border: 1px solid #ff0000;
-  background-color: #ffeeee;
+  border: 1px solid #ff0000 !important;
+  background-color: #ffeeee !important;
+}
+.p-dropdown.error .p-inputtext {
+  background-color: #ffeeee !important;
 }
 .p-growl {
   z-index: 9999 !important;

@@ -4,6 +4,7 @@ import { baseApiUrl, caseTypeOptions } from "../../common/constants";
 import { Panel } from "primereact/panel";
 import axios from "axios";
 import { Growl } from "primereact/growl";
+import { Messages } from 'primereact/messages';
 
 const title = "Opd Entry";
 
@@ -19,6 +20,7 @@ export default class OpdForm extends React.Component {
   });
 
   handleChange = e => {
+    this.messages.clear();
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
     fields[e.target.name] = e.target.value;
@@ -60,6 +62,10 @@ export default class OpdForm extends React.Component {
           this.setState({
             validationErrors: errors
           });
+          this.messages.clear();
+          Object.keys(errors).map((item, i) => (
+            this.messages.show({ severity: 'error', summary: 'Validation Message', detail: errors[item], sticky: true })
+          ))
         });
     }
   };
@@ -88,11 +94,12 @@ export default class OpdForm extends React.Component {
   };
 
   handleReset = e => {
+    this.messages.clear();
     this.setState(this.getInitialState());
   };
 
   getPatients = e => {
-    return axios.get(`${baseApiUrl}/patients?fields=id,fullname`).then(res => res.data.Result.data);
+    return axios.get(`${baseApiUrl}/patients?fields=id,fullname&take=100`).then(res => res.data.Result.data);
   };
 
   componentDidMount() {
@@ -111,6 +118,7 @@ export default class OpdForm extends React.Component {
         <Growl ref={el => (this.growl = el)} />
         <div className="row">
           <Panel header={title} toggleable={true}>
+            <Messages ref={(el) => this.messages = el} />
             <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
               <div className="row">
                 <div className="col-md-4">

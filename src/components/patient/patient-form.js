@@ -5,6 +5,7 @@ import { baseApiUrl } from "../../common/constants";
 import { toSentenceCase } from "../../common/helpers";
 import axios from 'axios';
 import { Growl } from 'primereact/growl';
+import { Messages } from 'primereact/messages';
 
 const title = "Patient Registration";
 
@@ -18,12 +19,11 @@ export default class PatientForm extends Component {
     validationErrors: {}
   })
   handleChange = e => {
+    this.messages.clear();
     const { isValidationFired, formFields } = this.state;
     let currentObj = e.target;
     let fields = formFields;
     fields[currentObj.name] = currentObj.value;
-    if (currentObj.className && currentObj.className.includes("sentenceCase"))
-      toSentenceCase(e);
     this.setState({
       formFields: fields
     });
@@ -53,6 +53,10 @@ export default class PatientForm extends Component {
           this.setState({
             validationErrors: errors
           });
+          this.messages.clear();
+          Object.keys(errors).map((item, i) => (
+            this.messages.show({ severity: 'error', summary: 'Validation Message', detail: errors[item], sticky: true })
+          ))
         });
     }
   };
@@ -89,6 +93,7 @@ export default class PatientForm extends Component {
   };
 
   handleReset = e => {
+    this.messages.clear();
     this.setState(this.getInitialState());
   };
 
@@ -112,6 +117,7 @@ export default class PatientForm extends Component {
         <Growl ref={(el) => this.growl = el} />
         <div className="row">
           <Panel header={title} toggleable={true}>
+            <Messages ref={(el) => this.messages = el} />
             <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
               <div className="row">
                 <div className="col-md-4">

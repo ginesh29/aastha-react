@@ -71,14 +71,14 @@
             });
 
             $('.pc-epie-chart').easyPieChart({
-                onStep: function(from, to, percent) {
+                onStep: function (from, to, percent) {
                     $(this.el).find('.percent').text(Math.round(percent));
                 },
                 barColor: "#5bc6f0",
                 lineWidth: 3,
-                size:50,
+                size: 50,
                 trackColor: "#32323a",
-                scaleColor:"#cccccc"
+                scaleColor: "#cccccc"
 
             });
 
@@ -208,18 +208,18 @@
 
         $('.sidebar-toggle-box .fa-bars').click(function (e) {
 
-            $(".leftside-navigation").niceScroll({
-                cursorcolor: "#1FB5AD",
-                cursorborder: "0px solid #fff",
-                cursorborderradius: "0px",
-                cursorwidth: "3px"
-            });
+            // $(".leftside-navigation").niceScroll({
+            //     cursorcolor: "#1FB5AD",
+            //     cursorborder: "0px solid #fff",
+            //     cursorborderradius: "0px",
+            //     cursorwidth: "3px"
+            // });
 
             $('#sidebar').toggleClass('hide-left-bar');
-            if ($('#sidebar').hasClass('hide-left-bar')) {
-                $(".leftside-navigation").getNiceScroll().hide();
-            }
-            $(".leftside-navigation").getNiceScroll().show();
+            // if ($('#sidebar').hasClass('hide-left-bar')) {
+            //     $(".leftside-navigation").getNiceScroll().hide();
+            // }
+            // $(".leftside-navigation").getNiceScroll().show();
             $('#main-content').toggleClass('merge-left');
             e.stopPropagation();
             if ($('#container').hasClass('open-right-panel')) {
@@ -266,7 +266,8 @@
                 el.slideUp(200);
             } else {
                 $(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
-                el.slideDown(200); }
+                el.slideDown(200);
+            }
         });
 
 
