@@ -292,7 +292,7 @@ export default class IpdForm extends React.Component {
                         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
                             <div className="row">
                                 <div className="col-md-4">
-                                    <InputField name="uniqueId" title="Invoice No." value={uniqueId} onChange={this.handleChange} {...this.state} />
+                                    <InputField name="uniqueId" title="Invoice No." value={uniqueId} onChange={this.handleChange} {...this.state} keyfilter="pint" />
                                 </div>
                                 <div className="col-md-4">
                                     <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="dropdown" options={patientNameOptions} filter={true} filterPlaceholder="Select Car" filterBy="label,value" showClear={true} onFocus={this.handleChange} dataKey={patientId} />
