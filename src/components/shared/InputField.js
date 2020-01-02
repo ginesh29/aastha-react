@@ -4,6 +4,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { AutoComplete } from "primereact/autocomplete";
 import { MultiSelect } from 'primereact/multiselect';
+import Select from 'react-select';
 
 export default class InputField extends Component {
   render() {
@@ -29,6 +30,15 @@ export default class InputField extends Component {
         <div className="form-group">
           <label className="control-label">{title}</label>
           <Dropdown name={name} value={value} options={options} className={preClassName + " " + errorClass} placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={true} ref={ref} />
+          <span className="error">{validationErrors[name]}</span>
+        </div>
+      );
+    }
+    else if (controlType === "select2") {
+      return (
+        <div className="form-group">
+          <label className="control-label">{title}</label>
+          <Select name={name} value={value} onChange={onChange} options={options} className={preClassName + " " + errorClass} />
           <span className="error">{validationErrors[name]}</span>
         </div>
       );

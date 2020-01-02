@@ -32,11 +32,14 @@ export default class OpdForm extends React.Component {
     validationErrors: {}
   });
 
-  handleChange = e => {
+  handleChange = (e, action) => {
     this.messages.clear();
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
-    fields[e.target.name] = e.target.value;
+    if (e.target)
+      fields[e.target.name] = e.target.value;
+    else
+      fields[action.name] = e.value;
     fields.consultCharge = fields.consultCharge ? fields.consultCharge : "";
     fields.usgCharge = fields.usgCharge ? fields.usgCharge : "";
     fields.uptCharge = fields.uptCharge ? fields.uptCharge : "";
@@ -45,6 +48,7 @@ export default class OpdForm extends React.Component {
 
     let total = Number(fields.consultCharge) + Number(fields.usgCharge) + Number(fields.uptCharge) + Number(fields.injectionCharge) + Number(fields.otherCharge);
     fields.totalCharge = total > 0 ? total : "";
+    console.log(fields)
     this.setState({
       formFields: fields
     });
@@ -128,7 +132,7 @@ export default class OpdForm extends React.Component {
                   <InputField name="caseType" title="Case Type" value={caseType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
                 </div>
                 <div className="col-md-8">
-                  <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="dropdown" options={patientNames} filter={true} filterPlaceholder="Select Car" filterBy="label,value" showClear={true} onFocus={this.handleChange} />
+                  <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="select2" options={patientNames} filter={true} filterBy="label,value" showClear={true} onFocus={this.handleChange} />
                 </div>
               </div>
               <div className="row">

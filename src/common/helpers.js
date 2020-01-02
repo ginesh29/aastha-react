@@ -23,7 +23,6 @@ export class helper {
   getPatientDropdown = (messageRef) => {
     return this.repository.get("patients", `fields=id,fullname&take=100`, messageRef)
       .then(res => {
-        this.res = res.data
         let patients = res && res.data.map(function (item) {
           return { value: item["id"], label: item["fullname"] };
         });
