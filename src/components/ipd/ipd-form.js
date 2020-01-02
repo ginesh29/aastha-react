@@ -1,19 +1,21 @@
 import React from "react";
 import InputField from "../shared/InputField";
-import { baseApiUrl, roomTypeOptions, departmentTypeEnum, genderOptions, lookupTypesOptions } from "../../common/constants";
+import { roomTypeOptions, departmentTypeEnum, genderOptions, lookupTypesOptions } from "../../common/constants";
 import { Panel } from "primereact/panel";
-import axios from "axios";
 import { Growl } from "primereact/growl";
-import { enumToObject } from "../../common/helpers";
+import { helper } from "../../common/helpers";
 import moment from 'moment';
 import { InputText } from 'primereact/inputtext';
 import { Messages } from 'primereact/messages';
+import { repository } from "../../common/repository";
 
 const title = "Ipd Entry";
 export default class IpdForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = this.getInitialState();
+        this.repository = new repository();
+        this.helper = new helper();
     }
     getInitialState = () => ({
         formFields: {
@@ -99,7 +101,6 @@ export default class IpdForm extends React.Component {
             typesOfOperation, generalDiagnosis, operationDate, deliveryDiagnosis, discountAmount } = this.state.formFields;
         const { chargeFormFields } = this.state;
         e.preventDefault();
-        const form = e.target;
         if (this.handleValidation()) {
             let lookupArray = [...typesOfDelivery, ...operationDiagnosis, ...typesOfOperation, ...generalDiagnosis];
 
@@ -130,22 +131,10 @@ export default class IpdForm extends React.Component {
                 charges: charges,
                 discount: discountAmount
             };
-            axios.post(`${baseApiUrl}/ipds`, ipd)
-                .then(res => {
+            this.repository.post("ipds", ipd, this.growl, this.messages).then(res => {
+                if (res)
                     this.handleReset();
-                    form.reset();
-                    this.growl.show({ severity: "success", summary: "Success Message", detail: res.data.Message });
-                })
-                .catch(error => {
-                    let errors = error.response.data.ValidationSummary;
-                    this.setState({
-                        validationErrors: errors
-                    });
-                    this.messages.clear();
-                    Object.keys(errors).map((item, i) => (
-                        this.messages.show({ severity: 'error', summary: 'Validation Message', detail: errors[item], sticky: true })
-                    ))
-                });
+            })
         }
     };
     handleValidation = e => {
@@ -230,38 +219,35 @@ export default class IpdForm extends React.Component {
         });
         return isValid;
     };
-    getPatients = e => {
-        return axios.get(`${baseApiUrl}/patients?fields=id,fullname&take=100`).then(res => res.data.Result.data);
-    };
 
     bindLookups = e => {
-        axios.get(`${baseApiUrl}/lookups`).then(res => {
-            let response = res.data.Result.data;
-            let lookups = response.map(function (item) {
+        this.repository.get("lookups", "", this.messages).then(res => {
+
+            let lookups = res && res.data.map(function (item) {
                 return { value: item["id"], label: item["name"], type: item["type"] };
             });
+            if (res) {
+                let typesofDeliveryOptions = lookups.filter(l => l.type === lookupTypesOptions.DELIVERYTYPE.value);
+                let deliveryDiganosisOptions = lookups.filter(l => l.type === lookupTypesOptions.DELIVERYDIAGNOSIS.value);
+                let operationDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptions.OPERATIONDIAGNOSIS.value);
+                let typesofOprationOptions = lookups.filter(l => l.type === lookupTypesOptions.OPERATIONTYPE.value);
+                let generalDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptions.GENERALDIAGNOSIS.value);
+                let chargeNames = lookups.filter(l => l.type === lookupTypesOptions.CHARGENAME.value);
 
-            let typesofDeliveryOptions = lookups.filter(l => l.type === lookupTypesOptions.DELIVERYTYPE.value);
-            let deliveryDiganosisOptions = lookups.filter(l => l.type === lookupTypesOptions.DELIVERYDIAGNOSIS.value);
-            let operationDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptions.OPERATIONDIAGNOSIS.value);
-            let typesofOprationOptions = lookups.filter(l => l.type === lookupTypesOptions.OPERATIONTYPE.value);
-            let generalDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptions.GENERALDIAGNOSIS.value);
-            let chargeNames = lookups.filter(l => l.type === lookupTypesOptions.CHARGENAME.value);
-
-            this.setState({ typesofDeliveryOptions: typesofDeliveryOptions });
-            this.setState({ deliveryDiganosisOptions: deliveryDiganosisOptions });
-            this.setState({ operationDiagnosisOptions: operationDiagnosisOptions });
-            this.setState({ typesofOprationOptions: typesofOprationOptions });
-            this.setState({ generalDiagnosisOptions: generalDiagnosisOptions });
-            this.setState({ chargeNames: chargeNames });
-            this.setState({ departmentTypeOptions: enumToObject(departmentTypeEnum) });
-
-            let charges = chargeNames.map(item => {
-                return { lookupId: item.value, rate: "", days: "", amount: "" }
-            })
-            this.setState({ chargeFormFields: charges });
-        });
+                this.setState({ typesofDeliveryOptions: typesofDeliveryOptions });
+                this.setState({ deliveryDiganosisOptions: deliveryDiganosisOptions });
+                this.setState({ operationDiagnosisOptions: operationDiagnosisOptions });
+                this.setState({ typesofOprationOptions: typesofOprationOptions });
+                this.setState({ generalDiagnosisOptions: generalDiagnosisOptions });
+                this.setState({ chargeNames: chargeNames });
+                let charges = chargeNames.map(item => {
+                    return { lookupId: item.value, rate: "", days: "", amount: "" }
+                })
+                this.setState({ chargeFormFields: charges });
+            }
+        })
     };
+
     handleReset = e => {
         this.messages.clear();
         const { chargeNames } = this.state;
@@ -271,20 +257,20 @@ export default class IpdForm extends React.Component {
         })
         this.setState({ chargeFormFields: charges });
     };
-    componentDidMount = e => {
-        this.getPatients().then(data => {
-            let patients = data.map(function (item) {
-                return { value: item["id"], label: item["fullname"] };
-            });
-            this.setState({ patientNameOptions: patients });
+    bindPatients = () => {
+        this.helper.getPatientDropdown(this.messages).then(res => {
+            this.setState({ patientNames: res });
         });
+    }
+    componentDidMount = e => {
+        this.bindPatients();
         this.bindLookups();
+        this.setState({ departmentTypeOptions: this.helper.enumToObject(departmentTypeEnum) });
     };
 
     render() {
         const { uniqueId, patientId, roomType, departmentType, addmissionDate, dischargeDate, deliveryDate, deliveryTime, typesOfDelivery, deliveryDiagnosis, babyGender, babyWeight, operationDate, operationDiagnosis, typesOfOperation, generalDiagnosis, discountAmount } = this.state.formFields;
-        const { patientNameOptions, departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields } = this.state;
-
+        const { patientNames, departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields } = this.state;
         return (
             <div className="col-md-12" >
                 <Growl ref={el => (this.growl = el)} />
@@ -297,7 +283,7 @@ export default class IpdForm extends React.Component {
                                     <InputField name="uniqueId" title="Invoice No." value={uniqueId} onChange={this.handleChange} {...this.state} keyfilter="pint" />
                                 </div>
                                 <div className="col-md-4">
-                                    <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="dropdown" options={patientNameOptions} filter={true} filterPlaceholder="Select Car" filterBy="label,value" showClear={true} onFocus={this.handleChange} dataKey={patientId} />
+                                    <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="dropdown" options={patientNames} filter={true} filterPlaceholder="Select Car" filterBy="label,value" showClear={true} onFocus={this.handleChange} dataKey={patientId} />
                                 </div>
                                 <div className="col-md-4">
                                     <InputField name="roomType" title="Room Type" value={roomType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={roomTypeOptions} />
@@ -334,7 +320,7 @@ export default class IpdForm extends React.Component {
                                         <InputField name="babyGender" title="Baby Gender" value={babyGender} onChange={this.handleChange} {...this.state} controlType="dropdown" options={genderOptions} />
                                     </div>
                                     <div className="col-md-4">
-                                        <InputField name="babyWeight" title="Baby Weight" value={babyWeight} onChange={this.handleChange} {...this.state} />
+                                        <InputField name="babyWeight" title="Baby Weight" value={babyWeight} onChange={this.handleChange} {...this.state} keyfilter="pnum" />
                                     </div>
                                 </div>
                             </div>
@@ -375,7 +361,7 @@ export default class IpdForm extends React.Component {
                                         let days = chargeObj.map(m => m.days);
                                         let amount = chargeObj.map(m => m.amount);
                                         return (
-                                            <tr key={index} >
+                                            <tr key={index}>
                                                 <th>{index + 1}</th>
                                                 <td>{item.label}</td>
                                                 <td><InputText type="text" value={rate} className="input-sm" keyfilter="pint" name={`rate-${item.value}`} onChange={this.handleChargeChange} /></td>
@@ -421,7 +407,7 @@ export default class IpdForm extends React.Component {
                         </form>
                     </Panel>
                 </div>
-            </div>
+            </div >
         );
     }
 }

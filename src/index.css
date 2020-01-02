@@ -24,6 +24,7 @@ form .p-multiselect {
 .p-growl {
   z-index: 9999 !important;
 }
-.p-multiselect-label-container .p-placeholder{
-  padding: -0.571em !important;
+
+.p-multiselect-label{
+  padding: 0 !important;
 }

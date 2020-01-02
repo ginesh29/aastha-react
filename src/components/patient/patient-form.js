@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Panel } from 'primereact/panel';
 import InputField from "../shared/InputField";
-import { baseApiUrl } from "../../common/constants";
-import { toSentenceCase } from "../../common/helpers";
-import axios from 'axios';
+import { helper } from "../../common/helpers";
+import { repository } from "../../common/repository";
 import { Growl } from 'primereact/growl';
 import { Messages } from 'primereact/messages';
 
@@ -13,9 +12,18 @@ export default class PatientForm extends Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
+    this.repository = new repository();
+    this.helper = new helper();
   }
   getInitialState = () => ({
-    formFields: { firstname: "", middlename: "", lastname: "", age: "", address: "", mobile: "" },
+    formFields: {
+      firstname: "",
+      middlename: "",
+      lastname: "",
+      age: "",
+      address: "",
+      mobile: ""
+    },
     validationErrors: {}
   })
   handleChange = e => {
@@ -43,21 +51,12 @@ export default class PatientForm extends Component {
         mobile: mobile,
         address: address
       };
-      axios.post(`${baseApiUrl}/patients`, patient)
+
+      this.repository.post("patients", patient, this.growl, this.messages)
         .then(res => {
-          this.handleReset();
-          this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
+          if (res)
+            this.handleReset();
         })
-        .catch(error => {
-          let errors = error.response.data.ValidationSummary;
-          this.setState({
-            validationErrors: errors
-          });
-          this.messages.clear();
-          Object.keys(errors).map((item, i) => (
-            this.messages.show({ severity: 'error', summary: 'Validation Message', detail: errors[item], sticky: true })
-          ))
-        });
     }
   };
 
@@ -99,13 +98,9 @@ export default class PatientForm extends Component {
 
   suggestAddresses = e => {
     let query = e ? e.query.toLowerCase() : "";
-    axios.get(`${baseApiUrl}/patients?filter=address.startswith({${query}})&fields=address`)
+    this.repository.get("patients", `filter=address.startswith({${query}})&fields=address`, this.messages)
       .then(res => {
-        let data = res.data.Result.data;
-        let addresses = data.map(function (item) {
-          return item.address;
-        });
-        this.setState({ addressSuggestions: addresses });
+        this.setState({ addressSuggestions: res && res.data.map(item => item.address) });
       })
   };
 
@@ -121,13 +116,13 @@ export default class PatientForm extends Component {
             <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
               <div className="row">
                 <div className="col-md-4">
-                  <InputField name="firstname" title="Firstname" value={firstname} onChange={this.handleChange} onInput={toSentenceCase} {...this.state} />
+                  <InputField name="firstname" title="Firstname" value={firstname} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
                 </div>
                 <div className="col-md-4">
-                  <InputField name="middlename" title="Middlename" value={middlename} onChange={this.handleChange} onInput={toSentenceCase} {...this.state} />
+                  <InputField name="middlename" title="Middlename" value={middlename} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
                 </div>
                 <div className="col-md-4">
-                  <InputField name="lastname" title="Lastname" value={lastname} onChange={this.handleChange} onInput={toSentenceCase} {...this.state} />
+                  <InputField name="lastname" title="Lastname" value={lastname} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
                 </div>
               </div>
               <div className="row">

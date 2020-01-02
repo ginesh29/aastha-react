@@ -1,30 +1,33 @@
-export const toSentenceCase = e => {
-  let str = e.target.value;
-  let result = "";
-  if (str) {
-    result = str[0].toUpperCase() + str.slice(1);
+import { repository } from "./repository";
+export class helper {
+  constructor() {
+    this.repository = new repository();
   }
-  e.target.value = result;
-};
+  toSentenceCase = e => {
+    let str = e.target.value;
+    let result = "";
+    if (str) {
+      result = str[0].toUpperCase() + str.slice(1);
+    }
+    e.target.value = result;
+  };
 
-export const enumToObject = function (enumValue) {
-  const keys = Object.keys(enumValue);
-  const result = keys.map(key => {
-    return enumValue[key];
-  });
-  return result;
-};
-// export const enumToObject1 = function (jsonList) {
-//   jsonList.map(item, index => {
-//     // if (jsonObj[i].Id == 3) {
-//     //   jsonObj[i].Username = "Thomas";
-//     //   break;
-//     // }
-//   })
-//   // for (var i = 0; i < jsonObj.length; i++) {
-//   //   if (jsonObj[i].Id == 3) {
-//   //     jsonObj[i].Username = "Thomas";
-//   //     break;
-//   //   }
-//   // }
-// }
+  enumToObject = function (enumValue) {
+    const keys = Object.keys(enumValue);
+    const result = keys.map(key => {
+      return enumValue[key];
+    });
+    return result;
+  };
+
+  getPatientDropdown = (messageRef) => {
+    return this.repository.get("patients", `fields=id,fullname&take=100`, messageRef)
+      .then(res => {
+        this.res = res.data
+        let patients = res && res.data.map(function (item) {
+          return { value: item["id"], label: item["fullname"] };
+        });
+        return patients;
+      })
+  }
+}

@@ -1,10 +1,11 @@
 import React from "react";
 import InputField from "../shared/InputField";
-import { baseApiUrl, caseTypeOptions } from "../../common/constants";
+import { caseTypeOptions } from "../../common/constants";
+import { helper } from "../../common/helpers";
 import { Panel } from "primereact/panel";
-import axios from "axios";
 import { Growl } from "primereact/growl";
 import { Messages } from 'primereact/messages';
+import { repository } from "../../common/repository";
 
 const title = "Opd Entry";
 
@@ -12,6 +13,8 @@ export default class OpdForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
+    this.repository = new repository();
+    this.helper = new helper();
   }
 
   getInitialState = () => ({
@@ -61,22 +64,10 @@ export default class OpdForm extends React.Component {
         injectionCharge: injectionCharge,
         otherCharge: otherCharge
       };
-      axios
-        .post(`${baseApiUrl}/opds`, opd)
-        .then(res => {
+      this.repository.post("opds", opd, this.growl, this.messages).then(res => {
+        if (res)
           this.handleReset();
-          this.growl.show({ severity: "success", summary: "Success Message", detail: res.data.Message });
-        })
-        .catch(error => {
-          let errors = error.response.data.ValidationSummary;
-          this.setState({
-            validationErrors: errors
-          });
-          this.messages.clear();
-          Object.keys(errors).map((item, i) => (
-            this.messages.show({ severity: 'error', summary: 'Validation Message', detail: errors[item], sticky: true })
-          ))
-        });
+      })
     }
   };
   handleValidation = e => {
@@ -108,18 +99,15 @@ export default class OpdForm extends React.Component {
     this.setState(this.getInitialState());
   };
 
-  getPatients = e => {
-    return axios.get(`${baseApiUrl}/patients?fields=id,fullname&take=100`).then(res => res.data.Result.data);
-  };
-
-  componentDidMount() {
-    this.getPatients().then(data => {
-      let patients = data.map(function (item) {
-        return { value: item["id"], label: item["fullname"] };
-      });
-      this.setState({ patientNames: patients });
+  bindPatients = () => {
+    this.helper.getPatientDropdown(this.messages).then(res => {
+      this.setState({ patientNames: res });
     });
   }
+  componentDidMount() {
+    this.bindPatients();
+  }
+
   render() {
     const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields;
     const { patientNames } = this.state;
