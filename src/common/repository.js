@@ -3,17 +3,17 @@ import { baseApiUrl } from "./constants";
 
 
 export class repository {
-    get(controller, querystring, growlRef) {
+    get(controller, querystring, messageRef) {
         return axios.get(`${baseApiUrl}/${controller}?${querystring}`)
             .then(res => res.data.Result)
             .catch(error => {
-                growlRef.clear();
+                messageRef.clear();
                 if (error.response) {
                     // debugger
                     // let errorResult = error.response.data;
 
                 } else if (error.request) {
-                    growlRef.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
+                    messageRef.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
                 } else {
                     // Something happened in setting up the request that triggered an Error
                     console.log('Error', error.message);

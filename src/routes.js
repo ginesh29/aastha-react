@@ -9,6 +9,7 @@ import Patients from "./components/patient/patients";
 import PatientForm from "./components/patient/patient-form";
 import OpdForm from "./components/opd/opd-form";
 import IpdForm from "./components/ipd/ipd-form";
+import Prescription from "./components/prescription";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 
@@ -26,6 +27,8 @@ const routes = (
       <Route path="/add-opd" component={OpdForm} />
 
       <Route path="/add-ipd" component={IpdForm} />
+
+      <Route path="/prescription" component={Prescription} />
     </MainLayout>
   </BrowserRouter>
 );

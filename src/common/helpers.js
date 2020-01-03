@@ -20,13 +20,13 @@ export class helper {
     return result;
   };
 
-  getPatientDropdown = (messageRef) => {
-    return this.repository.get("patients", `fields=id,fullname&take=100`, messageRef)
+  PatientOptions = (inputValue, callback) => {
+    this.repository.get("patients", `fields=id,fullname&take=15&filter=firstname.contains({${inputValue.toLowerCase()}}) or middlename.contains({${inputValue.toLowerCase()}}) or lastname.contains({${inputValue.toLowerCase()}})`)
       .then(res => {
         let patients = res && res.data.map(function (item) {
           return { value: item["id"], label: item["fullname"] };
         });
-        return patients;
+        callback(patients)
       })
   }
 }

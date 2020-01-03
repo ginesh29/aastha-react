@@ -4,19 +4,20 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { AutoComplete } from "primereact/autocomplete";
 import { MultiSelect } from 'primereact/multiselect';
-import Select from 'react-select';
+import AsyncSelect from 'react-select/async';
 
 export default class InputField extends Component {
   render() {
-    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref } = this.props;
+    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref, loadOptions } = this.props;
     let errorClass = validationErrors[name] ? "error" : "";
-    let preClassName = className ? className : "";
+    let propClassName = className ? className : "";
+    let finalClassName = `${propClassName} ${errorClass}`;
     if (controlType === "input-group-addon") {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
           <div className="p-inputgroup">
-            <InputText name={name} value={value} className={preClassName + " " + errorClass} placeholder={"Enter " + title} onChange={onChange} readOnly={readOnly} keyfilter={keyfilter} maxLength={maxLength} ref={ref} />
+            <InputText name={name} value={value} className={finalClassName} placeholder={"Enter " + title} onChange={onChange} readOnly={readOnly} keyfilter={keyfilter} maxLength={maxLength} ref={ref} />
             <span className="p-inputgroup-addon">
               <i className={"fa " + groupIcon}></i>
             </span>
@@ -29,7 +30,7 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <Dropdown name={name} value={value} options={options} className={preClassName + " " + errorClass} placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={true} ref={ref} />
+          <Dropdown name={name} value={value} options={options} className={finalClassName} placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={true} ref={ref} />
           <span className="error">{validationErrors[name]}</span>
         </div>
       );
@@ -38,7 +39,7 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <Select name={name} value={value} onChange={onChange} options={options} className={preClassName + " " + errorClass} />
+          <AsyncSelect name={name} defaultValue={value} cacheOptions loadOptions={loadOptions} className={finalClassName} defaultOptions isClearable={true} isLoading={true} onChange={onChange} />
           <span className="error">{validationErrors[name]}</span>
         </div>
       );
@@ -48,7 +49,7 @@ export default class InputField extends Component {
         <div className="form-group">
           <label className="control-label">{title}</label>
           <div className="p-inputgroup">
-            <Calendar name={name} value={value} showIcon={true} className={preClassName} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} dataKey={dataKey} minDate={minDate} ref={ref} />
+            <Calendar name={name} value={value} showIcon={true} className={propClassName} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} dataKey={dataKey} minDate={minDate} ref={ref} />
             <span className="p-inputgroup-addon">
               <i className={"fa " + groupIcon}></i>
             </span>
@@ -61,7 +62,7 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <AutoComplete name={name} value={value} className={preClassName + " " + errorClass} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} suggestions={suggestions} completeMethod={completeMethod} onFocus={onFocus} minLength={minLength} ref={ref} />
+          <AutoComplete name={name} value={value} className={finalClassName} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} suggestions={suggestions} completeMethod={completeMethod} onFocus={onFocus} minLength={minLength} ref={ref} />
           <span className="error">{validationErrors[name]}</span>
         </div>
       );
@@ -70,7 +71,7 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <MultiSelect name={name} value={value} className={preClassName + " " + errorClass} options={options} onChange={onChange} filter={filter} placeholder={"Select " + title} />
+          <MultiSelect name={name} value={value} className={finalClassName} options={options} onChange={onChange} filter={filter} placeholder={"Select " + title} />
           <span className="error">{validationErrors[name]}</span>
         </div>
       );
@@ -78,7 +79,7 @@ export default class InputField extends Component {
     return (
       <div className="form-group">
         <label className="control-label">{title}</label>
-        <InputText name={name} value={value} className={preClassName + " " + errorClass} placeholder={"Enter " + title} onChange={onChange} onInput={onInput} disabled={disabled} keyfilter={keyfilter} maxLength={maxLength} onFocus={this.onFocus} autoFocus={this.autoFocus} ref={ref} />
+        <InputText name={name} value={value} className={finalClassName} placeholder={"Enter " + title} onChange={onChange} onInput={onInput} disabled={disabled} keyfilter={keyfilter} maxLength={maxLength} onFocus={this.onFocus} autoFocus={this.autoFocus} ref={ref} />
         <span className="error">{validationErrors[name]}</span>
       </div>
     );

@@ -31,6 +31,15 @@ form .p-multiselect {
   outline: 0 none !important;
   box-shadow: none !important;
 }
-/* .p-multiselect-label{
-  padding: 0 !important;
-} */
+.css-yk16xz-control {
+  border-color: #a6a6a6 !important;
+}
+.css-yk16xz-control:focus,.css-2b097c-container:focus{
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2em #8dcdff !important;
+  border-color: #007ad9 !important;
+}
+#prescription .p-panel-content{
+  background:#FFFCAB !important;
+}

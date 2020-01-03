@@ -8,7 +8,6 @@ import { Messages } from 'primereact/messages';
 import { repository } from "../../common/repository";
 
 const title = "Opd Entry";
-
 export default class OpdForm extends React.Component {
   constructor(props) {
     super(props);
@@ -36,10 +35,10 @@ export default class OpdForm extends React.Component {
     this.messages.clear();
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
-    if (e.target)
-      fields[e.target.name] = e.target.value;
+    if (action)
+      fields[action.name] = action !== "clear" ? e && e.value : null;
     else
-      fields[action.name] = e.value;
+      fields[e.target.name] = e.target.value;
     fields.consultCharge = fields.consultCharge ? fields.consultCharge : "";
     fields.usgCharge = fields.usgCharge ? fields.usgCharge : "";
     fields.uptCharge = fields.uptCharge ? fields.uptCharge : "";
@@ -48,10 +47,10 @@ export default class OpdForm extends React.Component {
 
     let total = Number(fields.consultCharge) + Number(fields.usgCharge) + Number(fields.uptCharge) + Number(fields.injectionCharge) + Number(fields.otherCharge);
     fields.totalCharge = total > 0 ? total : "";
-    console.log(fields)
     this.setState({
       formFields: fields
     });
+    console.log(fields)
     if (isValidationFired) this.handleValidation();
   };
   handleSubmit = e => {
@@ -103,18 +102,8 @@ export default class OpdForm extends React.Component {
     this.setState(this.getInitialState());
   };
 
-  bindPatients = () => {
-    this.helper.getPatientDropdown(this.messages).then(res => {
-      this.setState({ patientNames: res });
-    });
-  }
-  componentDidMount() {
-    this.bindPatients();
-  }
-
   render() {
     const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields;
-    const { patientNames } = this.state;
     return (
       <div className="col-md-10">
         <Growl ref={el => (this.growl = el)} />
@@ -132,7 +121,7 @@ export default class OpdForm extends React.Component {
                   <InputField name="caseType" title="Case Type" value={caseType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
                 </div>
                 <div className="col-md-8">
-                  <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="select2" options={patientNames} filter={true} filterBy="label,value" showClear={true} onFocus={this.handleChange} />
+                  <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="select2" loadOptions={this.helper.PatientOptions} />
                 </div>
               </div>
               <div className="row">

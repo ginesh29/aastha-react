@@ -55,10 +55,10 @@ export default class LeftMenu extends React.Component {
                                 </ul>
                             </li>
                             <li>
-                                <a href="{}">
+                                <NavLink to="/prescription">
                                     <i className="fa fa-tasks"></i>
                                     <span>Prescription</span>
-                                </a>
+                                </NavLink>
                             </li>
                             <li>
                                 <a href="{}">
