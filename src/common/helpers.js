@@ -7,7 +7,7 @@ export class helper {
     let str = e.target.value;
     let result = "";
     if (str) {
-      result = str[0].toUpperCase() + str.slice(1);
+      result = str[0].toUpperCase() + str.slice(1).toLowerCase();
     }
     e.target.value = result;
   };
@@ -28,5 +28,26 @@ export class helper {
         });
         callback(patients)
       })
+  }
+  generateFilterString = (filters) => {
+    let filterString = "";
+    let opratorCondition = "";
+    let filterMatchMode = "";
+    let filterValue = "";
+    let operator = "";
+    let filterData = Object.keys(filters)
+    // eslint-disable-next-line
+    filterData.map((field, index) => {
+      operator = index !== filterData.length - 1 ? " and" : "";
+      filterMatchMode = filters[field].matchMode;
+      filterValue = filters[field].value;
+      if (filterMatchMode === "contains")
+        opratorCondition = `${field}.${filterMatchMode}({${filterValue}})${operator} `;
+      else
+        if (filterMatchMode === "equals")
+          opratorCondition = `${field}-${filterMatchMode}-{${filterValue}}${operator} `;
+      filterString = filterString + opratorCondition;
+    })
+    return filterString;
   }
 }

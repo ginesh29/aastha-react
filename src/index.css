@@ -43,3 +43,6 @@ form .p-multiselect {
 #prescription .p-panel-content{
   background:#FFFCAB !important;
 }
+.p-paginator .p-highlight {
+  pointer-events: none !important;
+}

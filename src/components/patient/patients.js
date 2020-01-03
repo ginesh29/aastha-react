@@ -5,6 +5,7 @@ import { Button } from 'primereact/button';
 import { Messages } from 'primereact/messages';
 import { repository } from "../../common/repository";
 import { Paginator } from 'primereact/paginator';
+import { helper } from "../../common/helpers";
 //const title = "Patients";
 export default class Patients extends Component {
   constructor(props) {
@@ -12,15 +13,16 @@ export default class Patients extends Component {
     this.state = {
       patients: [],
       first: 0,
-      rows: 15,
+      rows: 10,
       loading: true,
+      filterString: ""
     };
     this.repository = new repository();
-    //this.helper = new helper();
+    this.helper = new helper();
   }
   getPatients = () => {
-    const { first, rows } = this.state;
-    return this.repository.get("patients", `take=${rows}&skip=${first}`, this.messages)
+    const { first, rows, filterString } = this.state;
+    return this.repository.get("patients", `take=${rows}&skip=${first}&filter=${filterString}`, this.messages)
       .then(res => {
         this.setState({
           first: first,
@@ -35,16 +37,35 @@ export default class Patients extends Component {
     this.getPatients();
   }
 
-  onPageChange = (event) => {
+  onPageChange = (e) => {
     this.setState({
-      rows: event.rows,
-      first: event.first,
+      rows: e.rows,
+      first: e.first,
       loading: true
     }, () => {
       this.getPatients();
     })
   }
+  onSort = (e) => {
+    //let multiSortMetaOld = [];
+    //multiSortMeta.push(multiSortMeta)
+    //multiSortMeta.push(e.multiSortMeta);
+    // console.log(multiSortMeta)
+    this.setState({
+      multiSortMeta: e.multiSortMeta
+    }, () => {
+      //console.log(this.state)
+    })
+  }
+  onFilter = (e) => {
+    this.setState({ filters: e.filters });
+    const { filters } = this.state;
+    let filterString = this.helper.generateFilterString(filters);
 
+    this.setState({ filterString: filterString }, () => {
+      this.getPatients();
+    });
+  }
   actionTemplate(rowData, column) {
     return <div>
       <Button type="button" icon="pi pi-pencil" className="p-button-warning" style={{ marginRight: '.5em' }}></Button >
@@ -52,16 +73,16 @@ export default class Patients extends Component {
     </div >;
   }
   render() {
-    const { patients, totalRecords, rows, first, loading } = this.state;
+    const { patients, totalRecords, rows, first, loading, multiSortMeta, filters } = this.state;
     return (
       <>
         <Messages ref={(el) => this.messages = el} />
-        <DataTable value={patients} loading={loading} responsive={true}>
-          <Column field="id" header="Id" style={{ "width": "100px" }} />
-          <Column field="fullname" header="Patient's Name" />
+        <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter} selectionMode="single">
+          <Column field="id" header="Id" style={{ "width": "100px" }} sortable={true} filter={true} filterMatchMode="equals" />
+          <Column field="fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="equals" />
           <Column field="age" header="Age" />
-          <Column field="mobile" header="Mobile" />
-          <Column field="address" header="Address" />
+          <Column field="mobile" header="Mobile" filter={true} filterMatchMode="contains" />
+          <Column field="address" header="Address" sortable={true} filter={true} filterMatchMode="contains" />
           <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
         </DataTable>
         <Paginator paginator={true} rowsPerPageOptions={[15, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
