@@ -58,27 +58,23 @@ export class helper {
     return filterString;
   }
   generateSortString = (sortMeta) => {
-    let filterString = "";
-
+    let sortString = "";
     let sortField = "";
     let sortOrder = "";
     let operator = "";
+    let operatorCondition = "";
     // eslint-disable-next-line
     sortMeta.map((item, index) => {
-      operator = index !== sortMeta.length - 1 ? " ," : "";
+      operator = index !== sortMeta.length - 1 ? "," : "";
       sortField = item.field;
-      // filterMatchMode = sortMeta[field];
-      // filterValue = sortMeta[field].value;
-      // if (field === "fullname") {
-      //   operatorCondition = `firstname.${filterMatchMode}({${filterValue}}) or 
-      //                         middlename.${filterMatchMode}({${filterValue}}) or 
-      //                         lastname.${filterMatchMode}({${filterValue}})${operator}`;
-      // }
-      // else
-      //   operatorCondition = `${field}.${filterMatchMode}({${filterValue}})${operator} `;
-
-      // filterString = filterString + operatorCondition;
+      sortOrder = item.order === 1 ? "asc" : "desc"
+      if (sortField === "fullname") {
+        operatorCondition = `firstname ${sortOrder}${operator}`;
+      }
+      else
+        operatorCondition = `${sortField} ${sortOrder}${operator}`;
+      sortString = sortString + operatorCondition;
     })
-    return filterString;
+    return sortString;
   }
 }

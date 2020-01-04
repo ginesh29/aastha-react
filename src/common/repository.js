@@ -31,7 +31,7 @@ export class repository {
                     let errorResult = error.response.data;
                     let errors = errorResult.ValidationSummary;
                     messageRef.clear();
-                    Object.keys(errors).map((item, i) => (
+                    errors && Object.keys(errors).map((item, i) => (
                         messageRef.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
                     ))
                 } else if (error.request) {

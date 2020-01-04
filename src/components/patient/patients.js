@@ -15,20 +15,15 @@ export default class Patients extends Component {
       first: 0,
       rows: 10,
       loading: true,
-      filterString: ""
+      filterString: "",
+      sortString: ""
     };
     this.repository = new repository();
     this.helper = new helper();
-    //let multiSortMeta = [];
-    // multiSortMeta.push({ field: "foo", order: -1 });
-    // multiSortMeta.push({ field: "bar", order: -1 });
-    // this.state = ({
-    //   multiSortMeta: multiSortMeta
-    // });
   }
   getPatients = () => {
-    const { first, rows, filterString } = this.state;
-    return this.repository.get("patients", `take=${rows}&skip=${first}&filter=${filterString}`, this.messages)
+    const { first, rows, filterString, sortString } = this.state;
+    return this.repository.get("patients", `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}`, this.messages)
       .then(res => {
         this.setState({
           first: first,
@@ -53,20 +48,26 @@ export default class Patients extends Component {
     })
   }
   onSort = (e) => {
+    const { multiSortMeta } = this.state;
+    let SortMetaOld = multiSortMeta ? multiSortMeta : [];
     this.setState({
-      multiSortMeta: e.multiSortMeta
+      multiSortMeta: [...SortMetaOld, e.multiSortMeta[0]]
     }, () => {
       const { multiSortMeta } = this.state;
+      let a = multiSortMeta.map(item => {
+        if (item.field === e.multiSortMeta[0].field)
+          return { "field": item.field, "order": e.multiSortMeta[0].order };
+        else
+          return item;
+      })
+
+      console.log(a)
       let sortString = this.helper.generateSortString(multiSortMeta);
+      console.log(sortString)
+      this.setState({ sortString: sortString }, () => {
+        this.getPatients();
+      });
     });
-
-    //
-
-    // this.setState({
-    //   sortString: sortString
-    // }, () => {
-    //   this.getPatients();
-    // })
   }
   onFilter = (e) => {
     this.setState({ filters: e.filters });
@@ -97,7 +98,7 @@ export default class Patients extends Component {
           <Column field="address" header="Address" sortable={true} filter={true} filterMatchMode="contains" />
           <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
         </DataTable>
-        <Paginator paginator={true} rowsPerPageOptions={[15, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
+        <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
       </>
     );
   }
