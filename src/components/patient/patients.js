@@ -19,6 +19,12 @@ export default class Patients extends Component {
     };
     this.repository = new repository();
     this.helper = new helper();
+    //let multiSortMeta = [];
+    // multiSortMeta.push({ field: "foo", order: -1 });
+    // multiSortMeta.push({ field: "bar", order: -1 });
+    // this.state = ({
+    //   multiSortMeta: multiSortMeta
+    // });
   }
   getPatients = () => {
     const { first, rows, filterString } = this.state;
@@ -47,15 +53,20 @@ export default class Patients extends Component {
     })
   }
   onSort = (e) => {
-    //let multiSortMetaOld = [];
-    //multiSortMeta.push(multiSortMeta)
-    //multiSortMeta.push(e.multiSortMeta);
-    // console.log(multiSortMeta)
     this.setState({
       multiSortMeta: e.multiSortMeta
     }, () => {
-      //console.log(this.state)
-    })
+      const { multiSortMeta } = this.state;
+      let sortString = this.helper.generateSortString(multiSortMeta);
+    });
+
+    //
+
+    // this.setState({
+    //   sortString: sortString
+    // }, () => {
+    //   this.getPatients();
+    // })
   }
   onFilter = (e) => {
     this.setState({ filters: e.filters });
@@ -66,6 +77,7 @@ export default class Patients extends Component {
       this.getPatients();
     });
   }
+
   actionTemplate(rowData, column) {
     return <div>
       <Button type="button" icon="pi pi-pencil" className="p-button-warning" style={{ marginRight: '.5em' }}></Button >
@@ -79,7 +91,7 @@ export default class Patients extends Component {
         <Messages ref={(el) => this.messages = el} />
         <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter} selectionMode="single">
           <Column field="id" header="Id" style={{ "width": "100px" }} sortable={true} filter={true} filterMatchMode="equals" />
-          <Column field="fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="equals" />
+          <Column field="fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
           <Column field="age" header="Age" />
           <Column field="mobile" header="Mobile" filter={true} filterMatchMode="contains" />
           <Column field="address" header="Address" sortable={true} filter={true} filterMatchMode="contains" />

@@ -29,9 +29,10 @@ export class helper {
         callback(patients)
       })
   }
+
   generateFilterString = (filters) => {
     let filterString = "";
-    let opratorCondition = "";
+    let operatorCondition = "";
     let filterMatchMode = "";
     let filterValue = "";
     let operator = "";
@@ -42,11 +43,41 @@ export class helper {
       filterMatchMode = filters[field].matchMode;
       filterValue = filters[field].value;
       if (filterMatchMode === "contains")
-        opratorCondition = `${field}.${filterMatchMode}({${filterValue}})${operator} `;
+        if (field === "fullname") {
+          operatorCondition = `firstname.${filterMatchMode}({${filterValue}}) or 
+                              middlename.${filterMatchMode}({${filterValue}}) or 
+                              lastname.${filterMatchMode}({${filterValue}})${operator}`;
+        }
+        else
+          operatorCondition = `${field}.${filterMatchMode}({${filterValue}})${operator} `;
       else
         if (filterMatchMode === "equals")
-          opratorCondition = `${field}-${filterMatchMode}-{${filterValue}}${operator} `;
-      filterString = filterString + opratorCondition;
+          operatorCondition = `${field}-${filterMatchMode}-{${filterValue}}${operator} `;
+      filterString = filterString + operatorCondition;
+    })
+    return filterString;
+  }
+  generateSortString = (sortMeta) => {
+    let filterString = "";
+
+    let sortField = "";
+    let sortOrder = "";
+    let operator = "";
+    // eslint-disable-next-line
+    sortMeta.map((item, index) => {
+      operator = index !== sortMeta.length - 1 ? " ," : "";
+      sortField = item.field;
+      // filterMatchMode = sortMeta[field];
+      // filterValue = sortMeta[field].value;
+      // if (field === "fullname") {
+      //   operatorCondition = `firstname.${filterMatchMode}({${filterValue}}) or 
+      //                         middlename.${filterMatchMode}({${filterValue}}) or 
+      //                         lastname.${filterMatchMode}({${filterValue}})${operator}`;
+      // }
+      // else
+      //   operatorCondition = `${field}.${filterMatchMode}({${filterValue}})${operator} `;
+
+      // filterString = filterString + operatorCondition;
     })
     return filterString;
   }
