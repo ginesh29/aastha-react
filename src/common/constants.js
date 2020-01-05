@@ -1,4 +1,6 @@
-export const baseApiUrl = "http://localhost:61194/api";
+export const BASE_API_URL = "http://localhost:61194/api";
+export const ROWS = "10";
+
 
 export const caseTypeOptions = [
   { value: 1, label: "Old" },

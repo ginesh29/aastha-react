@@ -6,6 +6,7 @@ import { Messages } from 'primereact/messages';
 import { repository } from "../../common/repository";
 import { Paginator } from 'primereact/paginator';
 import { helper } from "../../common/helpers";
+import { ROWS } from "../../common/constants";
 //const title = "Patients";
 export default class Patients extends Component {
   constructor(props) {
@@ -13,7 +14,7 @@ export default class Patients extends Component {
     this.state = {
       patients: [],
       first: 0,
-      rows: 10,
+      rows: ROWS,
       loading: true,
       filterString: "",
       sortString: ""
@@ -48,29 +49,24 @@ export default class Patients extends Component {
     })
   }
   onSort = (e) => {
+
     const { multiSortMeta } = this.state;
-    let SortMetaOld = multiSortMeta ? multiSortMeta : [];
+    let SortMetaOld = multiSortMeta ? multiSortMeta.filter(item => item.field !== e.multiSortMeta[0].field) : [];
     this.setState({
-      multiSortMeta: [...SortMetaOld, e.multiSortMeta[0]]
+      multiSortMeta: [e.multiSortMeta[0], ...SortMetaOld],
+      loading: true
     }, () => {
       const { multiSortMeta } = this.state;
-      let a = multiSortMeta.map(item => {
-        if (item.field === e.multiSortMeta[0].field)
-          return { "field": item.field, "order": e.multiSortMeta[0].order };
-        else
-          return item;
-      })
-
-      console.log(a)
       let sortString = this.helper.generateSortString(multiSortMeta);
-      console.log(sortString)
       this.setState({ sortString: sortString }, () => {
-        this.getPatients();
+        setTimeout(() => {
+          this.getPatients();
+        }, 10);
       });
     });
   }
   onFilter = (e) => {
-    this.setState({ filters: e.filters });
+    this.setState({ filters: e.filters, loading: true });
     const { filters } = this.state;
     let filterString = this.helper.generateFilterString(filters);
 
@@ -78,7 +74,6 @@ export default class Patients extends Component {
       this.getPatients();
     });
   }
-
   actionTemplate(rowData, column) {
     return <div>
       <Button type="button" icon="pi pi-pencil" className="p-button-warning" style={{ marginRight: '.5em' }}></Button >

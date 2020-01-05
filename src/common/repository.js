@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { baseApiUrl } from "./constants";
+import { BASE_API_URL } from "./constants";
 
 
 export class repository {
     get(controller, querystring, messageRef) {
-        return axios.get(`${baseApiUrl}/${controller}?${querystring}`)
+        return axios.get(`${BASE_API_URL}/${controller}?${querystring}`)
             .then(res => res.data.Result)
             .catch(error => {
                 messageRef.clear();
@@ -21,7 +21,7 @@ export class repository {
             })
     }
     post(controller, model, growlRef, messageRef) {
-        return axios.post(`${baseApiUrl}/${controller}`, model)
+        return axios.post(`${BASE_API_URL}/${controller}`, model)
             .then(res => {
                 growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
                 return res.data;
