@@ -277,7 +277,7 @@ export default class IpdForm extends React.Component {
                                     <InputField name="uniqueId" title="Invoice No." value={uniqueId} onChange={this.handleChange} {...this.state} keyfilter="pint" />
                                 </div>
                                 <div className="col-md-4">
-                                    <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="select2" loadOptions={this.helper.PatientOptions} />
+                                    <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback, this.messages)} />
                                 </div>
                                 <div className="col-md-4">
                                     <InputField name="roomType" title="Room Type" value={roomType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={roomTypeOptions} />

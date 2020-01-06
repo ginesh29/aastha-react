@@ -23,6 +23,7 @@ const routes = (
 
       <Route path="/add-patient" component={PatientForm} />
       <Route path="/patients" component={Patients} />
+      <Route path="/archive-patients" component={Patients} />
 
       <Route path="/add-opd" component={OpdForm} />
 

@@ -20,8 +20,8 @@ export class helper {
     return result;
   };
 
-  PatientOptions = (inputValue, callback) => {
-    this.repository.get("patients", `fields=id,fullname&take=15&filter=firstname.contains({${inputValue.toLowerCase()}}) or middlename.contains({${inputValue.toLowerCase()}}) or lastname.contains({${inputValue.toLowerCase()}})`, null)
+  PatientOptions = (inputValue, callback, MessageRef) => {
+    this.repository.get("patients", `fields=id,fullname&take=15&filter=firstname.contains({${inputValue.toLowerCase()}}) or middlename.contains({${inputValue.toLowerCase()}}) or lastname.contains({${inputValue.toLowerCase()}})`, MessageRef)
       .then(res => {
         let patients = res && res.data.map(function (item) {
           return { value: item["id"], label: item["fullname"] };
@@ -46,7 +46,7 @@ export class helper {
         if (field === "fullname") {
           operatorCondition = `firstname.${filterMatchMode}({${filterValue}}) or 
                               middlename.${filterMatchMode}({${filterValue}}) or 
-                              lastname.${filterMatchMode}({${filterValue}})${operator}`;
+                              lastname.${filterMatchMode}({${filterValue}})${operator} `;
         }
         else
           operatorCondition = `${field}.${filterMatchMode}({${filterValue}})${operator} `;

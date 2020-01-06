@@ -47,4 +47,26 @@ export class repository {
         return axios.get('showcase/resources/demo/data/cars-large.json')
             .then(res => res.data.data);
     }
+    delete(controller, querystring, growlRef, messageRef) {
+        return axios.delete(`${BASE_API_URL}/${controller}/${querystring}`)
+            .then(res => {
+                growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
+                return res.data;
+            })
+            .catch(error => {
+                if (error.response) {
+                    let errorResult = error.response.data;
+                    let errors = errorResult.ValidationSummary;
+                    messageRef.clear();
+                    errors && Object.keys(errors).map((item, i) => (
+                        messageRef.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
+                    ))
+                } else if (error.request) {
+                    messageRef.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+            });
+    }
 }

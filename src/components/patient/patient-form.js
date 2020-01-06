@@ -108,48 +108,52 @@ export default class PatientForm extends Component {
     const { addressSuggestions } = this.state;
     const { firstname, middlename, lastname, age, address, mobile } = this.state.formFields;
     return (
-      <div className="col-md-8">
+      <>
+        <Messages ref={(el) => this.messages = el} />
         <Growl ref={(el) => this.growl = el} />
-        <div className="row">
-          <Panel header={title} toggleable={true}>
-            <Messages ref={(el) => this.messages = el} />
-            <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
-              <div className="row">
-                <div className="col-md-4">
-                  <InputField name="firstname" title="Firstname" value={firstname} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
-                </div>
-                <div className="col-md-4">
-                  <InputField name="middlename" title="Middlename" value={middlename} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
-                </div>
-                <div className="col-md-4">
-                  <InputField name="lastname" title="Lastname" value={lastname} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6">
-                  <InputField name="age" title="Age" value={age} onChange={this.handleChange} {...this.state} keyfilter="pint" maxLength="2" />
-                </div>
-                <div className="col-md-6">
-                  <InputField name="mobile" title="Mobile" value={mobile} onChange={this.handleChange} {...this.state} keyfilter="pint" />
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-12">
-                  <InputField name="address" title="Address" value={address} suggestions={addressSuggestions} completeMethod={this.suggestAddresses} onChange={this.handleChange} {...this.state} controlType="autocomplete" />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button type="reset" className="btn btn-default">
-                  Reset
+        {/* // <div className="col-md-8">
+      //  
+      //   <div className="row">
+      //     <Panel header={title} toggleable={true}>
+      //        */}
+        <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
+          <div className="row">
+            <div className="col-md-4">
+              <InputField name="firstname" title="Firstname" value={firstname} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+            </div>
+            <div className="col-md-4">
+              <InputField name="middlename" title="Middlename" value={middlename} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+            </div>
+            <div className="col-md-4">
+              <InputField name="lastname" title="Lastname" value={lastname} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6">
+              <InputField name="age" title="Age" value={age} onChange={this.handleChange} {...this.state} keyfilter="pint" maxLength="2" />
+            </div>
+            <div className="col-md-6">
+              <InputField name="mobile" title="Mobile" value={mobile} onChange={this.handleChange} {...this.state} keyfilter="pint" />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <InputField name="address" title="Address" value={address} suggestions={addressSuggestions} completeMethod={this.suggestAddresses} onChange={this.handleChange} {...this.state} controlType="autocomplete" />
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button type="reset" className="btn btn-default">
+              Reset
                   </button>
-                <button type="submit" className="btn btn-info">
-                  Save changes
+            <button type="submit" className="btn btn-info">
+              Save changes
                   </button>
-              </div>
-            </form>
-          </Panel>
-        </div>
-      </div>
+          </div>
+        </form>
+      </>
+      //     </Panel>
+      //   </div>
+      // </div>
     );
   }
 }
