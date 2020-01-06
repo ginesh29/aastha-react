@@ -21,7 +21,7 @@ export class helper {
   };
 
   PatientOptions = (inputValue, callback) => {
-    this.repository.get("patients", `fields=id,fullname&take=15&filter=firstname.contains({${inputValue.toLowerCase()}}) or middlename.contains({${inputValue.toLowerCase()}}) or lastname.contains({${inputValue.toLowerCase()}})`)
+    this.repository.get("patients", `fields=id,fullname&take=15&filter=firstname.contains({${inputValue.toLowerCase()}}) or middlename.contains({${inputValue.toLowerCase()}}) or lastname.contains({${inputValue.toLowerCase()}})`, null)
       .then(res => {
         let patients = res && res.data.map(function (item) {
           return { value: item["id"], label: item["fullname"] };
