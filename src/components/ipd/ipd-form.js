@@ -1,6 +1,6 @@
 import React from "react";
 import InputField from "../shared/InputField";
-import { roomTypeOptions, departmentTypeEnum, genderOptions, lookupTypesOptions } from "../../common/constants";
+import { roomTypeOptions, departmentTypeEnum, genderOptions, lookupTypesOptionsEnum } from "../../common/constants";
 import { Panel } from "primereact/panel";
 import { Growl } from "primereact/growl";
 import { helper } from "../../common/helpers";
@@ -227,12 +227,12 @@ export default class IpdForm extends React.Component {
                 return { value: item["id"], label: item["name"], type: item["type"] };
             });
             if (res) {
-                let typesofDeliveryOptions = lookups.filter(l => l.type === lookupTypesOptions.DELIVERYTYPE.value);
-                let deliveryDiganosisOptions = lookups.filter(l => l.type === lookupTypesOptions.DELIVERYDIAGNOSIS.value);
-                let operationDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptions.OPERATIONDIAGNOSIS.value);
-                let typesofOprationOptions = lookups.filter(l => l.type === lookupTypesOptions.OPERATIONTYPE.value);
-                let generalDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptions.GENERALDIAGNOSIS.value);
-                let chargeNames = lookups.filter(l => l.type === lookupTypesOptions.CHARGENAME.value);
+                let typesofDeliveryOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.DELIVERYTYPE.value);
+                let deliveryDiganosisOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.DELIVERYDIAGNOSIS.value);
+                let operationDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.OPERATIONDIAGNOSIS.value);
+                let typesofOprationOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.OPERATIONTYPE.value);
+                let generalDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.GENERALDIAGNOSIS.value);
+                let chargeNames = lookups.filter(l => l.type === lookupTypesOptionsEnum.CHARGENAME.value);
 
                 this.setState({ typesofDeliveryOptions: typesofDeliveryOptions });
                 this.setState({ deliveryDiganosisOptions: deliveryDiganosisOptions });
