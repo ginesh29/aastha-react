@@ -1,4 +1,5 @@
 import { repository } from "./repository";
+import { lookupTypesOptions } from "./constants";
 export class helper {
   constructor() {
     this.repository = new repository();
@@ -27,6 +28,19 @@ export class helper {
           return { value: item["id"], label: item["fullname"] };
         });
         callback(patients)
+      })
+  }
+
+  AddressOptions = (inputValue, callback, MessageRef) => {
+    let filter = `type-equals-{${lookupTypesOptions.ADDRESS.value}}`;
+    if (inputValue)
+      filter = filter + ` and name.contains({${inputValue.toLowerCase()}})`
+    this.repository.get("lookups", `take=15&filter=${filter}`, MessageRef)
+      .then(res => {
+        let addresses = res && res.data.map(function (item) {
+          return { value: item["id"], label: item["name"] };
+        });
+        callback(addresses)
       })
   }
 

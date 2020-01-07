@@ -32,5 +32,6 @@ export const lookupTypesOptions = {
   MEDICINTYPE: { value: 5, label: "MedicinType" },
   MEDICINE: { value: 6, label: "Medicine" },
   CHARGENAME: { value: 7, label: "ChargeName" },
-  DELIVERYDIAGNOSIS: { value: 8, label: "DeliveryDiagnosis" }
+  DELIVERYDIAGNOSIS: { value: 8, label: "DeliveryDiagnosis" },
+  ADDRESS: { value: 9, label: "Address" }
 };

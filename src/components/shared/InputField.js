@@ -4,11 +4,12 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { AutoComplete } from "primereact/autocomplete";
 import { MultiSelect } from 'primereact/multiselect';
-import AsyncSelect from 'react-select/async';
+// import AsyncSelect from 'react-select/async';
+import AsyncCreatableSelect from 'react-select/async-creatable';
 
 export default class InputField extends Component {
   render() {
-    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref, loadOptions } = this.props;
+    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref, loadOptions, onCreateOption } = this.props;
     let errorClass = validationErrors[name] ? "error" : "";
     let propClassName = className ? className : "";
     let finalClassName = `${propClassName} ${errorClass}`;
@@ -39,7 +40,7 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <AsyncSelect name={name} defaultValue={value} cacheOptions loadOptions={loadOptions} className={finalClassName} defaultOptions isClearable={true} isLoading={true} onChange={onChange} />
+          <AsyncCreatableSelect defaultOptions name={name} defaultValue={value} onCreateOption={onCreateOption} cacheOptions loadOptions={loadOptions} className={finalClassName} isClearable={true} isLoading={true} onChange={onChange} />
           <span className="error">{validationErrors[name]}</span>
         </div>
       );

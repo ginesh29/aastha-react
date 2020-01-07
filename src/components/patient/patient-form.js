@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import { Panel } from 'primereact/panel';
 import InputField from "../shared/InputField";
 import { helper } from "../../common/helpers";
 import { repository } from "../../common/repository";
 import { Growl } from 'primereact/growl';
 import { Messages } from 'primereact/messages';
-
-const title = "Patient Registration";
+import { Dialog } from 'primereact/dialog';
 
 export default class PatientForm extends Component {
   constructor(props) {
@@ -21,17 +19,21 @@ export default class PatientForm extends Component {
       middlename: "",
       lastname: "",
       age: "",
-      address: "",
+      addressId: null,
       mobile: ""
     },
+    isValidationFired: false,
     validationErrors: {}
   })
-  handleChange = e => {
+  handleChange = (e, action) => {
     this.messages.clear();
     const { isValidationFired, formFields } = this.state;
-    let currentObj = e.target;
     let fields = formFields;
-    fields[currentObj.name] = currentObj.value;
+    if (action)
+      fields[action.name] = action !== "clear" ? e && e.value : null;
+    else
+      fields[e.target.name] = e.target.value;
+
     this.setState({
       formFields: fields
     });
@@ -40,7 +42,7 @@ export default class PatientForm extends Component {
   };
 
   handleSubmit = e => {
-    const { firstname, middlename, lastname, age, address, mobile } = this.state.formFields;
+    const { firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
     e.preventDefault();
     if (this.handleValidation()) {
       const patient = {
@@ -49,7 +51,7 @@ export default class PatientForm extends Component {
         lastname: lastname,
         age: age,
         mobile: mobile,
-        address: address
+        addressId: addressId
       };
 
       this.repository.post("patients", patient, this.growl, this.messages)
@@ -61,7 +63,7 @@ export default class PatientForm extends Component {
   };
 
   handleValidation = e => {
-    const { firstname, middlename, lastname, age, address } = this.state.formFields;
+    const { firstname, middlename, lastname, age, addressId } = this.state.formFields;
     let errors = {};
     let isValid = true;
     if (!firstname) {
@@ -80,9 +82,9 @@ export default class PatientForm extends Component {
       isValid = false;
       errors.age = "Age is required";
     }
-    if (!address) {
+    if (!addressId) {
       isValid = false;
-      errors.address = "Address is required";
+      errors.addressId = "Address is required";
     }
     this.setState({
       validationErrors: errors,
@@ -96,26 +98,16 @@ export default class PatientForm extends Component {
     this.setState(this.getInitialState());
   };
 
-  suggestAddresses = e => {
-    let query = e ? e.query.toLowerCase() : "";
-    this.repository.get("patients", `filter=address.startswith({${query}})&fields=address`, this.messages)
-      .then(res => {
-        this.setState({ addressSuggestions: res && res.data.map(item => item.address) });
-      })
-  };
-
+  onCreateAddress = () => {
+    this.setState({ editDialogVisible: true })
+  }
   render() {
-    const { addressSuggestions } = this.state;
-    const { firstname, middlename, lastname, age, address, mobile } = this.state.formFields;
+    const { firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
+    const { editDialogVisible } = this.state;
     return (
       <>
         <Messages ref={(el) => this.messages = el} />
         <Growl ref={(el) => this.growl = el} />
-        {/* // <div className="col-md-8">
-      //  
-      //   <div className="row">
-      //     <Panel header={title} toggleable={true}>
-      //        */}
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col-md-4">
@@ -138,22 +130,23 @@ export default class PatientForm extends Component {
           </div>
           <div className="row">
             <div className="col-md-12">
-              <InputField name="address" title="Address" value={address} suggestions={addressSuggestions} completeMethod={this.suggestAddresses} onChange={this.handleChange} {...this.state} controlType="autocomplete" />
+              <InputField name="addressId" title="Address" onChange={this.handleChange} onCreateOption={this.onCreateAddress} {...this.state} controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback, this.messages)} />
             </div>
           </div>
           <div className="modal-footer">
-            <button type="reset" className="btn btn-default">
-              Reset
-                  </button>
-            <button type="submit" className="btn btn-info">
-              Save changes
-                  </button>
+            <div className="row">
+              <button type="reset" className="btn btn-default">Reset</button>
+              <button type="submit" className="btn btn-primary">Save changes</button>
+            </div>
           </div>
         </form>
+        <Dialog header="Add Address" visible={editDialogVisible} onHide={() => this.setState({ editDialogVisible: false })}>
+          The story begins as Don Vito Corleone, the head of a New York Mafia family, oversees his daughter's wedding.
+          His beloved son Michael has just come home from the war, but does not intend to become part of his father's business.
+          Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family,
+          kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family.
+        </Dialog>
       </>
-      //     </Panel>
-      //   </div>
-      // </div>
     );
   }
 }

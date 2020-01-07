@@ -6,7 +6,7 @@ import MainLayout from "./components/shared/layouts/MainLayout";
 
 import Dashboard from "./components/dashboard";
 import Patients from "./components/patient/patients";
-import PatientForm from "./components/patient/patient-form";
+import AddPatient from "./components/patient/add-patient";
 import OpdForm from "./components/opd/opd-form";
 import IpdForm from "./components/ipd/ipd-form";
 import Prescription from "./components/prescription";
@@ -21,7 +21,7 @@ const routes = (
       </Route>
       <Route path="/dashboard" component={Dashboard} />
 
-      <Route path="/add-patient" component={PatientForm} />
+      <Route path="/add-patient" component={AddPatient} />
       <Route path="/patients" component={Patients} />
       <Route path="/archive-patients" component={Patients} />
 

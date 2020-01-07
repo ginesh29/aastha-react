@@ -112,10 +112,12 @@ export default class Patients extends Component {
         });
       })
   }
-  onHide = () => {
+  onHideDeleteDialog = () => {
     this.setState({ deleteDialogVisible: false });
   }
-
+  onHideEditDialog = () => {
+    this.setState({ editDialogVisible: false });
+  }
   render() {
     const { patients, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialogVisible, editDialogVisible, isArchive } = this.state;
     let linkUrl = isArchive ? "/patients" : "/archive-patients";
@@ -123,16 +125,10 @@ export default class Patients extends Component {
     let action = isArchive ? "restore" : "delete";
     var header = <div className="p-clearfix" style={{ 'lineHeight': '1.87em' }}>{panelTitle}<NavLink to={linkUrl}><Button icon="pi pi-replay" style={{ 'float': 'right' }} /></NavLink> </div>;
     //var footer = "There are " + carCount + ' cars';
-    // const editDialogFooter = (
-    //   <div>
-    //     <Button label="Save" icon="pi pi-check" onClick={this.deleteRow} />
-    //     <Button label="Cancel" icon="pi pi-times" onClick={this.onHide} className="p-button-secondary" />
-    //   </div>
-    // );
     const deleteDialogFooter = (
       <div>
         <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
-        <Button label="No" icon="pi pi-times" onClick={this.onHide} className="p-button-secondary" />
+        <Button label="No" icon="pi pi-times" onClick={this.onHideDeleteDialog} className="p-button-secondary" />
       </div>
     );
 
@@ -145,16 +141,17 @@ export default class Patients extends Component {
           <Column field="fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
           <Column field="age" header="Age" />
           <Column field="mobile" header="Mobile" filter={true} filterMatchMode="contains" />
-          <Column field="address" header="Address" sortable={true} filter={true} filterMatchMode="contains" />
+          <Column field="addressName" header="Address" sortable={true} filter={true} filterMatchMode="contains" />
           <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '8em' }} />
         </DataTable>
         <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
 
-        <Dialog header="Confirmation" visible={deleteDialogVisible} footer={deleteDialogFooter} onHide={this.onHide}>
+        <Dialog header="Confirmation" visible={deleteDialogVisible} footer={deleteDialogFooter} onHide={this.onHideDeleteDialog}>
           Are you sure you want to {action} this item?
         </Dialog>
 
-        <Dialog header="Edit Patient" visible={editDialogVisible} footer={deleteDialogFooter} onHide={this.onHide}>
+        <Dialog header="Edit Patient" visible={editDialogVisible} onHide={this.onHideEditDialog}>
+          <PatientForm {...this.state} />
         </Dialog>
       </>
     );
