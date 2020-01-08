@@ -7,10 +7,10 @@ import MainLayout from "./components/shared/layouts/MainLayout";
 import Dashboard from "./components/dashboard";
 import Patients from "./components/patient/patients";
 import AddPatient from "./components/patient/add-patient";
-import OpdForm from "./components/opd/opd-form";
-import IpdForm from "./components/ipd/ipd-form";
 import Prescription from "./components/prescription";
 import AdminPanel from "./components/admin-panel";
+import AddOpd from "./components/opd/add-opd";
+import AddIpd from "./components/ipd/add-ipd";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 
@@ -26,9 +26,9 @@ const routes = (
       <Route path="/patients" component={Patients} />
       <Route path="/archive-patients" component={Patients} />
 
-      <Route path="/add-opd" component={OpdForm} />
+      <Route path="/add-opd" component={AddOpd} />
 
-      <Route path="/add-ipd" component={IpdForm} />
+      <Route path="/add-ipd" component={AddIpd} />
 
       <Route path="/admin-panel" component={AdminPanel} />
 

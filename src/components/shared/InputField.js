@@ -9,7 +9,7 @@ import AsyncCreatableSelect from 'react-select/async-creatable';
 
 export default class InputField extends Component {
   render() {
-    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref, loadOptions, onCreateOption } = this.props;
+    const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref, loadOptions, onCreateOption, onInputChange } = this.props;
     let errorClass = validationErrors[name] ? "error" : "";
     let propClassName = className ? className : "";
     let finalClassName = `${propClassName} ${errorClass}`;
@@ -40,7 +40,7 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <AsyncCreatableSelect defaultOptions name={name} value={value} onCreateOption={onCreateOption} cacheOptions loadOptions={loadOptions} className={finalClassName} isClearable={true} isLoading={true} onChange={onChange} />
+          <AsyncCreatableSelect defaultOptions name={name} value={value} onCreateOption={onCreateOption} createOptionPosition="first" loadOptions={loadOptions} className={finalClassName} isClearable={true} isLoading={true} onChange={onChange} onInputChange={onInputChange} />
           <span className="error">{validationErrors[name]}</span>
         </div>
       );

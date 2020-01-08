@@ -4,8 +4,13 @@ import { helper } from "../../common/helpers";
 import { repository } from "../../common/repository";
 import { Growl } from 'primereact/growl';
 import { Messages } from 'primereact/messages';
+import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
+import * as Constants from "../../common/constants";
+import { lookupTypeEnum } from "../../common/enums";
 
+const controller = "patients";
 export default class PatientForm extends Component {
   constructor(props) {
     super(props);
@@ -20,8 +25,10 @@ export default class PatientForm extends Component {
       lastname: "",
       age: "",
       addressId: null,
-      mobile: ""
+      mobile: "",
     },
+    address: "",
+    addressInput: "",
     isValidationFired: false,
     validationErrors: {}
   })
@@ -30,7 +37,7 @@ export default class PatientForm extends Component {
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
     if (action)
-      fields[action.name] = action !== "clear" ? e && e.value : null;
+      fields[action.name] = action !== Constants.SELECT2_ACTION_CLEAR_TEXT ? e && { value: e.value, label: e.label } : null;
     else
       fields[e.target.name] = e.target.value;
 
@@ -51,13 +58,13 @@ export default class PatientForm extends Component {
         lastname: lastname,
         age: age,
         mobile: mobile,
-        addressId: addressId
+        addressId: addressId.value
       };
 
-      this.repository.post("patients", patient, this.growl, this.messages)
+      this.repository.post(controller, patient, this.growl, this.messages)
         .then(res => {
-          if (res)
-            this.handleReset();
+          this.props.onHidePatientDialog && this.props.onHidePatientDialog();
+          res && this.handleReset();
         })
     }
   };
@@ -98,12 +105,56 @@ export default class PatientForm extends Component {
     this.setState(this.getInitialState());
   };
 
-  onCreateAddress = () => {
-    this.setState({ editDialogVisible: true })
+  saveAddress = () => {
+    const { address } = this.state;
+    let addressError = "";
+    let isValid = true;
+    if (!address) {
+      isValid = false;
+      addressError = "Address is required";
+    }
+    else
+      isValid = true;
+
+    this.setState({
+      addressError: addressError
+    });
+    if (isValid) {
+      const lookup = {
+        name: address,
+        type: lookupTypeEnum.ADDRESS.value
+      };
+      this.repository.post("lookups", lookup, this.growl, this.messages)
+        .then(res => {
+          this.setState({ address: "", addressDialogVisible: false });
+        })
+    }
+  }
+  static getDerivedStateFromProps(props, state) {
+    console.log(props)
+    // if (props.patientName) {
+    //   let splitedPatientName = props.patientName.split(" ");
+    //   let fields = state.formFields;
+    //   fields.firstname = fields.firstname || splitedPatientName[0];
+    //   fields.middlename = fields.middlename || splitedPatientName[1];
+    //   fields.lastname = fields.lastname || splitedPatientName[2];
+    //   if (splitedPatientName) {
+    //     return {
+    //       formFields: fields
+    //     }
+    //   }
+    // }
+    // else {
+    //   return null
+    // }
   }
   render() {
     const { firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
-    const { editDialogVisible } = this.state;
+    const { addressDialogVisible, address, addressInput, addressError } = this.state;
+    let addressDialogFooter = <div className="ui-dialog-buttonpane p-clearfix">
+      <Button label="Reset" icon="pi pi-times" className="p-button-secondary" onClick={(e) => this.setState({ address: "", addressError: "" })} />
+      <Button label="Save" icon="pi pi-check" onClick={this.saveAddress} />
+    </div>;
     return (
       <>
         <Messages ref={(el) => this.messages = el} />
@@ -111,13 +162,13 @@ export default class PatientForm extends Component {
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col-md-4">
-              <InputField name="firstname" title="Firstname" value={firstname} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              <InputField name="firstname" title="Firstname" value={this.helper.toSentenceCase(firstname)} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
             </div>
             <div className="col-md-4">
-              <InputField name="middlename" title="Middlename" value={middlename} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              <InputField name="middlename" title="Middlename" value={this.helper.toSentenceCase(middlename)} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
             </div>
             <div className="col-md-4">
-              <InputField name="lastname" title="Lastname" value={lastname} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              <InputField name="lastname" title="Lastname" value={this.helper.toSentenceCase(lastname)} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
             </div>
           </div>
           <div className="row">
@@ -130,7 +181,9 @@ export default class PatientForm extends Component {
           </div>
           <div className="row">
             <div className="col-md-12">
-              <InputField name="addressId" title="Address" value={addressId} onChange={this.handleChange} onCreateOption={this.onCreateAddress} {...this.state} controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback, this.messages)} />
+              <InputField name="addressId" title="Address" value={addressId} onChange={this.handleChange}
+                onCreateOption={() => this.setState({ addressDialogVisible: true, address: addressInput, addressError: "" })} {...this.state}
+                controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback, this.messages)} onInputChange={(e) => { this.setState({ addressInput: e }) }} />
             </div>
           </div>
           <div className="modal-footer">
@@ -140,11 +193,15 @@ export default class PatientForm extends Component {
             </div>
           </div>
         </form>
-        <Dialog header="Add Address" visible={editDialogVisible} onHide={() => this.setState({ editDialogVisible: false })}>
-          The story begins as Don Vito Corleone, the head of a New York Mafia family, oversees his daughter's wedding.
-          His beloved son Michael has just come home from the war, but does not intend to become part of his father's business.
-          Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family,
-          kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family.
+        <Dialog header={Constants.ADD_ADDRESS_TITLE} footer={addressDialogFooter} visible={addressDialogVisible} onHide={() => this.setState({ addressDialogVisible: false })} baseZIndex={0}>
+          <div className="form-group">
+            <div className="row">
+              <div className="col-md-12">
+                <InputText name="address" value={this.helper.toSentenceCase(address)} placeholder="Enter Address" onChange={(e) => this.setState({ address: e.target.value, addressError: "" })} className={addressError ? "error" : ""} />
+                <span className="error">{addressError}</span>
+              </div>
+            </div>
+          </div>
         </Dialog>
       </>
     );

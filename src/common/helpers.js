@@ -1,16 +1,21 @@
 import { repository } from "./repository";
-import { lookupTypesOptions } from "./constants";
+import { lookupTypeEnum } from "./enums";
 export class helper {
   constructor() {
     this.repository = new repository();
   }
   toSentenceCase = e => {
-    let str = e.target.value;
+    let value = e && e.target ? e.target.value : e;
+    let str = value;
     let result = "";
     if (str) {
       result = str[0].toUpperCase() + str.slice(1).toLowerCase();
     }
-    e.target.value = result;
+    if (e && e.target)
+      e.target.value = result;
+    else
+      e = result;
+    return result;
   };
 
   enumToObject = function (enumValue) {
@@ -32,7 +37,7 @@ export class helper {
   }
 
   AddressOptions = (inputValue, callback, MessageRef) => {
-    let filter = `type-equals-{${lookupTypesOptions.ADDRESS.value}}`;
+    let filter = `type-equals-{${lookupTypeEnum.ADDRESS.value}}`;
     if (inputValue)
       filter = filter + ` and name.contains({${inputValue.toLowerCase()}})`
     this.repository.get("lookups", `take=15&filter=${filter}`, MessageRef)

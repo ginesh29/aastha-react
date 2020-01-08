@@ -1,6 +1,7 @@
 form .p-dropdown,
 form .p-dropdown-filter,
 form .p-inputtext,
+.p-inputtext,
 form .p-autocomplete,
 form .p-calendar,
 form .p-dropdown-filter-container,
@@ -11,7 +12,8 @@ form .p-multiselect {
 .p-inputtext.error,
 .p-autocomplete.error input,
 .p-multiselect.error,
-.p-dropdown.error {
+.p-dropdown.error,
+.eroor .css-yk16xz-control{
   border: 1px solid #ff0000 !important;
   background-color: #ffeeee !important;
 }
@@ -24,7 +26,7 @@ form .p-multiselect {
 .p-growl {
   z-index: 9999 !important;
 }
-.css-yk16xz-control{
+/* .css-yk16xz-control{
   border: 1px solid #a6a6a6;
 }
 .css-2b097c-container:focus {
@@ -39,7 +41,7 @@ form .p-multiselect {
   outline-offset: 0 !important;
   box-shadow: 0 0 0 0.2em #8dcdff !important;
   border-color: #007ad9 !important;
-}
+} */
 #prescription .p-panel-content{
   background:#FFFCAB !important;
 }

@@ -1,15 +1,18 @@
 import React from "react";
 import InputField from "../shared/InputField";
-import { roomTypeOptions, departmentTypeEnum, genderOptions, lookupTypesOptionsEnum } from "../../common/constants";
-import { Panel } from "primereact/panel";
+import { roomTypeOptions, genderOptions } from "../../common/constants";
+import { departmentTypeEnum, lookupTypeEnum } from "../../common/enums";
 import { Growl } from "primereact/growl";
+import { Dialog } from 'primereact/dialog';
 import { helper } from "../../common/helpers";
 import moment from 'moment';
 import { InputText } from 'primereact/inputtext';
 import { Messages } from 'primereact/messages';
 import { repository } from "../../common/repository";
+import * as Constants from "../../common/constants";
+import PatientForm from "../patient/patient-form";
 
-const title = "Ipd Entry";
+const controller = "ipds";
 export default class IpdForm extends React.Component {
     constructor(props) {
         super(props);
@@ -37,16 +40,24 @@ export default class IpdForm extends React.Component {
             generalDiagnosis: [],
             discountAmount: ""
         },
+        patientName: "",
+        patientInput: "",
+        isValidationFired: false,
         grandTotal: "",
         amountPaid: "",
         chargeFormFields: [],
         validationErrors: {}
     });
-    handleChange = e => {
+    handleChange = (e, action) => {
         this.messages.clear();
         const { isValidationFired, formFields } = this.state;
-        formFields[e.target.name] = e.target.value;
-        if (e.target.name === "departmentType") {
+        let fields = formFields;
+        if (action)
+            fields[action.name] = action !== Constants.SELECT2_ACTION_CLEAR_TEXT ? e && { value: e.value, label: e.label } : null;
+        else
+            fields[e.target.name] = e.target.value;
+
+        if (e.target && e.target.name === "departmentType") {
             formFields.deliveryDate = "";
             formFields.deliveryTime = "";
             formFields.typesOfDelivery = [];
@@ -122,7 +133,7 @@ export default class IpdForm extends React.Component {
                 uniqueId: uniqueId,
                 type: departmentType.value,
                 roomType: roomType,
-                patientId: patientId,
+                patientId: patientId.value,
                 addmissionDate: addmissionDate,
                 dischargeDate: dischargeDate,
                 deliveryDetail: departmentType === departmentTypeEnum.DELIVERY ? deliveryDetail : null,
@@ -131,7 +142,7 @@ export default class IpdForm extends React.Component {
                 charges: charges,
                 discount: discountAmount
             };
-            this.repository.post("ipds", ipd, this.growl, this.messages).then(res => {
+            this.repository.post(controller, ipd, this.growl, this.messages).then(res => {
                 if (res)
                     this.handleReset();
             })
@@ -227,12 +238,12 @@ export default class IpdForm extends React.Component {
                 return { value: item["id"], label: item["name"], type: item["type"] };
             });
             if (res) {
-                let typesofDeliveryOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.DELIVERYTYPE.value);
-                let deliveryDiganosisOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.DELIVERYDIAGNOSIS.value);
-                let operationDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.OPERATIONDIAGNOSIS.value);
-                let typesofOprationOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.OPERATIONTYPE.value);
-                let generalDiagnosisOptions = lookups.filter(l => l.type === lookupTypesOptionsEnum.GENERALDIAGNOSIS.value);
-                let chargeNames = lookups.filter(l => l.type === lookupTypesOptionsEnum.CHARGENAME.value);
+                let typesofDeliveryOptions = lookups.filter(l => l.type === lookupTypeEnum.DELIVERYTYPE.value);
+                let deliveryDiganosisOptions = lookups.filter(l => l.type === lookupTypeEnum.DELIVERYDIAGNOSIS.value);
+                let operationDiagnosisOptions = lookups.filter(l => l.type === lookupTypeEnum.OPERATIONDIAGNOSIS.value);
+                let typesofOprationOptions = lookups.filter(l => l.type === lookupTypeEnum.OPERATIONTYPE.value);
+                let generalDiagnosisOptions = lookups.filter(l => l.type === lookupTypeEnum.GENERALDIAGNOSIS.value);
+                let chargeNames = lookups.filter(l => l.type === lookupTypeEnum.CHARGENAME.value);
 
                 this.setState({ typesofDeliveryOptions: typesofDeliveryOptions });
                 this.setState({ deliveryDiganosisOptions: deliveryDiganosisOptions });
@@ -264,144 +275,145 @@ export default class IpdForm extends React.Component {
 
     render() {
         const { uniqueId, patientId, roomType, departmentType, addmissionDate, dischargeDate, deliveryDate, deliveryTime, typesOfDelivery, deliveryDiagnosis, babyGender, babyWeight, operationDate, operationDiagnosis, typesOfOperation, generalDiagnosis, discountAmount } = this.state.formFields;
-        const { departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields } = this.state;
+        const { departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields, patientInput, patientDialogVisible, patientName } = this.state;
         return (
-            <div className="col-md-12" >
+            <>
                 <Growl ref={el => (this.growl = el)} />
-                <div className="row">
-                    <Panel header={title} toggleable={true}>
-                        <Messages ref={(el) => this.messages = el} />
-                        <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <InputField name="uniqueId" title="Invoice No." value={uniqueId} onChange={this.handleChange} {...this.state} keyfilter="pint" />
-                                </div>
-                                <div className="col-md-4">
-                                    <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback, this.messages)} />
-                                </div>
-                                <div className="col-md-4">
-                                    <InputField name="roomType" title="Room Type" value={roomType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={roomTypeOptions} />
-                                </div>
+                <Messages ref={(el) => this.messages = el} />
+                <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
+                    <div className="row">
+                        <div className="col-md-4">
+                            <InputField name="uniqueId" title="Invoice No." value={uniqueId} onChange={this.handleChange} {...this.state} keyfilter="pint" />
+                        </div>
+                        <div className="col-md-4">
+                            <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
+                                onCreateOption={() => this.setState({ patientDialogVisible: true, patientName: patientInput })} onInputChange={(e) => { this.setState({ patientInput: e }) }}
+                                controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback, this.messages)} />
+                        </div>
+                        <div className="col-md-4">
+                            <InputField name="roomType" title="Room Type" value={roomType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={roomTypeOptions} />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-4">
+                            <InputField name="departmentType" title="Department Type" value={departmentType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={departmentTypeOptions} optionLabel="label" />
+                        </div>
+                        <div className="col-md-4">
+                            <InputField name="addmissionDate" title="Addmission Date" value={addmissionDate} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
+                        </div>
+                        <div className="col-md-4">
+                            <InputField name="dischargeDate" title="Discharge Date" value={dischargeDate} onChange={this.handleChange} {...this.state} controlType="datepicker" minDate={addmissionDate} />
+                        </div>
+                    </div>
+                    <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.DELIVERY.label ? "" : "none" }}>
+                        <div className="row">
+                            <div className="col-md-4">
+                                <InputField name="deliveryDate" title="Delivery Date" value={deliveryDate} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-calendar" />
                             </div>
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <InputField name="departmentType" title="Department Type" value={departmentType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={departmentTypeOptions} optionLabel="label" />
-                                </div>
-                                <div className="col-md-4">
-                                    <InputField name="addmissionDate" title="Addmission Date" value={addmissionDate} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
-                                </div>
-                                <div className="col-md-4">
-                                    <InputField name="dischargeDate" title="Discharge Date" value={dischargeDate} onChange={this.handleChange} {...this.state} controlType="datepicker" minDate={addmissionDate} />
-                                </div>
+                            <div className="col-md-4">
+                                <InputField name="deliveryTime" title="Delivery Time" value={deliveryTime} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-clock" timeOnly={true} hourFormat="12" />
                             </div>
-                            <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.DELIVERY.label ? "" : "none" }}>
-                                <div className="row">
-                                    <div className="col-md-4">
-                                        <InputField name="deliveryDate" title="Delivery Date" value={deliveryDate} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-calendar" />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputField name="deliveryTime" title="Delivery Time" value={deliveryTime} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-clock" timeOnly={true} hourFormat="12" />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputField name="typesOfDelivery" title="Types Of Delivery" value={typesOfDelivery} onChange={this.handleChange} {...this.state} controlType="multiselect" options={typesofDeliveryOptions} filter={true} />
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-4">
-                                        <InputField name="deliveryDiagnosis" title="Delivery Diagnosis" value={deliveryDiagnosis} onChange={this.handleChange} {...this.state} controlType="dropdown" options={deliveryDiganosisOptions} />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputField name="babyGender" title="Baby Gender" value={babyGender} onChange={this.handleChange} {...this.state} controlType="dropdown" options={genderOptions} />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputField name="babyWeight" title="Baby Weight" value={babyWeight} onChange={this.handleChange} {...this.state} keyfilter="pnum" />
-                                    </div>
-                                </div>
+                            <div className="col-md-4">
+                                <InputField name="typesOfDelivery" title="Types Of Delivery" value={typesOfDelivery} onChange={this.handleChange} {...this.state} controlType="multiselect" options={typesofDeliveryOptions} filter={true} />
                             </div>
-                            <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.OPERATION.label ? "" : "none" }}>
-                                <div className="row">
-                                    <div className="col-md-4">
-                                        <InputField name="operationDate" title="Operation Date" value={operationDate} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-calendar" />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputField name="operationDiagnosis" title="Operation Diagnosis" value={operationDiagnosis} onChange={this.handleChange} {...this.state} controlType="multiselect" options={operationDiagnosisOptions} filter={true} />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputField name="typesOfOperation" title="Types Of Operation" value={typesOfOperation} onChange={this.handleChange} {...this.state} controlType="multiselect" options={typesofOprationOptions} filter={true} />
-                                    </div>
-                                </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-4">
+                                <InputField name="deliveryDiagnosis" title="Delivery Diagnosis" value={deliveryDiagnosis} onChange={this.handleChange} {...this.state} controlType="dropdown" options={deliveryDiganosisOptions} />
                             </div>
-                            <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.GENERAL.label ? "" : "none" }}>
-                                <div className="row">
-                                    <div className="col-md-4">
-                                        <InputField name="generalDiagnosis" title="General Diagnosis" value={generalDiagnosis} onChange={this.handleChange} {...this.state} controlType="multiselect" options={generalDiagnosisOptions} filter={true} />
-                                    </div>
-                                </div>
+                            <div className="col-md-4">
+                                <InputField name="babyGender" title="Baby Gender" value={babyGender} onChange={this.handleChange} {...this.state} controlType="dropdown" options={genderOptions} />
                             </div>
-                            <table className="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th width="50px">#</th>
-                                        <th>Charge Title</th>
-                                        <th width="100px">Rate</th>
-                                        <th width="100px">Day</th>
-                                        <th width="100px">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {chargeNames && chargeNames.map((item, index) => {
-                                        const chargeObj = chargeFormFields.filter(c => c.lookupId === item.value);
-                                        let rate = chargeObj.map(m => m.rate);
-                                        let days = chargeObj.map(m => m.days);
-                                        let amount = chargeObj.map(m => m.amount);
-                                        return (
-                                            <tr key={index}>
-                                                <th>{index + 1}</th>
-                                                <td>{item.label}</td>
-                                                <td><InputText type="text" value={rate} className="input-sm" keyfilter="pint" name={`rate-${item.value}`} onChange={this.handleChargeChange} /></td>
-                                                <td><InputText type="text" value={days} className="input-sm" keyfilter="pint" name={`days-${item.value}`} onChange={this.handleChargeChange} /></td>
-                                                <td>{amount}</td>
-                                            </tr>)
-                                    })}
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colSpan="2">Grand Total</td>
-                                        <td colSpan="3">
-                                            <div className="row">
-                                                <div className="col-md-5">
-                                                    <InputText type="text" className="input-sm" keyfilter="pint" value={grandTotal} readOnly />
-                                                </div>
-                                                <div className="col-md-2">
-                                                    <i className="fa fa-minus"></i>
-                                                </div>
-                                                <div className="col-md-5">
-                                                    <InputText name="discountAmount" className="input-sm" type="text" keyfilter="pint" value={discountAmount} onChange={this.handleChargeChange} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colSpan="2">Amount Paid</td>
-                                        <td colSpan="3">
-                                            {amountPaid}
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                            <div className="col-md-4">
+                                <InputField name="babyWeight" title="Baby Weight" value={babyWeight} onChange={this.handleChange} {...this.state} keyfilter="pnum" />
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.OPERATION.label ? "" : "none" }}>
+                        <div className="row">
+                            <div className="col-md-4">
+                                <InputField name="operationDate" title="Operation Date" value={operationDate} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-calendar" />
+                            </div>
+                            <div className="col-md-4">
+                                <InputField name="operationDiagnosis" title="Operation Diagnosis" value={operationDiagnosis} onChange={this.handleChange} {...this.state} controlType="multiselect" options={operationDiagnosisOptions} filter={true} />
+                            </div>
+                            <div className="col-md-4">
+                                <InputField name="typesOfOperation" title="Types Of Operation" value={typesOfOperation} onChange={this.handleChange} {...this.state} controlType="multiselect" options={typesofOprationOptions} filter={true} />
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.GENERAL.label ? "" : "none" }}>
+                        <div className="row">
+                            <div className="col-md-4">
+                                <InputField name="generalDiagnosis" title="General Diagnosis" value={generalDiagnosis} onChange={this.handleChange} {...this.state} controlType="multiselect" options={generalDiagnosisOptions} filter={true} />
+                            </div>
+                        </div>
+                    </div>
+                    <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="50px">#</th>
+                                <th>Charge Title</th>
+                                <th width="100px">Rate</th>
+                                <th width="100px">Day</th>
+                                <th width="100px">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {chargeNames && chargeNames.map((item, index) => {
+                                const chargeObj = chargeFormFields.filter(c => c.lookupId === item.value);
+                                let rate = chargeObj.map(m => m.rate);
+                                let days = chargeObj.map(m => m.days);
+                                let amount = chargeObj.map(m => m.amount);
+                                return (
+                                    <tr key={index}>
+                                        <th>{index + 1}</th>
+                                        <td>{item.label}</td>
+                                        <td><InputText type="text" value={rate} className="input-sm" keyfilter="pint" name={`rate-${item.value}`} onChange={this.handleChargeChange} /></td>
+                                        <td><InputText type="text" value={days} className="input-sm" keyfilter="pint" name={`days-${item.value}`} onChange={this.handleChargeChange} /></td>
+                                        <td>{amount}</td>
+                                    </tr>)
+                            })}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colSpan="2">Grand Total</td>
+                                <td colSpan="3">
+                                    <div className="row">
+                                        <div className="col-md-5">
+                                            <InputText type="text" className="input-sm" keyfilter="pint" value={grandTotal} readOnly />
+                                        </div>
+                                        <div className="col-md-2">
+                                            <i className="fa fa-minus"></i>
+                                        </div>
+                                        <div className="col-md-5">
+                                            <InputText name="discountAmount" className="input-sm" type="text" keyfilter="pint" value={discountAmount} onChange={this.handleChargeChange} />
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan="2">Amount Paid</td>
+                                <td colSpan="3">
+                                    {amountPaid}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
 
-                            <div className="modal-footer">
-                                <button type="reset" className="btn btn-default">
-                                    Reset
+                    <div className="modal-footer">
+                        <button type="reset" className="btn btn-default">
+                            Reset
                 </button>
-                                <button type="submit" className="btn btn-info">
-                                    Save changes
+                        <button type="submit" className="btn btn-info">
+                            Save changes
                 </button>
-                            </div>
-                        </form>
-                    </Panel>
-                </div>
-            </div >
+                    </div>
+                </form>
+                <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialogVisible} onHide={() => this.setState({ patientDialogVisible: false })} baseZIndex={50}>
+                    <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} patientName={patientName} />
+                </Dialog>
+            </>
         );
     }
 }

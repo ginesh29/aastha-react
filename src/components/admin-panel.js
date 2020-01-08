@@ -6,7 +6,8 @@ import { Messages } from 'primereact/messages';
 import { repository } from "../common/repository";
 import { Paginator } from 'primereact/paginator';
 import { helper } from "../common/helpers";
-import { ROWS, lookupTypesOptionsEnum } from "../common/constants";
+import { ROWS } from "../common/constants";
+import { lookupTypeEnum } from "../common/enums";
 import { Dialog } from 'primereact/dialog';
 import { Growl } from 'primereact/growl';
 import { NavLink } from 'react-router-dom';
@@ -32,7 +33,7 @@ export default class AdminPanel extends Component {
     }
     getLookups = () => {
         const { first, rows, filterString, sortString, isArchive, lookupType } = this.state;
-        let lookupFilter = `type-equals-{${lookupType || lookupTypesOptionsEnum.DELIVERYTYPE.value}}`
+        let lookupFilter = `type-equals-{${lookupType || lookupTypeEnum.DELIVERYTYPE.value}}`
         let filter = filterString ? `${lookupFilter} and ${filterString}` : `${lookupFilter}`;
         return this.repository.get("lookups", `take=${rows}&skip=${first}&filter=${filter}&sort=${sortString}&isDeleted=${isArchive}`, this.messages)
             .then(res => {
@@ -46,7 +47,7 @@ export default class AdminPanel extends Component {
             })
     }
     componentDidMount = (e) => {
-        this.setState({ lookupTypesOptions: this.helper.enumToObject(lookupTypesOptionsEnum) });
+        this.setState({ lookupTypesOptions: this.helper.enumToObject(lookupTypeEnum) });
         this.getLookups();
     }
 
@@ -130,7 +131,7 @@ export default class AdminPanel extends Component {
         let panelTitle = isArchive ? "Archived Patients" : "Current Patients";
         let action = isArchive ? "restore" : "delete";
         var header = <div className="p-clearfix" style={{ 'lineHeight': '1.87em' }}>{panelTitle}
-            <Dropdown options={lookupTypesOptions} value={lookupType || lookupTypesOptionsEnum.DELIVERYTYPE.value} onChange={this.onChangeLookup} />
+            <Dropdown options={lookupTypesOptions} value={lookupType || lookupTypeEnum.DELIVERYTYPE.value} onChange={this.onChangeLookup} />
             <NavLink to={linkUrl}><Button icon="pi pi-replay" style={{ 'float': 'right' }} /></NavLink> </div>;
         //var footer = "There are " + carCount + ' cars';
         // const editDialogFooter = (
