@@ -103,14 +103,12 @@ export default class OpdForm extends React.Component {
 
   handleReset = e => {
     this.messages.clear();
-    this.setState(this.getInitialState(), () => {
-      console.log(this.state.formFields.patientId)
-    });
+    this.setState(this.getInitialState());
   };
 
   render() {
     const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields;
-    const { patientDialogVisible, patientName } = this.state;
+    const { patientDialogVisible } = this.state;
     return (
       <>
         <Messages ref={(el) => this.messages = el} />
@@ -127,7 +125,7 @@ export default class OpdForm extends React.Component {
             </div>
             <div className="col-md-8">
               <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
-                onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { this.setState({ patientName: e }) }}
+                onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
                 controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback, this.messages)} />
             </div>
           </div>
@@ -154,16 +152,12 @@ export default class OpdForm extends React.Component {
             </div>
           </div>
           <div className="modal-footer">
-            <button type="reset" className="btn btn-default">
-              Reset
-                </button>
-            <button type="submit" className="btn btn-info">
-              Save changes
-                </button>
+            <button type="reset" className="btn btn-default">Reset</button>
+            <button type="submit" className="btn btn-info">Save changes</button>
           </div>
         </form>
         <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialogVisible} onHide={() => this.setState({ patientDialogVisible: false })} baseZIndex={50}>
-          <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} patientName={patientName} />
+          <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} {...this.state} />
         </Dialog>
       </>
     );

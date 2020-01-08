@@ -11,7 +11,6 @@ import { Dialog } from 'primereact/dialog';
 import { Growl } from 'primereact/growl';
 import { NavLink } from 'react-router-dom';
 import PatientForm from "./patient-form";
-//const title = "Patients";
 export default class Patients extends Component {
   constructor(props) {
     super(props);

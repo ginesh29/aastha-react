@@ -28,7 +28,6 @@ export default class PatientForm extends Component {
       mobile: "",
     },
     address: "",
-    addressInput: "",
     isValidationFired: false,
     validationErrors: {}
   })
@@ -130,27 +129,51 @@ export default class PatientForm extends Component {
         })
     }
   }
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   if (nextProps.formFields !== prevState.formFields) {
+  //     return { formFields: nextProps.formFields };
+  //   }
+  //   else return null;
+  // }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevProps.formFields !== this.props.formFields) {
+  //     //Perform some operation here
+  //     this.setState({ formFields: formFields });
+  //   }
+  // }
+  // componentDidUpdate = (prevProps) => {
+  //   if (prevProps.patientName !== this.props.patientName) {
+  //     console.log(this.props.patientName)
+  //     this.setState({ formFields: { firstname: this.props.patientName } })
+  //   }
+  //   //
+  // }
+
   static getDerivedStateFromProps(props, state) {
     console.log(props)
+    //let splitedPatientName = props.patientName.split(" ");
+    //let fields = state.formFields;
+
+    return {
+      formFields: props.selectedPatient
+    }
+
+    // fields.firstname = fields.firstname;
+    // fields.middlename = fields.middlename;
+    // fields.lastname = fields.lastname;
+    // if (splitedPatientName) {
+
+    // }
     // if (props.patientName) {
-    //   let splitedPatientName = props.patientName.split(" ");
-    //   let fields = state.formFields;
-    //   fields.firstname = fields.firstname || splitedPatientName[0];
-    //   fields.middlename = fields.middlename || splitedPatientName[1];
-    //   fields.lastname = fields.lastname || splitedPatientName[2];
-    //   if (splitedPatientName) {
-    //     return {
-    //       formFields: fields
-    //     }
-    //   }
+
     // }
-    // else {
+    // else
     //   return null
-    // }
   }
   render() {
     const { firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
-    const { addressDialogVisible, address, addressInput, addressError } = this.state;
+    const { addressDialogVisible, address, addressError } = this.state;
     let addressDialogFooter = <div className="ui-dialog-buttonpane p-clearfix">
       <Button label="Reset" icon="pi pi-times" className="p-button-secondary" onClick={(e) => this.setState({ address: "", addressError: "" })} />
       <Button label="Save" icon="pi pi-check" onClick={this.saveAddress} />
@@ -182,8 +205,8 @@ export default class PatientForm extends Component {
           <div className="row">
             <div className="col-md-12">
               <InputField name="addressId" title="Address" value={addressId} onChange={this.handleChange}
-                onCreateOption={() => this.setState({ addressDialogVisible: true, address: addressInput, addressError: "" })} {...this.state}
-                controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback, this.messages)} onInputChange={(e) => { this.setState({ addressInput: e }) }} />
+                onCreateOption={() => this.setState({ addressDialogVisible: true, address: address, addressError: "" })} {...this.state}
+                controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback, this.messages)} onInputChange={(e) => { e && this.setState({ address: e }) }} />
             </div>
           </div>
           <div className="modal-footer">
