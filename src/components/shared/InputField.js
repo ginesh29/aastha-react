@@ -40,7 +40,7 @@ export default class InputField extends Component {
       return (
         <div className="form-group">
           <label className="control-label">{title}</label>
-          <AsyncCreatableSelect defaultOptions name={name} defaultValue={value} onCreateOption={onCreateOption} cacheOptions loadOptions={loadOptions} className={finalClassName} isClearable={true} isLoading={true} onChange={onChange} />
+          <AsyncCreatableSelect defaultOptions name={name} value={value} onCreateOption={onCreateOption} cacheOptions loadOptions={loadOptions} className={finalClassName} isClearable={true} isLoading={true} onChange={onChange} />
           <span className="error">{validationErrors[name]}</span>
         </div>
       );

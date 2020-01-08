@@ -130,7 +130,7 @@ export default class PatientForm extends Component {
           </div>
           <div className="row">
             <div className="col-md-12">
-              <InputField name="addressId" title="Address" onChange={this.handleChange} onCreateOption={this.onCreateAddress} {...this.state} controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback, this.messages)} />
+              <InputField name="addressId" title="Address" value={addressId} onChange={this.handleChange} onCreateOption={this.onCreateAddress} {...this.state} controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback, this.messages)} />
             </div>
           </div>
           <div className="modal-footer">
