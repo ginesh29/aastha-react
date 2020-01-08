@@ -43,16 +43,10 @@ export default class LeftMenu extends React.Component {
                                 </a>
                             </li>
                             <li className="sub-menu">
-                                <a href="{}">
+                                <NavLink to="/admin-panel">
                                     <i className="fa fa-th"></i>
                                     <span>Admin Panel</span>
-                                </a>
-                                <ul className="sub">
-                                    <li><a href="basic_table.html">Basic Table</a></li>
-                                    <li><a href="responsive_table.html">Responsive Table</a></li>
-                                    <li><a href="dynamic_table.html">Dynamic Table</a></li>
-                                    <li><a href="editable_table.html">Editable Table</a></li>
-                                </ul>
+                                </NavLink>
                             </li>
                             <li>
                                 <NavLink to="/prescription">

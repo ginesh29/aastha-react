@@ -35,8 +35,9 @@ export default class OpdForm extends React.Component {
     this.messages.clear();
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
+    debugger
     if (action)
-      fields[action.name] = action !== "clear" ? e && e.value : null;
+      fields[action.name] = action !== "clear" ? e && { value: e.value, label: e.label } : null;
     else
       fields[e.target.name] = e.target.value;
     fields.consultCharge = fields.consultCharge ? fields.consultCharge : "";
@@ -99,7 +100,10 @@ export default class OpdForm extends React.Component {
 
   handleReset = e => {
     this.messages.clear();
-    this.setState(this.getInitialState());
+    this.setState(this.getInitialState(), () => {
+      console.log(this.state.formFields.patientId)
+    });
+
   };
 
   render() {
@@ -121,7 +125,7 @@ export default class OpdForm extends React.Component {
                   <InputField name="caseType" title="Case Type" value={caseType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
                 </div>
                 <div className="col-md-8">
-                  <InputField name="patientId" title="Patient" value={patientId} onChange={this.handleChange} {...this.state} controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback, this.messages)} />
+                  <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state} controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback, this.messages)} />
                 </div>
               </div>
               <div className="row">
