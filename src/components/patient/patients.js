@@ -21,7 +21,9 @@ export default class Patients extends Component {
       loading: true,
       filterString: "",
       sortString: "",
+      includeProperties: "Address",
       selectedPatient: null,
+      controller: "patients",
       isArchive: props.location.pathname.includes("archive"),
     };
     this.repository = new repository();
@@ -29,8 +31,8 @@ export default class Patients extends Component {
     this.onRowEdit = this.onRowEdit.bind(this);
   }
   getPatients = () => {
-    const { first, rows, filterString, sortString, isArchive } = this.state;
-    return this.repository.get("patients", `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&isDeleted=${isArchive}`, this.messages)
+    const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
+    return this.repository.get(controller, `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
       .then(res => {
         this.setState({
           first: first,
@@ -93,6 +95,8 @@ export default class Patients extends Component {
     });
   }
   onRowEdit = (row) => {
+    row.addressId = { value: row.address.id, label: row.address.name }
+    delete row.address;
     this.setState({
       editDialogVisible: true,
       selectedPatient: Object.assign({}, row),
@@ -100,9 +104,9 @@ export default class Patients extends Component {
   }
 
   deleteRow = () => {
-    const { patients, selectedPatient, isArchive } = this.state;
+    const { patients, selectedPatient, isArchive, controller } = this.state;
     let flag = isArchive ? false : true;
-    this.repository.delete("patients", `id=${selectedPatient.id}&isDeleted=${flag}`, this.growl, this.messages)
+    this.repository.delete(controller, `id=${selectedPatient.id}&isDeleted=${flag}`, this.growl, this.messages)
       .then(res => {
         this.setState({
           patients: patients.filter(patient => patient.id !== selectedPatient.id),
@@ -110,12 +114,6 @@ export default class Patients extends Component {
           deleteDialogVisible: false
         });
       })
-  }
-  onHideDeleteDialog = () => {
-    this.setState({ deleteDialogVisible: false });
-  }
-  onHideEditDialog = () => {
-    this.setState({ editDialogVisible: false });
   }
   render() {
     const { patients, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialogVisible, editDialogVisible, isArchive } = this.state;
@@ -127,7 +125,7 @@ export default class Patients extends Component {
     const deleteDialogFooter = (
       <div>
         <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
-        <Button label="No" icon="pi pi-times" onClick={this.onHideDeleteDialog} className="p-button-secondary" />
+        <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialogVisible: false })} className="p-button-secondary" />
       </div>
     );
 
@@ -138,18 +136,18 @@ export default class Patients extends Component {
         <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" header={header} onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter} selectionMode="single">
           <Column field="id" header="Id" style={{ "width": "100px" }} sortable={true} filter={true} filterMatchMode="equals" />
           <Column field="fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
-          <Column field="age" header="Age" />
-          <Column field="mobile" header="Mobile" filter={true} filterMatchMode="contains" />
-          <Column field="addressName" header="Address" sortable={true} filter={true} filterMatchMode="contains" />
+          <Column field="age" style={{ "width": "100px" }} header="Age" />
+          <Column field="mobile" style={{ "width": "150px" }} header="Mobile" filter={true} filterMatchMode="contains" />
+          <Column field="address.name" style={{ "width": "150px" }} header="Address" sortable={true} filter={true} filterMatchMode="contains" />
           <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '8em' }} />
         </DataTable>
         <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
 
-        <Dialog header="Confirmation" visible={deleteDialogVisible} footer={deleteDialogFooter} onHide={this.onHideDeleteDialog}>
+        <Dialog header="Confirmation" visible={deleteDialogVisible} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialogVisible: false })}>
           Are you sure you want to {action} this item?
         </Dialog>
 
-        <Dialog header="Edit Patient" visible={editDialogVisible} onHide={this.onHideEditDialog}>
+        <Dialog header="Edit Patient" visible={editDialogVisible} onHide={() => this.setState({ editDialogVisible: false })}>
           <PatientForm {...this.state} />
         </Dialog>
       </>

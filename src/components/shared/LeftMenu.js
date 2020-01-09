@@ -32,8 +32,8 @@ export default class LeftMenu extends React.Component {
                                 </a>
                                 <ul className="sub">
                                     <li><NavLink to="/patients">Manage Patient</NavLink></li>
-                                    <li><a href="buttons.html">Manage Opd</a></li>
-                                    <li><a href="typography.html">Manage Ipd</a></li>
+                                    <li><NavLink to="/opds">Manage Opd</NavLink></li>
+                                    <li><NavLink to="/ipds">Manage Ipd</NavLink></li>
                                 </ul>
                             </li>
                             <li>

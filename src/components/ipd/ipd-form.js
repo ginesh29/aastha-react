@@ -97,7 +97,7 @@ export default class IpdForm extends React.Component {
             item.amount = item.rate && item.days ? item.rate * item.days : "";
             return item;
         });
-
+        redu
         const grandTotal = chargeFormFields.reduce((total, item) => total + Number(item.amount), 0);
         const amountPaid = grandTotal - formFields.discountAmount;
         this.setState({

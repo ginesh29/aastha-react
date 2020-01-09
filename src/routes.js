@@ -11,6 +11,8 @@ import Prescription from "./components/prescription";
 import AdminPanel from "./components/admin-panel";
 import AddOpd from "./components/opd/add-opd";
 import AddIpd from "./components/ipd/add-ipd";
+import Opds from "./components/opd/opds";
+import Ipds from "./components/ipd/ipds";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 
@@ -27,8 +29,10 @@ const routes = (
       <Route path="/archive-patients" component={Patients} />
 
       <Route path="/add-opd" component={AddOpd} />
+      <Route path="/opds" component={Opds} />
 
       <Route path="/add-ipd" component={AddIpd} />
+      <Route path="/ipds" component={Ipds} />
 
       <Route path="/admin-panel" component={AdminPanel} />
 

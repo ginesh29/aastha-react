@@ -20,6 +20,7 @@ export default class PatientForm extends Component {
   }
   getInitialState = () => ({
     formFields: {
+      id: "",
       firstname: "",
       middlename: "",
       lastname: "",
@@ -48,10 +49,11 @@ export default class PatientForm extends Component {
   };
 
   handleSubmit = e => {
-    const { firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
+    const { id, firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
     e.preventDefault();
     if (this.handleValidation()) {
       const patient = {
+        id: id,
         firstname: firstname,
         middlename: middlename,
         lastname: lastname,
@@ -129,48 +131,14 @@ export default class PatientForm extends Component {
         })
     }
   }
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if (nextProps.formFields !== prevState.formFields) {
-  //     return { formFields: nextProps.formFields };
+  // static getDerivedStateFromProps(props, state) {
+  //   if (props.selectedPatient) {
+  //     let selectedPatient = props.selectedPatient;
+  //     return { formFields: selectedPatient }
   //   }
-  //   else return null;
+  //   else
+  //     return null;
   // }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevProps.formFields !== this.props.formFields) {
-  //     //Perform some operation here
-  //     this.setState({ formFields: formFields });
-  //   }
-  // }
-  // componentDidUpdate = (prevProps) => {
-  //   if (prevProps.patientName !== this.props.patientName) {
-  //     console.log(this.props.patientName)
-  //     this.setState({ formFields: { firstname: this.props.patientName } })
-  //   }
-  //   //
-  // }
-
-  static getDerivedStateFromProps(props, state) {
-    console.log(props)
-    //let splitedPatientName = props.patientName.split(" ");
-    //let fields = state.formFields;
-
-    return {
-      formFields: props.selectedPatient
-    }
-
-    // fields.firstname = fields.firstname;
-    // fields.middlename = fields.middlename;
-    // fields.lastname = fields.lastname;
-    // if (splitedPatientName) {
-
-    // }
-    // if (props.patientName) {
-
-    // }
-    // else
-    //   return null
-  }
   render() {
     const { firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
     const { addressDialogVisible, address, addressError } = this.state;
