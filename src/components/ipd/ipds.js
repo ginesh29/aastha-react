@@ -36,21 +36,20 @@ export default class Ipds extends Component {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
         return this.repository.get(controller, `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
             .then(res => {
-                let ipds = res && res.data.map(item => {
-                    let patient = item;
+                res && res.data.map(item => {
                     item.addmissionDate = moment(item.addmissionDate).format(Constants.DATE_FORMAT);
                     item.dischargeDate = moment(item.dishchargeDate).format(Constants.DATE_FORMAT);
                     item.patient = { value: item.patient.id, label: item.patient.fullname };
                     item.bill = item.charges.reduce((total, item) => total + (item.amount ? Number(item.amount) : 0), 0);
                     item.discount = item.discount ? item.discount : "";
                     item.amount = item.bill - item.discount;
-                    return patient;
+                    return item;
                 });
                 this.setState({
                     first: first,
                     rows: rows,
                     totalRecords: res && res.totalCount,
-                    ipds: res && ipds,
+                    ipds: res && res.data,
                     loading: false
                 });
             })

@@ -36,8 +36,7 @@ export default class Opds extends Component {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
         return this.repository.get(controller, `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
             .then(res => {
-                let opds = res && res.data.map(item => {
-                    let patient = item;
+                res && res.data.map(item => {
                     item.consultCharge = item.consultCharge ? item.consultCharge : "";
                     item.usgCharge = item.usgCharge ? item.usgCharge : "";
                     item.uptCharge = item.uptCharge ? item.uptCharge : "";
@@ -46,14 +45,14 @@ export default class Opds extends Component {
                     item.date = moment(item.date).format(Constants.DATE_FORMAT);
                     item.patient = { value: item.patient.id, label: item.patient.fullname }
                     let totalCharge = Number(item.consultCharge) + Number(item.usgCharge) + Number(item.uptCharge) + Number(item.injectionCharge) + Number(item.otherCharge);
-                    patient["totalCharge"] = totalCharge > 0 && totalCharge;
-                    return patient;
+                    item.totalCharge = totalCharge > 0 && totalCharge;
+                    return item;
                 });
                 this.setState({
                     first: first,
                     rows: rows,
                     totalRecords: res && res.totalCount,
-                    patients: res && opds,
+                    patients: res && res.data,
                     loading: false
                 });
             })
