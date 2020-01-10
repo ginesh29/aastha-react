@@ -72,9 +72,9 @@ export default class LeftMenu extends React.Component {
                                     <span>Report</span>
                                 </a>
                                 <ul className="sub">
-                                    <li><a href="mail.html">Opd Report</a></li>
-                                    <li><a href="mail_compose.html">Ipd Report</a></li>
-                                    <li><a href="mail_view.html">Monthly Ipd Report</a></li>
+                                    <li><NavLink to="/opd-report">Opd Report</NavLink></li>
+                                    <li><NavLink to="/ipd-report">Ipd Report</NavLink></li>
+                                    <li><NavLink to="/monthly-ipd-report">Monthly Ipd Report</NavLink></li>
                                 </ul>
                             </li>
                         </ul>

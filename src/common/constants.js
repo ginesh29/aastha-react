@@ -1,6 +1,5 @@
 export const BASE_API_URL = "http://localhost:61194/api";
 export const ROWS = 10;
-export const DATE_FORMAT = "DD/MM/YYYY";
 
 //Title
 export const PATIENT_REGISTRATION_TITLE = "Patient Registration";

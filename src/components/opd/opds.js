@@ -10,8 +10,6 @@ import { ROWS } from "../../common/constants";
 import { Dialog } from 'primereact/dialog';
 import { Growl } from 'primereact/growl';
 import { NavLink } from 'react-router-dom';
-import * as Constants from "../../common/constants";
-import moment from 'moment';
 
 export default class Opds extends Component {
     constructor(props) {
@@ -42,7 +40,7 @@ export default class Opds extends Component {
                     item.uptCharge = item.uptCharge ? item.uptCharge : "";
                     item.injectionCharge = item.injectionCharge ? item.injectionCharge : "";
                     item.otherCharge = item.otherCharge ? item.otherCharge : "";
-                    item.date = moment(item.date).format(Constants.DATE_FORMAT);
+                    item.formatedDate = this.helper.formatDate(item.date);
                     item.patient = { value: item.patient.id, label: item.patient.fullname }
                     let totalCharge = Number(item.consultCharge) + Number(item.usgCharge) + Number(item.uptCharge) + Number(item.injectionCharge) + Number(item.otherCharge);
                     item.totalCharge = totalCharge > 0 && totalCharge;
@@ -151,14 +149,14 @@ export default class Opds extends Component {
                     <Column field="id" header="Invoice Id" style={{ "width": "120px" }} sortable={true} filter={true} filterMatchMode="equals" />
                     <Column field="invoiceNo" header="Outdoor No." style={{ "width": "150px" }} sortable={true} filter={true} filterMatchMode="equals" />
                     <Column field="patient.label" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
-                    <Column field="date" style={{ "width": "150px" }} header="Opd Date" />
+                    <Column field="formatedDate" style={{ "width": "150px" }} header="Opd Date" />
                     <Column field="caseTypeName" style={{ "width": "100px" }} header="Type" filter={true} filterMatchMode="contains" />
                     <Column field="consultCharge" style={{ "width": "100px" }} header="Cons" sortable={true} filter={true} filterMatchMode="contains" />
                     <Column field="usgCharge" style={{ "width": "100px" }} header="USG" sortable={true} filter={true} filterMatchMode="contains" />
                     <Column field="uptCharge" style={{ "width": "100px" }} header="UPT" sortable={true} filter={true} filterMatchMode="contains" />
                     <Column field="injectionCharge" style={{ "width": "100px" }} header="Inj" sortable={true} filter={true} filterMatchMode="contains" />
                     <Column field="otherCharge" style={{ "width": "100px" }} header="Other" sortable={true} filter={true} filterMatchMode="contains" />
-                    <Column field="totalCharge" style={{ "width": "100px" }} header="Other" sortable={true} filter={true} filterMatchMode="contains" />
+                    <Column field="totalCharge" style={{ "width": "100px" }} header="Total" sortable={true} filter={true} filterMatchMode="contains" />
                     <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '8em' }} />
                 </DataTable>
                 <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>

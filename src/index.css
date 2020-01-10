@@ -13,15 +13,15 @@ form .p-multiselect {
 .p-autocomplete.error input,
 .p-multiselect.error,
 .p-dropdown.error,
-.eroor .css-yk16xz-control{
+.eroor .css-yk16xz-control {
   border: 1px solid #ff0000 !important;
   background-color: #ffeeee !important;
 }
 .p-dropdown.error .p-inputtext {
   background-color: #ffeeee !important;
 }
-.p-multiselect .p-multiselect-trigger { 
-  background-color:transparent !important;
+.p-multiselect .p-multiselect-trigger {
+  background-color: transparent !important;
 }
 .p-growl {
   z-index: 9999 !important;
@@ -42,9 +42,44 @@ form .p-multiselect {
   box-shadow: 0 0 0 0.2em #8dcdff !important;
   border-color: #007ad9 !important;
 } */
-#prescription .p-panel-content{
-  background:#FFFCAB !important;
+#prescription .p-panel-content {
+  background: #fffcab !important;
 }
 .p-paginator .p-highlight {
   pointer-events: none !important;
 }
+
+.reportTable > thead > tr > th,
+.reportTable > tbody > tr > th,
+.reportTable > tfoot > tr > th,
+.reportTable > thead > tr > td,
+.reportTable > tbody > tr > td,
+.reportTable > tfoot > tr > td {
+  padding: 4px;
+}
+
+.reportTable thead tr th {
+  font-size: 12px;
+}
+
+.reportTable td {
+  font-size: 12px;
+}
+
+.reportTable tbody {
+  background-color: white;
+}
+.report-group-title {
+  font-weight: bold;
+}
+.report-footer {
+  font-weight: bold;
+  text-decoration: underline;
+}
+/* .copyButton {
+  background: #ff0000;
+}
+
+
+
+*/

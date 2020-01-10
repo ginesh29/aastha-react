@@ -10,8 +10,6 @@ import { ROWS } from "../../common/constants";
 import { Dialog } from 'primereact/dialog';
 import { Growl } from 'primereact/growl';
 import { NavLink } from 'react-router-dom';
-import * as Constants from "../../common/constants";
-import moment from 'moment';
 
 export default class Ipds extends Component {
     constructor(props) {
@@ -37,8 +35,8 @@ export default class Ipds extends Component {
         return this.repository.get(controller, `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
             .then(res => {
                 res && res.data.map(item => {
-                    item.addmissionDate = moment(item.addmissionDate).format(Constants.DATE_FORMAT);
-                    item.dischargeDate = moment(item.dishchargeDate).format(Constants.DATE_FORMAT);
+                    item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
+                    item.formatedDischargeDate = this.helper.formatDate(item.dischargeDate);
                     item.patient = { value: item.patient.id, label: item.patient.fullname };
                     item.bill = item.charges.reduce((total, item) => total + (item.amount ? Number(item.amount) : 0), 0);
                     item.discount = item.discount ? item.discount : "";
@@ -148,8 +146,8 @@ export default class Ipds extends Component {
                     <Column field="uniqueId" header="Ipd Id" style={{ "width": "120px" }} sortable={true} filter={true} filterMatchMode="equals" />
                     <Column field="patient.label" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
                     <Column field="ipdType" style={{ "width": "150px" }} header="Type" />
-                    <Column field="addmissionDate" style={{ "width": "150px" }} header="Add. Date" filter={true} filterMatchMode="contains" />
-                    <Column field="dischargeDate" style={{ "width": "150px" }} header="Dis. Date" sortable={true} filter={true} filterMatchMode="contains" />
+                    <Column field="formatedAddmissionDate" style={{ "width": "150px" }} header="Add. Date" filter={true} filterMatchMode="contains" />
+                    <Column field="formatedDischargeDate" style={{ "width": "150px" }} header="Dis. Date" sortable={true} filter={true} filterMatchMode="contains" />
                     <Column field="bill" style={{ "width": "100px" }} header="Bill" sortable={true} filter={true} filterMatchMode="contains" />
                     <Column field="discount" style={{ "width": "100px" }} header="Conc." sortable={true} filter={true} filterMatchMode="contains" />
                     <Column field="amount" style={{ "width": "120px" }} header="Amount" sortable={true} filter={true} filterMatchMode="contains" />

@@ -13,6 +13,8 @@ import AddOpd from "./components/opd/add-opd";
 import AddIpd from "./components/ipd/add-ipd";
 import Opds from "./components/opd/opds";
 import Ipds from "./components/ipd/ipds";
+import OpdReport from "./components/report/opd-report";
+import IpdReport from "./components/report/ipd-report";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 
@@ -37,6 +39,9 @@ const routes = (
       <Route path="/admin-panel" component={AdminPanel} />
 
       <Route path="/prescription" component={Prescription} />
+
+      <Route path="/opd-report" component={OpdReport} />
+      <Route path="/ipd-report" component={IpdReport} />
     </MainLayout>
   </BrowserRouter>
 );
