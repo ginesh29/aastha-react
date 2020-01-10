@@ -25,7 +25,7 @@ export default class IpdReport extends Component
             filterString: "",
             sortString: "id asc",
             controller: "ipds",
-            includeProperties: "Patient,Charges",
+            includeProperties: "Patient,Charges.ChargeDetail",
         };
         this.repository = new repository();
         this.helper = new helper();
@@ -67,7 +67,6 @@ export default class IpdReport extends Component
         const month = this.helper.getMonthFromDate();
         const year = this.helper.getYearFromDate();
         const date = this.helper.formatDate("08/31/2018", "en-US");
-        console.log(date);
         const filter = `disChargeDate-equals-{${ date }}`
         this.setState({ filterString: filter }, () =>
         {
@@ -106,7 +105,6 @@ export default class IpdReport extends Component
                             {
                                 let dischargeDate = item;
                                 let ipd = ipds[item]
-                                console.log(ipd)
                                 let patientGroupCount = ipd.length
                                 return (
                                     <React.Fragment key={`fragement${ index }`}>
