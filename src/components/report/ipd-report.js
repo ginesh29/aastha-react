@@ -4,20 +4,9 @@ import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
 import { lookupTypeEnum } from "../../common/enums";
 import _ from 'lodash';
-import shortid from 'shortid';
 
-let patientCount = 0;
-let consultChargeTotal = 0;
-let usgChargeTotal = 0;
-let uptChargeTotal = 0;
-let injectionChargeTotal = 0;
-let otherChargeTotal = 0;
-let amountChargeTotal = 0;
-
-export default class IpdReport extends Component
-{
-    constructor(props)
-    {
+export default class IpdReport extends Component {
+    constructor(props) {
         super(props);
         this.state = {
             ipds: [],
@@ -25,59 +14,50 @@ export default class IpdReport extends Component
             filterString: "",
             sortString: "id asc",
             controller: "ipds",
-            includeProperties: "Patient,Charges",
+            includeProperties: "Patient,Charges.ChargeDetail",
         };
         this.repository = new repository();
         this.helper = new helper();
     }
-    getIpds = () =>
-    {
+    getIpds = () => {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-        return this.repository.get(controller, `filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`, this.messages)
-            .then(res =>
-            {
-                res && res.data.map(item =>
-                {
+        return this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
+            .then(res => {
+                res && res.data.map(item => {
                     item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
                     item.formatedDischargeDate = this.helper.formatDate(item.dischargeDate);
                     item.fullname = item.patient.fullname
+                    item.charges = _.groupBy(item.charges, 'lookupId');
                     return item;
                 });
-                var result = _.groupBy(res.data, "formatedDischargeDate")
                 this.setState({
                     first: first,
                     rows: rows,
                     totalRecords: res && res.totalCount,
-                    ipds: result,
+                    ipds: res && res.data,
                     loading: false
                 });
             })
     }
-    // getCharges = () =>
-    // {
-    //     this.repository.get("lookups", `filter=type-equals-{${ lookupTypeEnum.CHARGENAME.value }}`, this.messages).then(res =>
-    //     {
-    //         let charges = res && res.data;
-    //         this.setState({ charges: charges, chargesCount: charges.length });
-    //     })
-    // }
-    componentDidMount = (e) =>
-    {
-        //this.getCharges();
+    getCharges = () => {
+        this.repository.get("lookups", `filter=type-equals-{${lookupTypeEnum.CHARGENAME.value}}`, this.messages).then(res => {
+            let charges = res && res.data;
+            this.setState({ chargeNames: charges });
+        })
+    }
+    componentDidMount = (e) => {
+        this.getCharges();
         const month = this.helper.getMonthFromDate();
         const year = this.helper.getYearFromDate();
-        const date = this.helper.formatDate("08/31/2018", "en-US");
-        console.log(date);
-        const filter = `disChargeDate-equals-{${ date }}`
-        this.setState({ filterString: filter }, () =>
-        {
+        const date = this.helper.formatDate("11/01/2020", "en-US");
+        const filter = `DischargeDate-equals-{${date}}`
+        this.setState({ filterString: filter }, () => {
             this.getIpds();
         })
     }
 
-    render()
-    {
-        const { ipds, charges, chargesCount } = this.state;
+    render() {
+        const { ipds, charges, chargesCount, chargeNames } = this.state;
         return (
             <>
                 <Messages ref={(el) => this.messages = el} />
@@ -89,10 +69,9 @@ export default class IpdReport extends Component
                             <th>IPD Type</th>
                             <th>Adm. Date</th>
                             {
-                                charges && charges.map((c, i) =>
-                                {
+                                chargeNames && chargeNames.map((key, i) => {
                                     return (
-                                        <th key={shortid.generate()}>{i + 1}</th>
+                                        <th key={i}>{key.name.substring(0, 4)}.</th>
                                     )
                                 })
                             }
@@ -102,35 +81,50 @@ export default class IpdReport extends Component
                     </thead>
                     <tbody>
                         {
-                            Object.keys(ipds).map((item, index) =>
-                            {
-                                let dischargeDate = item;
-                                let ipd = ipds[item]
-                                console.log(ipd)
-                                let patientGroupCount = ipd.length
+                            ipds.map(subitem => {
                                 return (
-                                    <React.Fragment key={`fragement${ index }`}>
-                                        <tr className="report-group-title">
-                                            <td colSpan={(chargesCount + 6 - 10)} className="text-center">Date: {dischargeDate}</td>
-                                            <td colSpan="10" className="text-center">{patientGroupCount} Patients</td>
-                                        </tr>
+                                    <tr key={`subitem${subitem.uniqueId}`}>
+                                        <td>{subitem.uniqueId}</td>
+                                        <td>{subitem.uniqueId}</td>
+                                        <td>{subitem.fullname}</td>
+                                        <td>{subitem.ipdType}</td>
+                                        <td>{subitem.formatedDischargeDate}</td>
                                         {
-                                            ipd.map((subitem, i) =>
-                                            {
+                                            chargeNames && chargeNames.map((key, i) => {
                                                 return (
-                                                    <tr key={`subitem${ subitem.uniqueId }`}>
-                                                        <td>{subitem.uniqueId}</td>
-                                                        <td>{subitem.fullname}</td>
-                                                        <td>{subitem.ipdType}</td>
-                                                        <td>{subitem.formatedAddmissionDate}</td>
-
-                                                    </tr>
+                                                    <td key={i} > {1}</td>
                                                 )
                                             })
                                         }
-                                    </React.Fragment>
+                                    </tr>
                                 )
                             })
+                            // Object.keys(ipds).map((item, index) => {
+                            //     let dischargeDate = item;
+                            //     let ipd = ipds[item]
+                            //     let patientGroupCount = ipd.length
+                            //     return (
+                            //         <React.Fragment key={`fragement${index}`}>
+                            //             <tr className="report-group-title">
+                            //                 <td colSpan="8" className="text-center">Date: {dischargeDate}</td>
+                            //                 <td colSpan="10" className="text-center">{patientGroupCount} Patients</td>
+                            //             </tr>
+                            //             {
+                            //                 ipd.map((subitem, i) => {
+                            //                     return (
+                            //                         <tr key={`subitem${subitem.uniqueId}`}>
+                            //                             <td>{subitem.uniqueId}</td>
+                            //                             <td>{subitem.fullname}</td>
+                            //                             <td>{subitem.ipdType}</td>
+                            //                             <td>{subitem.formatedAddmissionDate}</td>
+
+                            //                         </tr>
+                            //                     )
+                            //                 })
+                            //             }
+                            //         </React.Fragment>
+                            //     )
+                            // })
                         }
                     </tbody>
                     {/* <tbody>

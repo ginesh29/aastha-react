@@ -120,13 +120,13 @@ export default class IpdForm extends React.Component {
                 return { lookupId: item };
             });
             const deliveryDetail = {
-                date: deliveryDate,
+                date: this.helper.formatDate(deliveryDate),
                 time: moment(deliveryTime).format("HH:mm"),
                 gender: babyGender,
                 babyWeight: babyWeight
             }
             const operationDetail = {
-                date: operationDate
+                date: this.helper.formatDate(operationDate)
             }
             const charges = chargeFormFields.filter(item => item.rate !== "" && item.day !== "")
             const ipd = {
@@ -134,8 +134,8 @@ export default class IpdForm extends React.Component {
                 type: departmentType.value,
                 roomType: roomType,
                 patientId: patientId.value,
-                addmissionDate: addmissionDate,
-                dischargeDate: dischargeDate,
+                addmissionDate: this.helper.formatDate(addmissionDate),
+                dischargeDate: this.helper.formatDate(dischargeDate),
                 deliveryDetail: departmentType === departmentTypeEnum.DELIVERY ? deliveryDetail : null,
                 operationDetail: departmentType === departmentTypeEnum.OPERATION ? operationDetail : null,
                 ipdLookups: ipdLookups,
@@ -232,19 +232,20 @@ export default class IpdForm extends React.Component {
     };
 
     bindLookups = e => {
-        this.repository.get("lookups", "", this.messages).then(res => {
+        this.repository.get("lookups", "filter=type-neq-{0}", this.messages).then(res => {
 
             let lookups = res && res.data.map(function (item) {
                 return { value: item["id"], label: item["name"], type: item["type"] };
             });
             if (res) {
+
                 let typesofDeliveryOptions = lookups.filter(l => l.type === lookupTypeEnum.DELIVERYTYPE.value);
                 let deliveryDiganosisOptions = lookups.filter(l => l.type === lookupTypeEnum.DELIVERYDIAGNOSIS.value);
                 let operationDiagnosisOptions = lookups.filter(l => l.type === lookupTypeEnum.OPERATIONDIAGNOSIS.value);
                 let typesofOprationOptions = lookups.filter(l => l.type === lookupTypeEnum.OPERATIONTYPE.value);
                 let generalDiagnosisOptions = lookups.filter(l => l.type === lookupTypeEnum.GENERALDIAGNOSIS.value);
                 let chargeNames = lookups.filter(l => l.type === lookupTypeEnum.CHARGENAME.value);
-
+                console.log(chargeNames)
                 this.setState({ typesofDeliveryOptions: typesofDeliveryOptions });
                 this.setState({ deliveryDiganosisOptions: deliveryDiganosisOptions });
                 this.setState({ operationDiagnosisOptions: operationDiagnosisOptions });
