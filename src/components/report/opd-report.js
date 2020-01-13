@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Messages } from 'primereact/messages';
 import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
+import { OverlayPanel } from 'primereact/overlaypanel';
+import { Button } from 'primereact/button';
 import _ from 'lodash';
 
 let patientCount = 0;
@@ -47,12 +49,12 @@ export default class OpdReport extends Component
                     item.totalCharge = totalCharge > 0 && totalCharge;
                     return item;
                 });
-                var result = _.groupBy(res.data, "formatedOpdDate")
+                res.data = _.groupBy(res.data, "formatedOpdDate")
                 this.setState({
                     first: first,
                     rows: rows,
                     totalRecords: res && res.totalCount,
-                    opds: result,
+                    opds: res && res.data,
                     loading: false
                 });
             })
@@ -76,6 +78,7 @@ export default class OpdReport extends Component
         return (
             <>
                 <Messages ref={(el) => this.messages = el} />
+                <Button type="button" label="Toggle" onClick={(e) => this.op.toggle(e)} />
                 <table className="table table-bordered reportTable">
                     <thead>
                         <tr>
@@ -128,12 +131,12 @@ export default class OpdReport extends Component
                                                         <td>{subitem.invoiceNo}</td>
                                                         <td>{subitem.fullname}</td>
                                                         <td>{subitem.caseTypeName}</td>
-                                                        <td>{subitem.consultCharge}</td>
-                                                        <td>{subitem.usgCharge}</td>
-                                                        <td>{subitem.uptCharge}</td>
-                                                        <td>{subitem.injectionCharge}</td>
-                                                        <td>{subitem.otherCharge}</td>
-                                                        <td>{subitem.totalCharge}</td>
+                                                        <td className="text-right">{subitem.consultCharge ? subitem.consultCharge : 0}</td>
+                                                        <td className="text-right">{subitem.usgCharge ? subitem.usgCharge : 0}</td>
+                                                        <td className="text-right">{subitem.uptCharge ? subitem.uptCharge : 0}</td>
+                                                        <td className="text-right">{subitem.injectionCharge ? subitem.injectionCharge : 0}</td>
+                                                        <td className="text-right">{subitem.otherCharge ? subitem.otherCharge : 0}</td>
+                                                        <td className="text-right">{subitem.totalCharge ? subitem.totalCharge : 0}</td>
                                                     </tr>
                                                 )
                                             })
@@ -141,12 +144,12 @@ export default class OpdReport extends Component
                                         <tr className="report-group-title">
                                             <td colSpan="3"></td>
                                             <td className="text-right">Total</td>
-                                            <td>{consultGroupTotal}</td>
-                                            <td>{usgGroupTotal}</td>
-                                            <td>{uptGroupTotal}</td>
-                                            <td>{injectionGroupTotal}</td>
-                                            <td>{otherGroupTotal}</td>
-                                            <td>{amountGroupTotal}</td>
+                                            <td className="text-right">{consultGroupTotal}</td>
+                                            <td className="text-right">{usgGroupTotal}</td>
+                                            <td className="text-right">{uptGroupTotal}</td>
+                                            <td className="text-right">{injectionGroupTotal}</td>
+                                            <td className="text-right">{otherGroupTotal}</td>
+                                            <td className="text-right">{amountGroupTotal}</td>
                                         </tr>
 
                                     </React.Fragment>
@@ -175,6 +178,51 @@ export default class OpdReport extends Component
                             )}
                     </tfoot>
                 </table>
+                <OverlayPanel ref={(el) => this.op = el}>
+                    <label> Opd Report Summary</label>
+                    <table className="table table-bordered reportTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>No of Patients</th>
+                                <th>Total Collection</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                Object.keys(opds).map((item, index) =>
+                                {
+                                    let opdDate = item;
+                                    let opd = opds[item]
+                                    let patientGroupCount = opd.length
+                                    let amountGroupTotal = opds[item].reduce((total, item) => total + Number(item.totalCharge), 0)
+                                    return (
+                                        <tr key={`summaryRow${ index }`}>
+                                            <td>{opdDate}</td>
+                                            <td className="text-right">{patientGroupCount}</td>
+                                            <td className="text-right">{amountGroupTotal}</td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                        <tfoot className="report-footer">
+                            {opds && opds.length ?
+                                (
+                                    <tr>
+                                        <td colSpan="11" className="text-left">No Record Found</td>
+                                    </tr>
+                                ) :
+                                (
+                                    <tr className="report-group-title">
+                                        <td>Grand Total</td>
+                                        <td className="text-right">{patientCount}</td>
+                                        <td className="text-right">{amountChargeTotal}</td>
+                                    </tr>
+                                )}
+                        </tfoot>
+                    </table>
+                </OverlayPanel>
             </>
         );
     }
