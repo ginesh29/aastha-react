@@ -14,10 +14,8 @@ let injectionChargeTotal = 0;
 let otherChargeTotal = 0;
 let amountChargeTotal = 0;
 
-export default class OpdReport extends Component
-{
-    constructor(props)
-    {
+export default class OpdReport extends Component {
+    constructor(props) {
         super(props);
         this.state = {
             opds: [],
@@ -30,14 +28,11 @@ export default class OpdReport extends Component
         this.repository = new repository();
         this.helper = new helper();
     }
-    getOpds = () =>
-    {
+    getOpds = () => {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-        return this.repository.get(controller, `filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`, this.messages)
-            .then(res =>
-            {
-                res && res.data.map(item =>
-                {
+        return this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
+            .then(res => {
+                res && res.data.map(item => {
                     item.consultCharge = item.consultCharge ? item.consultCharge : "";
                     item.usgCharge = item.usgCharge ? item.usgCharge : "";
                     item.uptCharge = item.uptCharge ? item.uptCharge : "";
@@ -49,7 +44,6 @@ export default class OpdReport extends Component
                     item.totalCharge = totalCharge > 0 && totalCharge;
                     return item;
                 });
-                res.data = _.groupBy(res.data, "formatedOpdDate")
                 this.setState({
                     first: first,
                     rows: rows,
@@ -59,22 +53,22 @@ export default class OpdReport extends Component
                 });
             })
     }
-    componentDidMount = (e) =>
-    {
-        const month = this.helper.getMonthFromDate();
-        const year = this.helper.getYearFromDate();
-        // const date = this.helper.formatDate("09/03/2018", "en-US");
-        // console.log(date);
-        const filter = `Date.Month-equals-{${ month }} and Date.Year-equals-{${ year }}`
-        this.setState({ filterString: filter }, () =>
-        {
-            this.getOpds();
-        })
+    componentDidMount = (e) => {
+        // const month = this.helper.getMonthFromDate();
+        // const year = this.helper.getYearFromDate();
+        // // const date = this.helper.formatDate("09/03/2018", "en-US");
+        // // console.log(date);
+        // const filter = `Date.Month-equals-{${ month }} and Date.Year-equals-{${ year }}`
+        // this.setState({ filterString: filter }, () =>
+        // {
+        //     this.getOpds();
+        // })
+        this.getOpds();
     }
 
-    render()
-    {
+    render() {
         const { opds } = this.state;
+        let opdData = _.groupBy(opds, "formatedOpdDate")
         return (
             <>
                 <Messages ref={(el) => this.messages = el} />
@@ -96,18 +90,17 @@ export default class OpdReport extends Component
                     </thead>
                     <tbody>
                         {
-                            Object.keys(opds).map((item, index) =>
-                            {
+                            Object.keys(opdData).map((item, index) => {
                                 let opdDate = item;
-                                let opd = opds[item]
+                                let opd = opdData[item]
                                 let patientGroupCount = opd.length
 
-                                let consultGroupTotal = opds[item].reduce((total, item) => total + Number(item.consultCharge), 0)
-                                let usgGroupTotal = opds[item].reduce((total, item) => total + Number(item.usgCharge), 0)
-                                let uptGroupTotal = opds[item].reduce((total, item) => total + Number(item.uptCharge), 0)
-                                let injectionGroupTotal = opds[item].reduce((total, item) => total + Number(item.injectionCharge), 0)
-                                let otherGroupTotal = opds[item].reduce((total, item) => total + Number(item.otherCharge), 0)
-                                let amountGroupTotal = opds[item].reduce((total, item) => total + Number(item.totalCharge), 0)
+                                let consultGroupTotal = opdData[item].reduce((total, item) => total + Number(item.consultCharge), 0)
+                                let usgGroupTotal = opdData[item].reduce((total, item) => total + Number(item.usgCharge), 0)
+                                let uptGroupTotal = opdData[item].reduce((total, item) => total + Number(item.uptCharge), 0)
+                                let injectionGroupTotal = opdData[item].reduce((total, item) => total + Number(item.injectionCharge), 0)
+                                let otherGroupTotal = opdData[item].reduce((total, item) => total + Number(item.otherCharge), 0)
+                                let amountGroupTotal = opdData[item].reduce((total, item) => total + Number(item.totalCharge), 0)
 
                                 patientCount = patientCount + patientGroupCount;
                                 consultChargeTotal = consultChargeTotal + consultGroupTotal;
@@ -117,16 +110,15 @@ export default class OpdReport extends Component
                                 otherChargeTotal = otherChargeTotal + otherGroupTotal;
                                 amountChargeTotal = amountChargeTotal + amountGroupTotal;
                                 return (
-                                    <React.Fragment key={`fragement${ index }`}>
+                                    <React.Fragment key={`fragement${index}`}>
                                         <tr className="report-group-title">
                                             <td colSpan="4" className="text-center">Date: {opdDate}</td>
                                             <td colSpan="6" className="text-center">{patientGroupCount} Patients</td>
                                         </tr>
                                         {
-                                            opd.map((subitem, i) =>
-                                            {
+                                            opd.map((subitem, i) => {
                                                 return (
-                                                    <tr key={`subitem${ subitem.id }`}>
+                                                    <tr key={`subitem${subitem.id}`}>
                                                         <td>{subitem.id}</td>
                                                         <td>{subitem.invoiceNo}</td>
                                                         <td>{subitem.fullname}</td>
@@ -158,7 +150,7 @@ export default class OpdReport extends Component
                         }
                     </tbody>
                     <tfoot className="report-footer">
-                        {opds && opds.length ?
+                        {opdData && opdData.length ?
                             (
                                 <tr>
                                     <td colSpan="11" className="text-left">No Record Found</td>
@@ -166,14 +158,14 @@ export default class OpdReport extends Component
                             ) :
                             (
                                 <tr className="report-group-title">
-                                    <td colSpan="3">{patientCount} Patients</td>
+                                    <td colSpan="3">{patientCount}Patients</td>
                                     <td className="text-right">Grand Total</td>
-                                    <td>{consultChargeTotal}</td>
-                                    <td>{usgChargeTotal}</td>
-                                    <td>{uptChargeTotal}</td>
-                                    <td>{injectionChargeTotal}</td>
-                                    <td>{otherChargeTotal}</td>
-                                    <td>{amountChargeTotal}</td>
+                                    <td className="text-right">{consultChargeTotal}</td>
+                                    <td className="text-right">{usgChargeTotal}</td>
+                                    <td className="text-right">{uptChargeTotal}</td>
+                                    <td className="text-right">{injectionChargeTotal}</td>
+                                    <td className="text-right">{otherChargeTotal}</td>
+                                    <td className="text-right">{amountChargeTotal}</td>
                                 </tr>
                             )}
                     </tfoot>
@@ -190,14 +182,13 @@ export default class OpdReport extends Component
                         </thead>
                         <tbody>
                             {
-                                Object.keys(opds).map((item, index) =>
-                                {
+                                Object.keys(opdData).map((item, index) => {
                                     let opdDate = item;
-                                    let opd = opds[item]
+                                    let opd = opdData[item]
                                     let patientGroupCount = opd.length
-                                    let amountGroupTotal = opds[item].reduce((total, item) => total + Number(item.totalCharge), 0)
+                                    let amountGroupTotal = opd.reduce((total, item) => total + Number(item.totalCharge), 0)
                                     return (
-                                        <tr key={`summaryRow${ index }`}>
+                                        <tr key={`summaryRow${index}`}>
                                             <td>{opdDate}</td>
                                             <td className="text-right">{patientGroupCount}</td>
                                             <td className="text-right">{amountGroupTotal}</td>
@@ -207,7 +198,7 @@ export default class OpdReport extends Component
                             }
                         </tbody>
                         <tfoot className="report-footer">
-                            {opds && opds.length ?
+                            {opdData && opdData.length ?
                                 (
                                     <tr>
                                         <td colSpan="11" className="text-left">No Record Found</td>
