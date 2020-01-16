@@ -66,7 +66,7 @@ export default class MonthlyIpdReport extends Component
 
     render()
     {
-        const { ipds,  chargeNames } = this.state;
+        const { ipds, chargeNames } = this.state;
         let ipdData;
         //let chargesColumns;
         let amount = 0;
@@ -80,14 +80,14 @@ export default class MonthlyIpdReport extends Component
                     let obj = item.charges.filter(item => item.lookupId === key.id)[0];
                     amount = obj && obj.amount;
                     hash[chargeName] = amount ? Number(amount) : 0;
-                    hash.amount = _.sumBy(item.charges, x => x.amount);                  
+                    hash.amount = _.sumBy(item.charges, x => x.amount);
                     return hash;
                 }, item);
                 delete item.charges;
                 return item;
             });
-            
-            ipdData=mapWithCharge;
+
+            ipdData = mapWithCharge;
             console.log(ipdData)
             // let ipdGroupByDate = _.groupBy(mapWithCharge, "formatedDischargeDate");
             // ipdData = _.map(ipdGroupByDate, (items, key) => 
