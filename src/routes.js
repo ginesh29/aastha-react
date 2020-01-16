@@ -15,6 +15,7 @@ import Opds from "./components/opd/opds";
 import Ipds from "./components/ipd/ipds";
 import OpdReport from "./components/report/opd-report";
 import IpdReport from "./components/report/ipd-report";
+import MonthlyIpdReport from "./components/report/monthly-ipd-report";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 
@@ -42,6 +43,7 @@ const routes = (
 
       <Route path="/opd-report" component={OpdReport} />
       <Route path="/ipd-report" component={IpdReport} />
+      <Route path="/monthly-ipd-report" component={MonthlyIpdReport} />
     </MainLayout>
   </BrowserRouter>
 );

@@ -33,7 +33,7 @@ export default class AdminPanel extends Component {
     }
     getLookups = () => {
         const { first, rows, filterString, sortString, isArchive, lookupType } = this.state;
-        let lookupFilter = `type-equals-{${lookupType || lookupTypeEnum.DELIVERYTYPE.value}}`
+        let lookupFilter = `type-eq-{${lookupType || lookupTypeEnum.DELIVERYTYPE.value}}`
         let filter = filterString ? `${lookupFilter} and ${filterString}` : `${lookupFilter}`;
         return this.repository.get("lookups", `take=${rows}&skip=${first}&filter=${filter}&sort=${sortString}&isDeleted=${isArchive}`, this.messages)
             .then(res => {
@@ -154,7 +154,6 @@ export default class AdminPanel extends Component {
                         <Growl ref={(el) => this.growl = el} />
                         <Messages ref={(el) => this.messages = el} />
                         <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" header={header} onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter} selectionMode="single">
-                            {/* <Column field="id" header="Id" style={{ "width": "100px" }} sortable={true} filter={true} filterMatchMode="equals" /> */}
                             <Column field="name" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
                             <Column field="type" header="Age" />
                             <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '8em' }} />

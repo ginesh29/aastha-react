@@ -3,13 +3,15 @@ import { Messages } from 'primereact/messages';
 import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
 import { lookupTypeEnum } from "../../common/enums";
+import { OverlayPanel } from 'primereact/overlaypanel';
+import { Button } from 'primereact/button';
 import _ from 'lodash';
 
-let patientCount = 0;
-let chargeTotal = {};
-let amountTotal = 0;
-export default class IpdReport extends Component {
-    constructor(props) {
+let chargeTotal = 0;
+export default class IpdReport extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
             ipds: [],
@@ -22,11 +24,15 @@ export default class IpdReport extends Component {
         this.repository = new repository();
         this.helper = new helper();
     }
-    getIpds = () => {
-        const { first, rows, filterString, sortString, includeProperties, controller, chargeNames } = this.state;
-        return this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
-            .then(res => {
-                res && res.data.map(item => {
+    getIpds = () =>
+    {
+        const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
+        return this.repository.get(controller, `filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`, this.messages)
+            .then(res =>
+            {
+                this.getCharges();
+                res && res.data.map(item =>
+                {
                     item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
                     item.formatedDischargeDate = this.helper.formatDate(item.dischargeDate);
                     item.fullname = item.patient.fullname;
@@ -41,66 +47,73 @@ export default class IpdReport extends Component {
                 });
             })
     }
-    // getChargesTotal = (lookupId) => {
-    //     const { ipds } = this.state;
-    //     chargeNames && chargeNames.map((key, i) => {
-    //         let chargeName = `${key.name.substring(0, 4)}.`;
-    //         res && res.data.map(item => {
-    //             let groupChargeTotal = item.charges.filter(item => item.lookupId === key.id).reduce((total, item1) => total + (item1.amount ? Number(item1.amount) : 0), 0);
-    //             chargeTotal = chargeTotal + groupChargeTotal;
-    //             item[chargeName] = chargeTotal
-    //             return item;
-    //         })
-    //     });
-    //     return chargeTotal;
-
-    // }
-    getCharges = () => {
-        this.repository.get("lookups", `filter=type-equals-{${lookupTypeEnum.CHARGENAME.value}}`, this.messages).then(res => {
+    getCharges = () =>
+    {
+        this.repository.get("lookups", `filter=type-eq-{${ lookupTypeEnum.CHARGENAME.value }}`, this.messages).then(res =>
+        {
             let charges = res && res.data;
             this.setState({ chargeNames: charges, chargesLength: charges.length });
         })
     }
-    componentDidMount = (e) => {
-        //const month = this.helper.getMonthFromDate();
-        // /const year = this.helper.getYearFromDate();
-        //const date = this.helper.formatDate("08/31/2018", "en-US");
-        const filter = `disChargeDate.Month-equals-{1} and disChargeDate.Year-equals-{2019}`
-        this.setState({ filterString: filter }, () => {
+    componentDidMount = (e) =>
+    {
+        const month = 9;// this.helper.getMonthFromDate();
+        const year = 2018;// this.helper.getYearFromDate();
+        // // const date = this.helper.formatDate("09/03/2018", "en-US");
+        const filter = `DischargeDate.Month-eq-{${ month }} and DischargeDate.Year-eq-{${ year }}`
+        this.setState({ filterString: filter }, () =>
+        {
             this.getIpds();
-            this.getCharges();
         })
     }
 
-    render() {
+    render()
+    {
         const { ipds, chargesLength, chargeNames } = this.state;
-
-        ipds.map((item) => {
-            let chargeName;
-            let amount = 0;
-            return chargeNames && chargeNames.map((key, i) => {
-                chargeName = `${key.name.substring(0, 4)}Charge`;
-                amount = item.charges.filter(item => item.lookupId === key.id)[0].amount;
-                item[`${chargeName}`] = amount ? amount : 0;
+        let ipdData;
+        let chargesColumns;
+        let amount = 0;
+        if (chargeNames) {
+            let mapWithCharge = ipds.map((item) =>
+            {
+                let chargeName;
+                _.reduce(chargeNames, function (hash, key)
+                {
+                    chargeName = `${ key.name.substring(0, 4) }Charge`;
+                    let obj = item.charges.filter(item => item.lookupId === key.id)[0];
+                    amount = obj && obj.amount;
+                    hash[chargeName] = amount ? Number(amount) : 0;
+                    hash.amount = _.sumBy(item.charges, x => x.amount);
+                    return hash;
+                }, item);
+                delete item.charges;
                 return item;
-            })
-        })
-        let ipdData = _.groupBy(ipds, "formatedDischargeDate")
-
-        let MapData = _.map(ipdData, item => {
-
-            let chargeName;
-            return chargeNames && chargeNames.map((key, i) => {
-                chargeName = `${key.name.substring(0, 4)}GroupTotal`;
-                //groupAmount = item.charges.filter(item => item.lookupId === key.id)[0].amount;
-                item[`${chargeName}`] = 0;
-                return item;
-            })
-        })
-        console.log(MapData)
+            });
+            let ipdGroupByDate = _.groupBy(mapWithCharge, "formatedDischargeDate");
+            ipdData = _.map(ipdGroupByDate, (items, key) => 
+            {
+                let result = {};
+                let chargeName;
+                result.dischargeDate = key;
+                result.data = items;
+                result.count = items.length;
+                _.reduce(chargeNames, function (hash, key)
+                {
+                    chargeName = `${ key.name.substring(0, 4) }Charge`;
+                    result[`${ chargeName }`] = items.reduce((total, item) => total + Number(item[chargeName]), 0);
+                    result.total = items.reduce((total, item) => total + Number(item.amount), 0)
+                    return hash;
+                }, items);
+                return result
+            });
+            chargesColumns = ipdData[0].data[0];
+        }
+        let ipdCount = ipdData && ipdData.reduce((total, item) => total + Number(item.count), 0);
+        let amountTotal = ipdData && ipdData.reduce((total, item) => total + Number(item.total), 0);
         return (
             <>
                 <Messages ref={(el) => this.messages = el} />
+                <Button type="button" label="Toggle" onClick={(e) => this.op.toggle(e)} />
                 <table className="table table-bordered reportTable">
                     <thead>
                         <tr>
@@ -109,9 +122,10 @@ export default class IpdReport extends Component {
                             <th>IPD Type</th>
                             <th>Adm. Date</th>
                             {
-                                chargeNames && chargeNames.map((key, i) => {
+                                chargesColumns && Object.keys(chargesColumns).filter(m => m.includes("Charge")).map((key, i) =>
+                                {
                                     return (
-                                        <th key={i}>{key.name.substring(0, 4)}.</th>
+                                        <th key={i}>{key.substring(0, 4)}.</th>
                                     )
                                 })
                             }
@@ -120,41 +134,32 @@ export default class IpdReport extends Component {
                     </thead>
                     <tbody>
                         {
-                            Object.keys(ipdData).map((item, index) => {
-                                let dischargeDate = item;
-                                let ipd = ipdData[item]
-                                let patientGroupCount = ipd.length
-                                patientCount = patientCount + patientGroupCount;
-                                let chargeGroupTotal = {};
-                                let amountGroupTotal = 0;
+                            ipdData && ipdData.map((items, key) =>
+                            {
                                 return (
-                                    <React.Fragment key={`fragement${index}`}>
-                                        <tr className="report-group-title" >
-                                            <td colSpan="5" className="text-center">Date: {dischargeDate}</td>
-                                            <td colSpan={chargesLength} className="text-center">{patientGroupCount} Patients</td>
+                                    <React.Fragment key={`fragement${ key }`}>
+                                        <tr className="report-group-title">
+                                            <td colSpan="5" className="text-center">Discharge & Billing Date: {items.dischargeDate}</td>
+                                            <td colSpan={chargesLength} className="text-center">{items.count} Patients</td>
                                         </tr>
                                         {
-                                            ipd.map((subitem, i) => {
-                                                let rowTotalCharge = 0;
-                                                amountGroupTotal = 0;
+                                            items.data.map((subitem) =>
+                                            {
                                                 return (
-                                                    <tr key={`subitem${subitem.id}`}>
+                                                    <tr key={`subitem${ subitem.id }`}>
                                                         <td>{subitem.uniqueId}</td>
-                                                        <td>{subitem.invoiceNo}</td>
                                                         <td>{subitem.fullname}</td>
+                                                        <td>{subitem.ipdType}</td>
                                                         <td>{subitem.formatedAddmissionDate}</td>
                                                         {
-                                                            chargeNames && chargeNames.map((key, i) => {
-                                                                let charge = subitem.charges.filter(item => item.lookupId === key.id)[0];
-                                                                rowTotalCharge = subitem.charges.reduce((total, item) => total + (item.amount ? Number(item.amount) : 0), 0);
-                                                                chargeGroupTotal[key.id] = ipd.reduce((total, item) => total + (charge.amount ? Number(charge.amount) : 0), 0)
-                                                                amountGroupTotal = amountGroupTotal + chargeGroupTotal[key.id];
+                                                            chargesColumns && Object.keys(chargesColumns).filter(m => m.includes("Charge")).map((key, i) =>
+                                                            {
                                                                 return (
-                                                                    <td key={i} className="text-right">{charge && charge.amount ? charge.amount : 0}</td>
+                                                                    <td key={i} className="text-right">{subitem[key]}</td>
                                                                 )
                                                             })
                                                         }
-                                                        <td className="text-right"> {rowTotalCharge}</td>
+                                                        <td className="text-right">{subitem.amount}</td>
                                                     </tr>
                                                 )
                                             })
@@ -163,13 +168,14 @@ export default class IpdReport extends Component {
                                             <td colSpan="3"></td>
                                             <td className="text-right">Total</td>
                                             {
-                                                chargeNames && chargeNames.map((key, i) => {
+                                                chargesColumns && Object.keys(chargesColumns).filter(m => m.includes("Charge")).map((key, i) =>
+                                                {
                                                     return (
-                                                        <td className="text-right" key={`groupTotal${i}`}>{chargeGroupTotal[key.id]}</td>
+                                                        <td key={i} className="text-right">{items[`${ key }`]}</td>
                                                     )
                                                 })
                                             }
-                                            <td className="text-right">{amountGroupTotal}</td>
+                                            <td className="text-right">{items.total}</td>
                                         </tr>
                                     </React.Fragment>
                                 )
@@ -179,26 +185,69 @@ export default class IpdReport extends Component {
                     <tfoot className="report-footer">
                         {ipdData && ipdData.length ?
                             (
-                                <tr>
-                                    <td colSpan={chargesLength + 5} className="text-left">No Record Found</td>
-                                </tr>
-                            ) :
-                            (
                                 <tr className="report-group-title">
-                                    <td colSpan="3">{patientCount} Patients</td>
+                                    <td colSpan="3">{ipdCount} Patients</td>
                                     <td className="text-right">Grand Total</td>
                                     {
-                                        chargeNames && chargeNames.map((key, i) => {
+                                        chargesColumns && Object.keys(chargesColumns).filter(m => m.includes("Charge")).map((key, i) =>
+                                        {
+                                            chargeTotal = ipdData && ipdData.reduce((total, item) => total + Number(item[key]), 0);
                                             return (
-                                                <td className="text-right" key={`groupTotal${i}`}>{chargeTotal[key.id]}</td>
+                                                <td key={i} className="text-right">{chargeTotal}</td>
                                             )
                                         })
                                     }
                                     <td className="text-right">{amountTotal}</td>
                                 </tr>
+                            ) :
+                            (
+                                <tr>
+                                    <td colSpan="11" className="text-left">No Record Found</td>
+                                </tr>
                             )}
                     </tfoot>
                 </table>
+                <OverlayPanel ref={(el) => this.op = el}>
+                    <label> Ipd Report Summary</label>
+                    <table className="table table-bordered reportTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>No of Patients</th>
+                                <th>Total Collection</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                ipdData && ipdData.map((items, index) =>
+                                {
+                                    return (
+                                        <tr key={`summaryRow${ index }`}>
+                                            <td>{items.dischargeDate}</td>
+                                            <td className="text-right">{items.count}</td>
+                                            <td className="text-right">{items.total}</td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                        <tfoot className="report-footer">
+                            {ipdData && ipdData.length ?
+                                (
+                                    <tr className="report-group-title">
+                                        <td>Grand Total</td>
+                                        <td className="text-right">{ipdCount}</td>
+                                        <td className="text-right">{amountTotal}</td>
+                                    </tr>
+                                ) :
+                                (
+                                    <tr>
+                                        <td colSpan="11" className="text-left">No Record Found</td>
+                                    </tr>
+                                )}
+                        </tfoot>
+                    </table>
+                </OverlayPanel>
             </>
         );
     }
