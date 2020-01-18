@@ -14,3 +14,8 @@ export const lookupTypeEnum = {
     DELIVERYDIAGNOSIS: { value: 8, label: "DeliveryDiagnosis" },
     ADDRESS: { value: 9, label: "Address" }
 };
+export const reportTypeEnum = {
+    DAILY: { value: 1, label: "Daily" },
+    DATERANGE: { value: 2, label: "Date Range" },
+    MONTHLY: { value: 3, label: "Monthly" }
+};

@@ -2609,11 +2609,11 @@ ul.inbox-pagination li {
     width:100%;
     margin-bottom:40px;
 }
-.invoice-title {
+/* .invoice-title {
     background:#1fb5ad;
     color:#fff;
     display:inline-block;
-}
+} */
 .inv-label {
     color:#1fb5ad;
 }

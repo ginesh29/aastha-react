@@ -8,7 +8,9 @@ form .p-dropdown-filter-container,
 form .p-multiselect {
   width: 100%;
 }
-
+label{
+  font-weight: 600 !important;
+}
 .p-inputtext.error,
 .p-autocomplete.error input,
 .p-multiselect.error,
@@ -26,22 +28,6 @@ form .p-multiselect {
 .p-growl {
   z-index: 9999 !important;
 }
-/* .css-yk16xz-control{
-  border: 1px solid #a6a6a6;
-}
-.css-2b097c-container:focus {
-  outline: 0 none !important;
-  box-shadow: none !important;
-}
-.css-yk16xz-control {
-  border-color: #a6a6a6 !important;
-}
-.css-yk16xz-control:focus,.css-2b097c-container:focus{
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2em #8dcdff !important;
-  border-color: #007ad9 !important;
-} */
 #prescription .p-panel-content {
   background: #fffcab !important;
 }
@@ -49,37 +35,56 @@ form .p-multiselect {
   pointer-events: none !important;
 }
 
-.reportTable > thead > tr > th,
-.reportTable > tbody > tr > th,
-.reportTable > tfoot > tr > th,
-.reportTable > thead > tr > td,
-.reportTable > tbody > tr > td,
-.reportTable > tfoot > tr > td {
-  padding: 4px;
+.report-table > thead > tr > th,
+.report-table > tbody > tr > th,
+.report-table > tfoot > tr > th,
+.report-table > thead > tr > td,
+.report-table > tbody > tr > td,
+.report-table > tfoot > tr > td,
+.invoice-table > thead > tr > th,
+.invoice-table > tbody > tr > th,
+.invoice-table > tfoot > tr > th,
+.invoice-table > thead > tr > td,
+.invoice-table > tbody > tr > td,
+.invoice-table > tfoot > tr > td
+ {
+  padding: 2px !important;
 }
 
-.reportTable thead tr th {
-  font-size: 12px;
+.invoice-table{
+  color: #000;
+}
+.invoice-table> thead > tr > th,
+.invoice-table> tfoot > tr > td{
+  border-top: 1px solid #000 !important;
+  border-bottom: 1px solid #000 !important;
+}
+.invoice-table> thead > tr > th,
+.invoice-table> tfoot > tr > td{
+
+background: #ebebeb !important;
+font-weight: bold !important;
+font-size: 12px !important;
+}
+.report-table td,
+.invoice-table td {
+  font-size: 12px !important;
 }
 
-.reportTable td {
-  font-size: 12px;
-}
-
-.reportTable tbody {
-  background-color: white;
+.report-table tbody {
+  background-color: white !important;
 }
 .report-group-title {
   font-weight: bold;
 }
-.report-footer {
+
+.invoice-title {
+  text-align: center;
+  margin-bottom: 20px;
   font-weight: bold;
   text-decoration: underline;
 }
-/* .copyButton {
-  background: #ff0000;
+
+.vertical-devider {
+  border-right: 1px dashed #333;
 }
-
-
-
-*/

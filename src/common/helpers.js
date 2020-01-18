@@ -1,13 +1,10 @@
 import { repository } from "./repository";
 import { lookupTypeEnum } from "./enums";
-export class helper
-{
-  constructor()
-  {
+export class helper {
+  constructor() {
     this.repository = new repository();
   }
-  toSentenceCase = e =>
-  {
+  toSentenceCase = e => {
     let value = e && e.target ? e.target.value : e;
     let str = value;
     let result = "";
@@ -21,107 +18,94 @@ export class helper
     return result;
   };
 
-  enumToObject = function (enumValue)
-  {
+  enumToObject = function (enumValue) {
     const keys = Object.keys(enumValue);
-    const result = keys.map(key =>
-    {
+    const result = keys.map(key => {
       return enumValue[key];
     });
     return result;
   };
 
-  PatientOptions = (inputValue, callback, MessageRef) =>
-  {
-    let filter = inputValue && `firstname.contains({${ inputValue.toLowerCase() }}) or middlename.contains({${ inputValue.toLowerCase() }}) or lastname.contains({${ inputValue.toLowerCase() }})`;
-    this.repository.get("patients", `fields=id,fullname&take=15&filter=${ filter }`, MessageRef)
-      .then(res =>
-      {
-        let patients = res && res.data.map(function (item)
-        {
+  PatientOptions = (inputValue, callback, MessageRef) => {
+    let filter = inputValue && `firstname.contains({${inputValue.toLowerCase()}}) or middlename.contains({${inputValue.toLowerCase()}}) or lastname.contains({${inputValue.toLowerCase()}})`;
+    this.repository.get("patients", `fields=id,fullname&take=15&filter=${filter}`, MessageRef)
+      .then(res => {
+        let patients = res && res.data.map(function (item) {
           return { value: item["id"], label: item["fullname"] };
         });
         callback(patients)
       })
   }
 
-  AddressOptions = (inputValue, callback, MessageRef) =>
-  {
+  AddressOptions = (inputValue, callback, MessageRef) => {
     alert()
-    let filter = `type-eq-{${ lookupTypeEnum.ADDRESS.value }}`;
+    let filter = `type-eq-{${lookupTypeEnum.ADDRESS.value}}`;
     if (inputValue)
-      filter = filter + ` and name.contains({${ inputValue.toLowerCase() }})`
-    this.repository.get("lookups", `take=15&filter=${ filter }`, MessageRef)
-      .then(res =>
-      {
-        let addresses = res && res.data.map(function (item)
-        {
+      filter = filter + ` and name.contains({${inputValue.toLowerCase()}})`
+    this.repository.get("lookups", `take=15&filter=${filter}`, MessageRef)
+      .then(res => {
+        let addresses = res && res.data.map(function (item) {
           return { value: item["id"], label: item["name"] };
         });
         callback(addresses)
       })
   }
 
-  generateFilterString = (filters) =>
-  {
+  generateFilterString = (filters) => {
     let filterString = "";
     let operatorCondition = "";
     let filterMatchMode = "";
     let filterValue = "";
     let operator = "";
     let filterData = Object.keys(filters)
-    filterData.map((field, index) =>
-    {
+    filterData.map((field, index) => {
       operator = index !== filterData.length - 1 ? " and" : "";
       filterMatchMode = filters[field].matchMode;
       filterValue = filters[field].value;
       if (filterMatchMode === "contains")
         if (field === "fullname") {
-          operatorCondition = `firstname.${ filterMatchMode }({${ filterValue }}) or 
-                              middlename.${filterMatchMode }({${ filterValue }}) or 
-                              lastname.${filterMatchMode }({${ filterValue }})${ operator } `;
+          operatorCondition = `firstname.${filterMatchMode}({${filterValue}}) or 
+                              middlename.${filterMatchMode}({${filterValue}}) or 
+                              lastname.${filterMatchMode}({${filterValue}})${operator} `;
         }
         else
-          operatorCondition = `${ field }.${ filterMatchMode }({${ filterValue }})${ operator } `;
+          operatorCondition = `${field}.${filterMatchMode}({${filterValue}})${operator} `;
       else
         if (filterMatchMode === "eq")
-          operatorCondition = `${ field }-${ filterMatchMode }-{${ filterValue }}${ operator } `;
+          operatorCondition = `${field}-${filterMatchMode}-{${filterValue}}${operator} `;
       filterString = filterString + operatorCondition;
       return filterString;
     })
   }
-  generateSortString = (sortMeta) =>
-  {
+  generateSortString = (sortMeta) => {
     let sortString = "";
     let sortField = "";
     let sortOrder = "";
     let operator = "";
     let operatorCondition = "";
-    sortMeta.map((item, index) =>
-    {
+    sortMeta.map((item, index) => {
       operator = index !== sortMeta.length - 1 ? "," : "";
       sortField = item.field;
       sortOrder = item.order === 1 ? "asc" : "desc"
       if (sortField === "fullname") {
-        operatorCondition = `firstname ${ sortOrder }${ operator }`;
+        operatorCondition = `firstname ${sortOrder}${operator}`;
       }
       else
-        operatorCondition = `${ sortField } ${ sortOrder }${ operator }`;
+        operatorCondition = `${sortField} ${sortOrder}${operator}`;
       sortString = sortString + operatorCondition;
       return sortString;
     })
 
   }
-  formatDate = (date, format) =>
-  {
+  formatDate = (date, format) => {
     return (new Date(date)).toLocaleDateString(format ? format : 'en-GB', { year: 'numeric', month: 'numeric', day: 'numeric' });
   }
-  getMonthFromDate = (date) =>
-  {
-    return new Date().getMonth() + 1;
+  getMonthFromDate = (date) => {
+    let d = date ? new Date(date) : new Date();
+    return d.getMonth() + 1;
   }
-  getYearFromDate = (date) =>
-  {
-    return new Date().getFullYear();
+  getYearFromDate = (date) => {
+    let d = date ? new Date(date) : new Date();
+    return d.getFullYear();
   }
 }
