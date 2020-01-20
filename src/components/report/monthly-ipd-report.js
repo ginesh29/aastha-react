@@ -6,28 +6,38 @@ import { lookupTypeEnum, reportTypeEnum } from "../../common/enums";
 import _ from 'lodash';
 import numberToWords from 'number-to-words';
 import invoice_header from "../../images/invoice_header.jpg"
+import { Button } from 'primereact/button';
+import { RadioButton } from 'primereact/radiobutton';
+import { Calendar } from 'primereact/calendar';
 
-export default class MonthlyIpdReport extends Component {
-    constructor(props) {
+const todayDate = new Date()
+const yearRange = `${ todayDate.getFullYear() - 10 }:${ todayDate.getFullYear() + 10 }`;
+export default class MonthlyIpdReport extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
             reportType: reportTypeEnum.MONTHLY.value,
             ipds: [],
             loading: true,
             filterString: "",
-            sortString: "id asc",
+            sortString: "dischargeDate asc",
             controller: "ipds",
             includeProperties: "Patient.Address,Charges.ChargeDetail",
         };
         this.repository = new repository();
         this.helper = new helper();
     }
-    getIpds = () => {
+    getIpds = () =>
+    {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-        return this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
-            .then(res => {
+        return this.repository.get(controller, `filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`, this.messages)
+            .then(res =>
+            {
                 this.getCharges();
-                res && res.data.map(item => {
+                res && res.data.map(item =>
+                {
                     item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
                     item.formatedDischargeDate = this.helper.formatDate(item.dischargeDate);
                     item.fullname = item.patient.fullname;
@@ -43,21 +53,26 @@ export default class MonthlyIpdReport extends Component {
                 });
             })
     }
-    getCharges = () => {
-        this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.CHARGENAME.value}}`, this.messages).then(res => {
+    getCharges = () =>
+    {
+        this.repository.get("lookups", `filter=type-eq-{${ lookupTypeEnum.CHARGENAME.value }}`, this.messages).then(res =>
+        {
             let charges = res && res.data;
             this.setState({ chargeNames: charges, chargesLength: charges.length });
         })
     }
-    componentDidMount = (e) => {
+    componentDidMount = (e) =>
+    {
         const month = this.helper.getMonthFromDate();
         const year = this.helper.getYearFromDate() - 1;
-        const filter = `Date.Month-eq-{${month}} and Date.Year-eq-{${year}}`;
-        this.setState({ filterString: filter }, () => {
-            this.getOpds();
+        const filter = `DischargeDate.Month-eq-{${ month }} and DischargeDate.Year-eq-{${ year }}`;
+        this.setState({ filterString: filter }, () =>
+        {
+            this.getIpds();
         });
     }
-    onDateSelection = (e) => {
+    onDateSelection = (e) =>
+    {
         const { reportType } = this.state;
         let name = e.target.name;
         let value = e.target.value;
@@ -67,45 +82,49 @@ export default class MonthlyIpdReport extends Component {
         let filter = "";
         if (reportType === reportTypeEnum.DAILY.value) {
             let date = this.helper.formatDate(value, 'en-US')
-            filter = `DischargeDate-eq-{${date}}`;
+            filter = `DischargeDate-eq-{${ date }}`;
         }
         else if (reportType === reportTypeEnum.DATERANGE.value) {
             let startDate = this.helper.formatDate(value[0], 'en-US')
             let endDate = this.helper.formatDate(value[1], 'en-US')
-            filter = `DischargeDate-gte-{${startDate}} and DischargeDate-lte-{${endDate}}`
+            filter = `DischargeDate-gte-{${ startDate }} and DischargeDate-lte-{${ endDate }}`
         }
         else if (reportType === reportTypeEnum.MONTHLY.value) {
             let month = this.helper.getMonthFromDate(value);
             let year = this.helper.getYearFromDate(value);
-            filter = `DischargeDate.Month-eq-{${month}} and DischargeDate.Year-eq-{${year}}`
+            filter = `DischargeDate.Month-eq-{${ month }} and DischargeDate.Year-eq-{${ year }}`
         }
-        this.setState({ filterString: filter }, () => {
-            this.getOpds();
+        this.setState({ filterString: filter }, () =>
+        {
+            this.getIpds();
         });
     }
 
-    render() {
-        const { ipds, chargeNames } = this.state;
+    render()
+    {
+        const { ipds, chargeNames, reportType, dateSelection, dateRangeSelection, monthSelection } = this.state;
+        const reportTypeOptions = this.helper.enumToObject(reportTypeEnum);
         let ipdData;
         let chargesColumns;
         let amount = 0;
         let days = 0;
         let rate = 0;
         if (chargeNames) {
-            let mapWithCharge = ipds.map((item) => {
+            let mapWithCharge = ipds.map((item) =>
+            {
                 let chargeName;
-                _.reduce(chargeNames, function (hash, key) {
-                    chargeName = `dynamic-charge-${key.id}`;
+                _.reduce(chargeNames, function (hash, key)
+                {
+                    chargeName = `dynamic-charge-${ key.id }`;
                     let obj = item.charges && item.charges.filter(item => item.lookupId === key.id)[0];
-                    days = obj.days ? Number(obj.days) : 0;
-                    rate = obj.rate ? Number(obj.rate) : 0;
-                    amount = obj.amount ? Number(obj.amount) : 0;
-                    hash[chargeName] = { chargeName: obj.chargeDetail.name, rate: rate, days: days, amount: amount };
+                    days = obj && obj.days ? Number(obj.days) : 0;
+                    rate = obj && obj.rate ? Number(obj.rate) : 0;
+                    amount = obj && obj.amount ? Number(obj.amount) : 0;
+                    hash[chargeName] = { chargeName: key.name, rate: rate, days: days, amount: amount };
                     hash.amount = _.sumBy(item.charges, x => x.amount);
                     hash.discount = hash.discount ? hash.discount : 0;
                     hash.payableAmount = hash.amount - hash.discount;
                     hash.amountInWord = numberToWords.toWords(hash.payableAmount).toUpperCase();
-
                     return hash;
                 }, item);
                 //delete item.charges;
@@ -119,12 +138,41 @@ export default class MonthlyIpdReport extends Component {
         return (
             <>
                 <Messages ref={(el) => this.messages = el} />
+                <h4>Report Type</h4>
                 <div className="row">
+                    <div className="col-md-5">
+                        <div className="form-group">
+                            {
+                                reportTypeOptions.map((item, i) =>
+                                {
+                                    return (
+                                        <label className="radio-inline" key={i}>
+                                            <RadioButton inputId={`reportType${ i }`} name="reportType" value={item.value} onChange={(e) => this.setState({ reportType: e.value })} checked={reportType === item.value} />
+                                            <label htmlFor={`reportType${ i }`} className="p-radiobutton-label">{item.label}</label>
+                                        </label>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                    <div className="col-md-7">
+                        <div className="p-inputgroup pull-right">
+                            <div className="form-group">
+                                <Calendar name="dateSelection" value={dateSelection} onChange={this.onDateSelection} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DAILY.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={yearRange} />
+                                <Calendar name="dateRangeSelection" value={dateRangeSelection} onChange={this.onDateSelection} selectionMode="range" readonlyInput={true} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DATERANGE.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={yearRange} />
+                                <Calendar name="monthSelection" value={monthSelection} onChange={this.onDateSelection} view="month" dateFormat="mm/yy" yearNavigator={true} yearRange={yearRange} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.MONTHLY.value ? "" : "none" }} />
+                                <Button icon="pi pi-print" className="p-button-primary" label="Print" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div className="row invoice">
                     {
-                        ipdData && ipdData.map((items, i) => {
-                            //console.log(items)
+                        ipdData && ipdData.map((items, i) =>
+                        {
                             return (
-                                <div className={`col-md-6 col-xs-6 ${i % 2 === 0 ? "vertical-devider" : ""}`} key={i}>
+                                <div className={`col-md-6 col-xs-6 ${ i % 2 === 0 ? "vertical-devider" : "" }`} key={i}>
                                     <div className="" style={{ paddingLeft: "50px" }}>
                                         <img src={invoice_header} className="img-responsive" alt="Invoice Header" />
                                         <h3 className="invoice-title">Indoor Invoice</h3>
@@ -162,9 +210,10 @@ export default class MonthlyIpdReport extends Component {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            chargesColumns.map((key, i) => {
+                                                            chargesColumns.map((key, i) =>
+                                                            {
                                                                 return (
-                                                                    <tr key={`chrge-${i}`}>
+                                                                    <tr key={`chrge-${ i }`}>
                                                                         <td>{i + 1}</td>
                                                                         <td>{items[key].chargeName}</td>
                                                                         <td className="text-right"> {items[key].rate}</td>
@@ -175,7 +224,7 @@ export default class MonthlyIpdReport extends Component {
                                                             })
                                                         }
                                                     </tbody>
-                                                    <tfoot>
+                                                    <tfoot className="invoice-footer">
                                                         <tr>
                                                             <td colSpan="3">Grand Total <span></span></td>
                                                             <td colSpan="2" className="text-right"><strong id="Total"> {items.amount}</strong></td>
@@ -185,7 +234,7 @@ export default class MonthlyIpdReport extends Component {
                                                             <td colSpan="2" className="text-right"><strong id="Total"> {items.discount}</strong></td>
                                                         </tr>
                                                         <tr>
-                                                            <td colSpan="4">Net Payable Amount :<span className="text-lowercase"> {`${items.amountInWord} Only`}</span></td>
+                                                            <td colSpan="4">Net Payable Amount :<span > {`${ items.amountInWord } Only`}</span></td>
                                                             <td colSpan="1" className="text-right"><strong id="Total"> {items.payableAmount}</strong></td>
                                                         </tr>
                                                     </tfoot>

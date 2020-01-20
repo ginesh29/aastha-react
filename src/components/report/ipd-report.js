@@ -11,28 +11,33 @@ import _ from 'lodash';
 
 let chargeTotal = 0;
 const todayDate = new Date()
-const yearRange = `${todayDate.getFullYear() - 10}:${todayDate.getFullYear() + 10}`;
-export default class IpdReport extends Component {
-    constructor(props) {
+const yearRange = `${ todayDate.getFullYear() - 10 }:${ todayDate.getFullYear() + 10 }`;
+export default class IpdReport extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
             reportType: reportTypeEnum.MONTHLY.value,
             ipds: [],
             loading: true,
             filterString: "",
-            sortString: "id asc",
+            sortString: "dischargeDate asc",
             controller: "ipds",
             includeProperties: "Patient,Charges",
         };
         this.repository = new repository();
         this.helper = new helper();
     }
-    getIpds = () => {
+    getIpds = () =>
+    {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-        return this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
-            .then(res => {
+        return this.repository.get(controller, `filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`, this.messages)
+            .then(res =>
+            {
                 this.getCharges();
-                res && res.data.map(item => {
+                res && res.data.map(item =>
+                {
                     item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
                     item.formatedDischargeDate = this.helper.formatDate(item.dischargeDate);
                     item.fullname = item.patient.fullname;
@@ -47,21 +52,27 @@ export default class IpdReport extends Component {
                 });
             })
     }
-    getCharges = () => {
-        this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.CHARGENAME.value}}`, this.messages).then(res => {
+    getCharges = () =>
+    {
+        this.repository.get("lookups", `filter=type-eq-{${ lookupTypeEnum.CHARGENAME.value }}`, this.messages).then(res =>
+        {
             let charges = res && res.data;
             this.setState({ chargeNames: charges, chargesLength: charges.length });
         })
     }
-    componentDidMount = (e) => {
+    componentDidMount = (e) =>
+    {
+        //const day = this.helper.getDayFromDate();
         const month = this.helper.getMonthFromDate();
         const year = this.helper.getYearFromDate() - 1;
-        const filter = `DischargeDate.Month-eq-{${month}} and DischargeDate.Year-eq-{${year}}`;
-        this.setState({ filterString: filter }, () => {
+        const filter = `DischargeDate.Month-eq-{${ month }} and DischargeDate.Year-eq-{${ year }}`;
+        this.setState({ filterString: filter }, () =>
+        {
             this.getIpds();
         });
     }
-    onDateSelection = (e) => {
+    onDateSelection = (e) =>
+    {
         const { reportType } = this.state;
         let name = e.target.name;
         let value = e.target.value;
@@ -71,34 +82,39 @@ export default class IpdReport extends Component {
         let filter = "";
         if (reportType === reportTypeEnum.DAILY.value) {
             let date = this.helper.formatDate(value, 'en-US')
-            filter = `DischargeDate-eq-{${date}}`;
+            filter = `DischargeDate-eq-{${ date }}`;
         }
         else if (reportType === reportTypeEnum.DATERANGE.value) {
             let startDate = this.helper.formatDate(value[0], 'en-US')
             let endDate = this.helper.formatDate(value[1], 'en-US')
-            filter = `DischargeDate-gte-{${startDate}} and DischargeDate-lte-{${endDate}}`
+            filter = `DischargeDate-gte-{${ startDate }} and DischargeDate-lte-{${ endDate }}`
         }
         else if (reportType === reportTypeEnum.MONTHLY.value) {
             let month = this.helper.getMonthFromDate(value);
             let year = this.helper.getYearFromDate(value);
-            filter = `DischargeDate.Month-eq-{${month}} and Date.Year-eq-{${year}}`
+            filter = `DischargeDate.Month-eq-{${ month }} and DischargeDate.Year-eq-{${ year }}`
         }
-        this.setState({ filterString: filter }, () => {
+        this.setState({ filterString: filter }, () =>
+        {
             this.getIpds();
         });
     }
-    render() {
+    render()
+    {
         const { ipds, chargesLength, chargeNames, reportType, dateSelection, dateRangeSelection, monthSelection } = this.state;
         const reportTypeOptions = this.helper.enumToObject(reportTypeEnum);
         let ipdData;
         let chargesColumns;
         let amount = 0;
         if (chargeNames) {
-            let mapWithCharge = ipds.map((item) => {
+            let mapWithCharge = ipds.map((item) =>
+            {
                 let chargeName;
-                _.reduce(chargeNames, function (hash, key) {
-                    chargeName = `${key.name.substring(0, 4)}Charge`;
+                _.reduce(chargeNames, function (hash, key)
+                {
+                    chargeName = `${ key.name.substring(0, 4) }Charge`;
                     let obj = item.charges && item.charges.filter(item => item.lookupId === key.id)[0];
+                    //let discount = item.discount ? item.discount : 0;
                     amount = obj && obj.amount;
                     hash[chargeName] = amount ? Number(amount) : 0;
                     hash.amount = _.sumBy(item.charges, x => x.amount);
@@ -108,15 +124,17 @@ export default class IpdReport extends Component {
                 return item;
             });
             let ipdGroupByDate = _.groupBy(mapWithCharge, "formatedDischargeDate");
-            ipdData = _.map(ipdGroupByDate, (items, key) => {
+            ipdData = _.map(ipdGroupByDate, (items, key) =>
+            {
                 let result = {};
                 let chargeName;
                 result.dischargeDate = key;
                 result.data = items;
                 result.count = items.length;
-                _.reduce(chargeNames, function (hash, key) {
-                    chargeName = `${key.name.substring(0, 4)}Charge`;
-                    result[`${chargeName}`] = items.reduce((total, item) => total + Number(item[chargeName]), 0);
+                _.reduce(chargeNames, function (hash, key)
+                {
+                    chargeName = `${ key.name.substring(0, 4) }Charge`;
+                    result[`${ chargeName }`] = items.reduce((total, item) => total + Number(item[chargeName]), 0);
                     result.total = items.reduce((total, item) => total + Number(item.amount), 0)
                     return hash;
                 }, items);
@@ -135,11 +153,12 @@ export default class IpdReport extends Component {
                     <div className="col-md-5">
                         <div className="form-group">
                             {
-                                reportTypeOptions.map((item, i) => {
+                                reportTypeOptions.map((item, i) =>
+                                {
                                     return (
                                         <label className="radio-inline" key={i}>
-                                            <RadioButton inputId={`reportType${i}`} name="reportType" value={item.value} onChange={(e) => this.setState({ reportType: e.value })} checked={reportType === item.value} />
-                                            <label htmlFor={`reportType${i}`} className="p-radiobutton-label">{item.label}</label>
+                                            <RadioButton inputId={`reportType${ i }`} name="reportType" value={item.value} onChange={(e) => this.setState({ reportType: e.value })} checked={reportType === item.value} />
+                                            <label htmlFor={`reportType${ i }`} className="p-radiobutton-label">{item.label}</label>
                                         </label>
                                     )
                                 })
@@ -158,6 +177,7 @@ export default class IpdReport extends Component {
                     </div>
                 </div>
                 <hr />
+                <h3 className="report-header">IPD Report</h3>
                 <table className="table table-bordered report-table">
                     <thead>
                         <tr>
@@ -166,7 +186,8 @@ export default class IpdReport extends Component {
                             <th>IPD Type</th>
                             <th>Adm. Date</th>
                             {
-                                chargesColumns && chargesColumns.map((key, i) => {
+                                chargesColumns && chargesColumns.map((key, i) =>
+                                {
                                     return (
                                         <th key={i}>{key.substring(0, 4)}.</th>
                                     )
@@ -177,23 +198,26 @@ export default class IpdReport extends Component {
                     </thead>
                     <tbody>
                         {
-                            ipdData && ipdData.map((items, key) => {
+                            ipdData && ipdData.map((items, key) =>
+                            {
                                 return (
-                                    <React.Fragment key={`fragement${key}`}>
+                                    <React.Fragment key={`fragement${ key }`}>
                                         <tr className="report-group-title">
                                             <td colSpan="5" className="text-center">Discharge & Billing Date: {items.dischargeDate}</td>
                                             <td colSpan={chargesLength} className="text-center">{items.count} Patients</td>
                                         </tr>
                                         {
-                                            items.data.map((subitem) => {
+                                            items.data.map((subitem) =>
+                                            {
                                                 return (
-                                                    <tr key={`subitem${subitem.id}`}>
+                                                    <tr key={`subitem${ subitem.id }`}>
                                                         <td>{subitem.uniqueId}</td>
                                                         <td>{subitem.fullname}</td>
                                                         <td>{subitem.ipdType}</td>
                                                         <td>{subitem.formatedAddmissionDate}</td>
                                                         {
-                                                            chargesColumns.map((key, i) => {
+                                                            chargesColumns.map((key, i) =>
+                                                            {
                                                                 return (
                                                                     <td key={i} className="text-right">{subitem[key]}</td>
                                                                 )
@@ -208,9 +232,10 @@ export default class IpdReport extends Component {
                                             <td colSpan="3"></td>
                                             <td className="text-right">Total</td>
                                             {
-                                                chargesColumns.map((key, i) => {
+                                                chargesColumns.map((key, i) =>
+                                                {
                                                     return (
-                                                        <td key={i} className="text-right">{items[`${key}`]}</td>
+                                                        <td key={i} className="text-right">{items[`${ key }`]}</td>
                                                     )
                                                 })
                                             }
@@ -221,14 +246,15 @@ export default class IpdReport extends Component {
                             })
                         }
                     </tbody>
-                    <tfoot className="report-footer">
+                    <tfoot>
                         {ipdData && ipdData.length ?
                             (
-                                <tr className="report-group-title">
+                                <tr className="report-footer">
                                     <td colSpan="3">{ipdCount} Patients</td>
                                     <td className="text-right">Grand Total</td>
                                     {
-                                        chargesColumns.map((key, i) => {
+                                        chargesColumns.map((key, i) =>
+                                        {
                                             chargeTotal = ipdData && ipdData.reduce((total, item) => total + Number(item[key]), 0);
                                             return (
                                                 <td key={i} className="text-right">{chargeTotal}</td>
@@ -257,9 +283,10 @@ export default class IpdReport extends Component {
                         </thead>
                         <tbody>
                             {
-                                ipdData && ipdData.map((items, index) => {
+                                ipdData && ipdData.map((items, index) =>
+                                {
                                     return (
-                                        <tr key={`summaryRow${index}`}>
+                                        <tr key={`summaryRow${ index }`}>
                                             <td>{items.dischargeDate}</td>
                                             <td className="text-right">{items.count}</td>
                                             <td className="text-right">{items.total}</td>
