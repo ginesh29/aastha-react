@@ -5,6 +5,7 @@ import { appointmentTypeEnum } from "../common/enums";
 import { FullCalendar } from 'primereact/fullcalendar';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import '@fullcalendar/core/main.css';
+import interactionPlugin from "@fullcalendar/interaction";
 
 export default class AppointmentCalendar extends Component
 {
@@ -58,9 +59,13 @@ export default class AppointmentCalendar extends Component
         const { appointments } = this.state;
         const options = {
             height: 750,
-            plugins: [dayGridPlugin],
+            plugins: [dayGridPlugin, interactionPlugin],
             defaultDate: '2020-01-01',//this.helper.formatFullcalendarDate(),//new Date(),
             editable: true,
+            dateClick: function ()
+            {
+                alert()
+            }
             // eventRender: function (event, element)
             // {
             //     // element.popover({
