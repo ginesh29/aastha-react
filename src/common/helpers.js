@@ -111,6 +111,14 @@ export class helper
     })
 
   }
+  formatFullcalendarDate(date)
+  {
+    let d = date ? new Date(date) : new Date();
+    var month = d.getMonth() + 1;
+    var day = d.getDate();
+    var year = d.getFullYear();
+    return year + "-" + (month < 10 ? ("0" + month) : month) + "-" + (day < 10 ? ("0" + day) : day);
+  }
   formatDate = (date, format) =>
   {
     return (new Date(date)).toLocaleDateString(format ? format : 'en-GB', { year: 'numeric', month: 'numeric', day: 'numeric' });

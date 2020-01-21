@@ -16,6 +16,7 @@ import Ipds from "./components/ipd/ipds";
 import OpdReport from "./components/report/opd-report";
 import IpdReport from "./components/report/ipd-report";
 import MonthlyIpdReport from "./components/report/monthly-ipd-report";
+import AppointmentCalendar from "./components/appointment-calendar";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 
@@ -40,7 +41,7 @@ const routes = (
       <Route path="/admin-panel" component={AdminPanel} />
 
       <Route path="/prescription" component={Prescription} />
-
+      <Route path="/appointment-calendar" component={AppointmentCalendar} />
       <Route path="/opd-report" component={OpdReport} />
       <Route path="/ipd-report" component={IpdReport} />
       <Route path="/monthly-ipd-report" component={MonthlyIpdReport} />

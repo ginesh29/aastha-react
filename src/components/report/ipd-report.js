@@ -99,6 +99,16 @@ export default class IpdReport extends Component
             this.getIpds();
         });
     }
+    printOrder = () =>
+    {
+        alert()
+        const printableElements = document.getElementById('printme').innerHTML;
+        const orderHtml = '<html><head><title></title></head><body>' + printableElements + '</body></html>'
+        const oldPage = document.body.innerHTML;
+        document.body.innerHTML = orderHtml;
+        window.print();
+        document.body.innerHTML = oldPage
+    }
     render()
     {
         const { ipds, chargesLength, chargeNames, reportType, dateSelection, dateRangeSelection, monthSelection } = this.state;
@@ -171,106 +181,108 @@ export default class IpdReport extends Component
                                 <Calendar name="dateSelection" value={dateSelection} onChange={this.onDateSelection} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DAILY.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={yearRange} />
                                 <Calendar name="dateRangeSelection" value={dateRangeSelection} onChange={this.onDateSelection} selectionMode="range" readonlyInput={true} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DATERANGE.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={yearRange} />
                                 <Calendar name="monthSelection" value={monthSelection} onChange={this.onDateSelection} view="month" dateFormat="mm/yy" yearNavigator={true} yearRange={yearRange} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.MONTHLY.value ? "" : "none" }} />
-                                <Button icon="pi pi-print" className="p-button-primary" label="Print" />
+                                <Button icon="pi pi-print" className="p-button-primary" label="Print" onClick={() => this.printOrder()} />
                             </div>
                         </div>
                     </div>
                 </div>
                 <hr />
-                <h3 className="report-header">IPD Report</h3>
-                <table className="table table-bordered report-table">
-                    <thead>
-                        <tr>
-                            <th style={{ width: "10px" }}>Id</th>
-                            <th>Patient's Name</th>
-                            <th>IPD Type</th>
-                            <th>Adm. Date</th>
+                <div id="printme">
+                    <h3 className="report-header">IPD Report</h3>
+                    <table className="table table-bordered report-table">
+                        <thead>
+                            <tr>
+                                <th style={{ width: "10px" }}>Id</th>
+                                <th>Patient's Name</th>
+                                <th>IPD Type</th>
+                                <th>Adm. Date</th>
+                                {
+                                    chargesColumns && chargesColumns.map((key, i) =>
+                                    {
+                                        return (
+                                            <th key={i}>{key.substring(0, 4)}.</th>
+                                        )
+                                    })
+                                }
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {
-                                chargesColumns && chargesColumns.map((key, i) =>
+                                ipdData && ipdData.map((items, key) =>
                                 {
                                     return (
-                                        <th key={i}>{key.substring(0, 4)}.</th>
-                                    )
-                                })
-                            }
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            ipdData && ipdData.map((items, key) =>
-                            {
-                                return (
-                                    <React.Fragment key={`fragement${ key }`}>
-                                        <tr className="report-group-title">
-                                            <td colSpan="5" className="text-center">Discharge & Billing Date: {items.dischargeDate}</td>
-                                            <td colSpan={chargesLength} className="text-center">{items.count} Patients</td>
-                                        </tr>
-                                        {
-                                            items.data.map((subitem) =>
+                                        <React.Fragment key={`fragement${ key }`}>
+                                            <tr className="report-group-title">
+                                                <td colSpan="5" className="text-center">Discharge & Billing Date: {items.dischargeDate}</td>
+                                                <td colSpan={chargesLength} className="text-center">{items.count} Patients</td>
+                                            </tr>
                                             {
-                                                return (
-                                                    <tr key={`subitem${ subitem.id }`}>
-                                                        <td>{subitem.uniqueId}</td>
-                                                        <td>{subitem.fullname}</td>
-                                                        <td>{subitem.ipdType}</td>
-                                                        <td>{subitem.formatedAddmissionDate}</td>
-                                                        {
-                                                            chargesColumns.map((key, i) =>
-                                                            {
-                                                                return (
-                                                                    <td key={i} className="text-right">{subitem[key]}</td>
-                                                                )
-                                                            })
-                                                        }
-                                                        <td className="text-right">{subitem.amount}</td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                        <tr className="report-group-title">
-                                            <td colSpan="3"></td>
-                                            <td className="text-right">Total</td>
-                                            {
-                                                chargesColumns.map((key, i) =>
+                                                items.data.map((subitem) =>
                                                 {
                                                     return (
-                                                        <td key={i} className="text-right">{items[`${ key }`]}</td>
+                                                        <tr key={`subitem${ subitem.id }`}>
+                                                            <td>{subitem.uniqueId}</td>
+                                                            <td>{subitem.fullname}</td>
+                                                            <td>{subitem.ipdType}</td>
+                                                            <td>{subitem.formatedAddmissionDate}</td>
+                                                            {
+                                                                chargesColumns.map((key, i) =>
+                                                                {
+                                                                    return (
+                                                                        <td key={i} className="text-right">{subitem[key]}</td>
+                                                                    )
+                                                                })
+                                                            }
+                                                            <td className="text-right">{subitem.amount}</td>
+                                                        </tr>
                                                     )
                                                 })
                                             }
-                                            <td className="text-right">{items.total}</td>
-                                        </tr>
-                                    </React.Fragment>
-                                )
-                            })
-                        }
-                    </tbody>
-                    <tfoot>
-                        {ipdData && ipdData.length ?
-                            (
-                                <tr className="report-footer">
-                                    <td colSpan="3">{ipdCount} Patients</td>
-                                    <td className="text-right">Grand Total</td>
-                                    {
-                                        chargesColumns.map((key, i) =>
+                                            <tr className="report-group-title">
+                                                <td colSpan="3"></td>
+                                                <td className="text-right">Total</td>
+                                                {
+                                                    chargesColumns.map((key, i) =>
+                                                    {
+                                                        return (
+                                                            <td key={i} className="text-right">{items[`${ key }`]}</td>
+                                                        )
+                                                    })
+                                                }
+                                                <td className="text-right">{items.total}</td>
+                                            </tr>
+                                        </React.Fragment>
+                                    )
+                                })
+                            }
+                        </tbody>
+                        <tfoot>
+                            {ipdData && ipdData.length ?
+                                (
+                                    <tr className="report-footer">
+                                        <td colSpan="3">{ipdCount} Patients</td>
+                                        <td className="text-right">Grand Total</td>
                                         {
-                                            chargeTotal = ipdData && ipdData.reduce((total, item) => total + Number(item[key]), 0);
-                                            return (
-                                                <td key={i} className="text-right">{chargeTotal}</td>
-                                            )
-                                        })
-                                    }
-                                    <td className="text-right">{amountTotal}</td>
-                                </tr>
-                            ) :
-                            (
-                                <tr>
-                                    <td colSpan="11" className="text-left">No Record Found</td>
-                                </tr>
-                            )}
-                    </tfoot>
-                </table>
+                                            chargesColumns.map((key, i) =>
+                                            {
+                                                chargeTotal = ipdData && ipdData.reduce((total, item) => total + Number(item[key]), 0);
+                                                return (
+                                                    <td key={i} className="text-right">{chargeTotal}</td>
+                                                )
+                                            })
+                                        }
+                                        <td className="text-right">{amountTotal}</td>
+                                    </tr>
+                                ) :
+                                (
+                                    <tr>
+                                        <td colSpan="11" className="text-left">No Record Found</td>
+                                    </tr>
+                                )}
+                        </tfoot>
+                    </table>
+                </div>
                 <OverlayPanel ref={(el) => this.op = el}>
                     <label> Ipd Report Summary</label>
                     <table className="table table-bordered report-table">

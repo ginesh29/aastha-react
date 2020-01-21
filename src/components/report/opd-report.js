@@ -8,6 +8,7 @@ import { Button } from 'primereact/button';
 import { RadioButton } from 'primereact/radiobutton';
 import { Calendar } from 'primereact/calendar';
 import _ from 'lodash';
+import ReactToPrint from 'react-to-print';
 
 const todayDate = new Date()
 const yearRange = `${ todayDate.getFullYear() - 10 }:${ todayDate.getFullYear() + 10 }`;
@@ -94,6 +95,15 @@ export default class OpdReport extends Component
             this.getOpds();
         });
     }
+    // printOrder = () =>
+    // {
+    //     const printableElements = document.getElementById('printme').innerHTML;
+    //     const orderHtml = '<html><head><title></title></head><body>' + printableElements + '</body></html>'
+    //     const oldPage = document.body.innerHTML;
+    //     document.body.innerHTML = orderHtml;
+    //     window.print();
+    //     document.body.innerHTML = oldPage
+    // }
     render()
     {
         const { opds, reportType, dateSelection, dateRangeSelection, monthSelection } = this.state;
@@ -122,6 +132,12 @@ export default class OpdReport extends Component
         const amountChargeTotal = opdData.reduce((total, item) => total + Number(item.totalCharge), 0);
         return (
             <>
+                <ReactToPrint
+                    trigger={() => <button>Print this out!</button>}
+                    content={() => this.componentRef}
+                    pageStyle="@page { margin: 0.25mm; }"
+                />
+
                 <Messages ref={(el) => this.messages = el} />
                 {/* <Button type="button" label="Toggle" onClick={(e) => this.op.toggle(e)} /> */}
                 <h4>Report Type</h4>
@@ -147,93 +163,95 @@ export default class OpdReport extends Component
                                 <Calendar name="dateSelection" value={dateSelection} onChange={this.onDateSelection} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DAILY.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={yearRange} />
                                 <Calendar name="dateRangeSelection" value={dateRangeSelection} onChange={this.onDateSelection} selectionMode="range" readonlyInput={true} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DATERANGE.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={yearRange} />
                                 <Calendar name="monthSelection" value={monthSelection} onChange={this.onDateSelection} view="month" dateFormat="mm/yy" yearNavigator={true} yearRange={yearRange} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.MONTHLY.value ? "" : "none" }} />
-                                <Button icon="pi pi-print" className="p-button-primary" label="Print" />
+                                <Button icon="pi pi-print" className="p-button-primary" label="Print" onClick={() => this.printOrder()} />
                             </div>
                         </div>
                     </div>
                 </div>
                 <hr />
-                <h3 className="report-header">OPD Report</h3>
-                <table className="table table-bordered report-table">
-                    <thead>
-                        <tr>
-                            <th>Invoice No</th>
-                            <th>OPD Id</th>
-                            <th>Patient's Name</th>
-                            <th>Type</th>
-                            <th>Cons</th>
-                            <th>USG</th>
-                            <th>UPT</th>
-                            <th>Inj</th>
-                            <th>Other</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            opdData.map((items, key) =>
+                <div id="printme" ref={el => (this.componentRef = el)}>
+                    <h3 className="report-header">OPD Report</h3>
+                    <table className="table table-bordered report-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice No</th>
+                                <th>OPD Id</th>
+                                <th>Patient's Name</th>
+                                <th>Type</th>
+                                <th>Cons</th>
+                                <th>USG</th>
+                                <th>UPT</th>
+                                <th>Inj</th>
+                                <th>Other</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {
-                                return (
-                                    <React.Fragment key={`fragement${ key }`}>
-                                        <tr className="report-group-title">
-                                            <td colSpan="4" className="text-center">Date: {items.opdDate}</td>
-                                            <td colSpan="6" className="text-center">{items.count} Patients</td>
-                                        </tr>
-                                        {
-                                            items.data.map((subitem) =>
+                                opdData.map((items, key) =>
+                                {
+                                    return (
+                                        <React.Fragment key={`fragement${ key }`}>
+                                            <tr className="report-group-title">
+                                                <td colSpan="4" className="text-center">Date: {items.opdDate}</td>
+                                                <td colSpan="6" className="text-center">{items.count} Patients</td>
+                                            </tr>
                                             {
-                                                return (
-                                                    <tr key={`subitem${ subitem.id }`}>
-                                                        <td>{subitem.id}</td>
-                                                        <td>{subitem.invoiceNo}</td>
-                                                        <td>{subitem.fullname}</td>
-                                                        <td>{subitem.caseTypeName}</td>
-                                                        <td className="text-right">{subitem.consultCharge ? subitem.consultCharge : 0}</td>
-                                                        <td className="text-right">{subitem.usgCharge ? subitem.usgCharge : 0}</td>
-                                                        <td className="text-right">{subitem.uptCharge ? subitem.uptCharge : 0}</td>
-                                                        <td className="text-right">{subitem.injectionCharge ? subitem.injectionCharge : 0}</td>
-                                                        <td className="text-right">{subitem.otherCharge ? subitem.otherCharge : 0}</td>
-                                                        <td className="text-right">{subitem.totalCharge ? subitem.totalCharge : 0}</td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                        <tr className="report-group-title">
-                                            <td colSpan="3"></td>
-                                            <td className="text-right">Total</td>
-                                            <td className="text-right">{items.consultCharge}</td>
-                                            <td className="text-right">{items.usgCharge}</td>
-                                            <td className="text-right">{items.uptCharget}</td>
-                                            <td className="text-right">{items.injectionCharge}</td>
-                                            <td className="text-right">{items.otherCharge}</td>
-                                            <td className="text-right">{items.totalCharge}</td>
-                                        </tr>
-                                    </React.Fragment>
-                                )
-                            })
-                        }
-                    </tbody>
-                    <tfoot>
-                        {opdData && opdData.length ?
-                            (
-                                <tr className="report-footer">
-                                    <td colSpan="3">{opdCount} Patients</td>
-                                    <td className="text-right">Grand Total</td>
-                                    <td className="text-right">{consultChargeTotal}</td>
-                                    <td className="text-right">{usgChargeTotal}</td>
-                                    <td className="text-right">{uptChargeTotal}</td>
-                                    <td className="text-right">{injectionChargeTotal}</td>
-                                    <td className="text-right">{otherChargeTotal}</td>
-                                    <td className="text-right">{amountChargeTotal}</td>
-                                </tr>
-                            ) :
-                            (
-                                <tr>
-                                    <td colSpan="11" className="text-left">No Record Found</td>
-                                </tr>
-                            )}
-                    </tfoot>
-                </table>
+                                                items.data.map((subitem) =>
+                                                {
+                                                    return (
+                                                        <tr key={`subitem${ subitem.id }`}>
+                                                            <td>{subitem.id}</td>
+                                                            <td>{subitem.invoiceNo}</td>
+                                                            <td>{subitem.fullname}</td>
+                                                            <td>{subitem.caseTypeName}</td>
+                                                            <td className="text-right">{subitem.consultCharge ? subitem.consultCharge : 0}</td>
+                                                            <td className="text-right">{subitem.usgCharge ? subitem.usgCharge : 0}</td>
+                                                            <td className="text-right">{subitem.uptCharge ? subitem.uptCharge : 0}</td>
+                                                            <td className="text-right">{subitem.injectionCharge ? subitem.injectionCharge : 0}</td>
+                                                            <td className="text-right">{subitem.otherCharge ? subitem.otherCharge : 0}</td>
+                                                            <td className="text-right">{subitem.totalCharge ? subitem.totalCharge : 0}</td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                            <tr className="report-group-title">
+                                                <td colSpan="3"></td>
+                                                <td className="text-right">Total</td>
+                                                <td className="text-right">{items.consultCharge}</td>
+                                                <td className="text-right">{items.usgCharge}</td>
+                                                <td className="text-right">{items.uptCharget}</td>
+                                                <td className="text-right">{items.injectionCharge}</td>
+                                                <td className="text-right">{items.otherCharge}</td>
+                                                <td className="text-right">{items.totalCharge}</td>
+                                            </tr>
+                                        </React.Fragment>
+                                    )
+                                })
+                            }
+                        </tbody>
+                        <tfoot>
+                            {opdData && opdData.length ?
+                                (
+                                    <tr className="report-footer">
+                                        <td colSpan="3">{opdCount} Patients</td>
+                                        <td className="text-right">Grand Total</td>
+                                        <td className="text-right">{consultChargeTotal}</td>
+                                        <td className="text-right">{usgChargeTotal}</td>
+                                        <td className="text-right">{uptChargeTotal}</td>
+                                        <td className="text-right">{injectionChargeTotal}</td>
+                                        <td className="text-right">{otherChargeTotal}</td>
+                                        <td className="text-right">{amountChargeTotal}</td>
+                                    </tr>
+                                ) :
+                                (
+                                    <tr>
+                                        <td colSpan="11" className="text-left">No Record Found</td>
+                                    </tr>
+                                )}
+                        </tfoot>
+                    </table>
+                </div>
                 <OverlayPanel ref={(el) => this.op = el}>
                     <label> Opd Report Summary</label>
                     <table className="table table-bordered report-table">
