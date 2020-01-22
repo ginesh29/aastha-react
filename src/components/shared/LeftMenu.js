@@ -1,10 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-export default class LeftMenu extends React.Component
-{
-    render()
-    {
+export default class LeftMenu extends React.Component {
+    render() {
         return (
             <aside>
                 <div id="sidebar" className="nav-collapse">
@@ -63,10 +61,10 @@ export default class LeftMenu extends React.Component
                                 </NavLink>
                             </li>
                             <li>
-                                <a href="{}">
+                                <NavLink to="/statistics">
                                     <i className="fa fa-tasks"></i>
                                     <span>Statistics</span>
-                                </a>
+                                </NavLink>
                             </li>
                             <li className="sub-menu">
                                 <a href="{}">
