@@ -22,8 +22,8 @@ export const reportTypeEnum = {
 };
 
 export const appointmentTypeEnum = {
-    DATE: { value: 1, label: "Date", color: "#cc2424" },
-    SONOGRAPHY: { value: 2, label: "Sonography", color: "#00a651" },
-    ANOMALY: { value: 3, label: "Anomaly", color: "#fad839" },
+    DATE: { value: 1, label: "Date", color: "#ff6c60" },
+    SONOGRAPHY: { value: 2, label: "Sonography", color: "#5cb85c" },
+    ANOMALY: { value: 3, label: "Anomaly", color: "#FCB322" },
     OVULATION: { value: 3, label: "Ovulation", color: "#21a9e1" }
 };

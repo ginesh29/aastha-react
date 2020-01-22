@@ -1,5 +1,5 @@
 import { repository } from "./repository";
-import { lookupTypeEnum } from "./enums";
+import { lookupTypeEnum, appointmentTypeEnum } from "./enums";
 export class helper
 {
   constructor()
@@ -61,6 +61,30 @@ export class helper
       })
   }
 
+  getAppointments = (fetchInfo, successCallback) =>
+  {
+    console.log(fetchInfo)
+    const includeProperties = "Patient";
+    let date = new Date(this.formatFullcalendarDate(fetchInfo.start));
+    date.setDate(date.getDate() + 7);
+    let month = this.getMonthFromDate(date);
+    let year = this.getYearFromDate(date);
+
+    const filterString = `Date.Month-eq-{${ month }} and Date.Year-eq-{${ year }}`;
+
+    this.repository.get("appointments", `filter=${ filterString }&includeProperties=${ includeProperties }`, this.messages)
+      .then(res =>
+      {
+        let appointments = res && res.data.map(item =>
+        {
+          item.title = item.patient.fullname;
+          item.start = this.formatFullcalendarDate(item.date);
+          item.color = appointmentTypeEnum[item.appointmentType.toUpperCase()].color;
+          return item;
+        });
+        successCallback(appointments)
+      });
+  }
   generateFilterString = (filters) =>
   {
     let filterString = "";
@@ -111,7 +135,7 @@ export class helper
     })
 
   }
-  formatFullcalendarDate(date)
+  formatFullcalendarDate = (date) =>
   {
     let d = date ? new Date(date) : new Date();
     var month = d.getMonth() + 1;

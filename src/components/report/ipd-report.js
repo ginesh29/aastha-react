@@ -63,6 +63,7 @@ export default class IpdReport extends Component
     componentDidMount = (e) =>
     {
         //const day = this.helper.getDayFromDate();
+
         const month = this.helper.getMonthFromDate();
         const year = this.helper.getYearFromDate() - 1;
         const filter = `DischargeDate.Month-eq-{${ month }} and DischargeDate.Year-eq-{${ year }}`;
@@ -101,7 +102,6 @@ export default class IpdReport extends Component
     }
     printOrder = () =>
     {
-        alert()
         const printableElements = document.getElementById('printme').innerHTML;
         const orderHtml = '<html><head><title></title></head><body>' + printableElements + '</body></html>'
         const oldPage = document.body.innerHTML;

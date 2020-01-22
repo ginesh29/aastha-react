@@ -80,3 +80,7 @@ hr {
 .vertical-devider {
   border-right: 1px dashed #333;
 }
+.fc-event {
+  padding: 1px;
+  margin: 1px;
+}

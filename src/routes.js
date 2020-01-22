@@ -17,6 +17,7 @@ import OpdReport from "./components/report/opd-report";
 import IpdReport from "./components/report/ipd-report";
 import MonthlyIpdReport from "./components/report/monthly-ipd-report";
 import AppointmentCalendar from "./components/appointment-calendar";
+import Statistics from "./components/statistics";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 
@@ -42,6 +43,7 @@ const routes = (
 
       <Route path="/prescription" component={Prescription} />
       <Route path="/appointment-calendar" component={AppointmentCalendar} />
+      <Route path="/statistics" component={Statistics} />
       <Route path="/opd-report" component={OpdReport} />
       <Route path="/ipd-report" component={IpdReport} />
       <Route path="/monthly-ipd-report" component={MonthlyIpdReport} />

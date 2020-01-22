@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import { repository } from "../common/repository";
 import { helper } from "../common/helpers";
-import { appointmentTypeEnum } from "../common/enums";
 import { FullCalendar } from 'primereact/fullcalendar';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import '@fullcalendar/core/main.css';
 import interactionPlugin from "@fullcalendar/interaction";
+import { Dialog } from 'primereact/dialog';
 
-export default class AppointmentCalendar extends Component {
-    constructor(props) {
+export default class AppointmentCalendar extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
+            dialog: false,
             appointments: [],
             loading: true,
             filterString: "",
-            sortString: "id asc",
             controller: "appointments",
             includeProperties: "Patient",
             events: []
@@ -22,95 +24,65 @@ export default class AppointmentCalendar extends Component {
         this.repository = new repository();
         this.helper = new helper();
     }
-    getAppointments = () => {
-        const { filterString, sortString, includeProperties, controller } = this.state;
-        return this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
-            .then(res => {
-                res && res.data.map(item => {
-                    item.title = item.patient.firstname;
-                    item.description = item.patient.fullname;
-                    item.start = this.helper.formatFullcalendarDate(item.date);
-                    item.color = appointmentTypeEnum[item.appointmentType.toUpperCase()].color;
-                    return item;
-                });
-                this.setState({
-                    appointments: res && res.data,
-                    loading: false
-                });
-            })
+    onClick = () =>
+    {
+        this.setState({ dialog: true });
     }
-    // componentDidMount() {
-    //     const month = this.helper.getMonthFromDate();
-    //     const year = this.helper.getYearFromDate();
-    //     const filter = `Date.Month-eq-{${month}} and Date.Year-eq-{${year}}`;
-    //     this.setState({ filterString: filter }, () => {
-    //         this.getAppointments();
-    //     });
-    // }
 
-    getAppointments = (fetchInfo, successCallback) => {
-        const { filterString, sortString, includeProperties, controller } = this.state;
-        this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
-            .then(res => {
-                let appointments = res && res.data.map(function (item) {
-                    return {
-                        title: item.patient.firstname,
-                        description: item.patient.fullname,
-                        start: "2019-01-01",// this.helper.formatFullcalendarDate(item.date),
-                        color: appointmentTypeEnum[item.appointmentType.toUpperCase()].color
-                    };
-                });
-                successCallback(appointments)
-            });
+    onHide = () =>
+    {
+        this.setState({ dialog: false });
     }
-    getCalendarData(fetchInfo, successCallback) {
-        const { filterString, sortString, includeProperties, controller } = this.state;
-        try {
 
-            let year = new Date().getFullYear();
-            let month = new Date().getMonth() + 1;
-
-            if (fetchInfo) {
-                year = new Date(fetchInfo.start).getFullYear();
-                month = new Date(fetchInfo.start).getMonth() + 1;
-            }
-
-            this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`, this.messages)
-                .then(res => {
-                    let appointments = res && res.data.map(function (item) {
-                        return {
-                            title: item.patient.firstname,
-                            description: item.patient.fullname,
-                            start: "2019-01-01",// this.helper.formatFullcalendarDate(item.date),
-                            color: appointmentTypeEnum[item.appointmentType.toUpperCase()].color
-                        };
-                    });
-                    successCallback(appointments)
-                });
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    render() {
+    render()
+    {
         const options = {
+            firstDay: 1,
+            eventLimit: 6,
             hiddenDays: [0],
-            height: 750,
+            height: 900,
             plugins: [dayGridPlugin, interactionPlugin],
-            defaultDate: '2020-01-01',//this.helper.formatFullcalendarDate(),//new Date(),
-            editable: true,
-            dateClick: function () {
-                //alert()
-            }
+            dateClick: (arg) =>
+            {
+                //console.log(arg.jsEvent)
+                arg.jsEvent.preventDefault();
+                this.setState({ dialog: true });
+            },
+            // eventClick: function (calEvent, jsEvent, view)
+            // {
+            //     var title = prompt('Event Title:', calEvent.title, 'Event Title:', calEvent.title, { buttons: { Ok: true, Cancel: false } });
+
+            //     // if (title) {
+            //     //     calEvent.title = title;
+            //     //     calendar.fullCalendar('updateEvent', calEvent);
+            //     // }
+            // }
+            // eventClick: (info) =>
+            // {
+            //     info.jsEvent.preventDefault(); // don't let the browser navigate
+
+            //     this.setState({ dialog: true });
+            // }
         }
         return (
-            <div className="row" >
-                <div className="col-md-12">
-                    <FullCalendar options={options} events={
-                        (fetchInfo, successCallback, failureCallback) => this.getCalendarData(fetchInfo, successCallback, failureCallback)
-                    } />
-                </div>
-            </div>
+            <>
+                <h3 className="report-header">Appointment Calendar</h3>
+                <hr />
+                <div className="row">
+                    <div className="col-md-12">
+                        <FullCalendar options={options}
+                            events={
+                                (fetchInfo, successCallback) => this.helper.getAppointments(fetchInfo, successCallback)
+                            } />
+                    </div>
+                </div >
+                <Dialog header="Godfather I" visible={this.state.dialog} onHide={this.onHide} >
+                    The story begins as Don Vito Corleone, the head of a New York Mafia family, oversees his daughter's wedding.
+                    His beloved son Michael has just come home from the war, but does not intend to become part of his father's business.
+                    Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family,
+                    kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family.
+                    </Dialog>
+            </>
         );
     }
 }
