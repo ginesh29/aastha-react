@@ -5,8 +5,10 @@ import { Panel } from 'primereact/panel';
 import { TabView, TabPanel } from 'primereact/tabview';
 import _ from 'lodash';
 
-export default class Statistics extends Component {
-    constructor(props) {
+export default class Statistics extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
             loading: true,
@@ -14,37 +16,46 @@ export default class Statistics extends Component {
         this.repository = new repository();
         this.helper = new helper();
     }
-    // getYears = () => {
-    //     const opdFilterString = "date-neq-{01-01-1900}";
-    //     this.repository.get("opds", `filter=${opdFilterString}&fields=date.year&sort=date desc`, this.messages)
-    //         .then(res => {
-    //             this.setState({ opdYears: res.data })
-    //         })
-    // }
-    getStatistics = () => {
-        const opdFilterString = `date-neq-{01-01-1900}`;
-        this.repository.get("opds/GetStatistics", `filter=${opdFilterString}`, this.messages)
-            .then(res => {
+    getStatistics = () =>
+    {
+        this.repository.get("opds/GetStatistics", `filter=0`, this.messages)
+            .then(res =>
+            {
                 let opdStatistics = _.groupBy(res, "year");
                 this.setState({ opdStatistics: opdStatistics })
             })
+        this.repository.get("ipds/GetStatistics", `filter=0`, this.messages)
+            .then(res =>
+            {
+                let ipdStatistics = _.groupBy(res, "year");
+                this.setState({ ipdStatistics: ipdStatistics })
+            })
     }
-    componentDidMount = () => {
+    componentDidMount = () =>
+    {
         this.getStatistics();
     }
-    render() {
-        const { opdStatistics, opdActiveIndex } = this.state;
+    render()
+    {
+        const { opdStatistics, ipdStatistics, opdActiveTab, ipdActiveTab } = this.state;
+        let totalOpdPatient = 0;
+        let totalOpdCollection = 0;
+        let totalIpdPatient = 0;
+        let totalIpdCollection = 0;
         return (
             <div className="row">
                 <div className="col-md-6">
                     <Panel header="Opd Statistics">
-                        <TabView activeIndex={opdActiveIndex} onTabChange={(e) => this.setState({ opdActiveIndex: e.index })}>
+                        <TabView activeIndex={opdActiveTab} onTabChange={(e) => this.setState({ opdActiveTab: e.index })}>
                             {
-                                opdStatistics && Object.keys(opdStatistics).map((year) => {
+                                opdStatistics && Object.keys(opdStatistics).map((year) =>
+                                {
+                                    totalOpdPatient = opdStatistics[year].reduce((total, item) => total + item.totalPatient, 0);
+                                    totalOpdCollection = opdStatistics[year].reduce((total, item) => total + item.totalCollection, 0);
                                     return (
-                                        <TabPanel header={year}>
+                                        <TabPanel header={year} key={year}>
                                             <div className="row">
-                                                <table class="table table-bordered">
+                                                <table className="table table-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th>Month</th>
@@ -54,9 +65,10 @@ export default class Statistics extends Component {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            opdStatistics[year].map(item => {
+                                                            opdStatistics[year].map(item =>
+                                                            {
                                                                 return (
-                                                                    <tr>
+                                                                    <tr key={item.monthName}>
                                                                         <td>{item.monthName}</td>
                                                                         <td>{item.totalPatient}</td>
                                                                         <td>{item.totalCollection}</td>
@@ -68,8 +80,8 @@ export default class Statistics extends Component {
                                                     <tfoot>
                                                         <tr>
                                                             <td>Total</td>
-                                                            <td>5610</td>
-                                                            <td>1612930</td>
+                                                            <td>{totalOpdPatient}</td>
+                                                            <td>{totalOpdCollection}</td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
@@ -81,6 +93,56 @@ export default class Statistics extends Component {
                         </TabView>
                     </Panel>
                 </div>
+                <div className="col-md-6">
+                    <Panel header="Ipd Statistics">
+                        <TabView activeIndex={ipdActiveTab} onTabChange={(e) => this.setState({ ipdActiveTab: e.index })}>
+                            {
+                                ipdStatistics && Object.keys(ipdStatistics).map((year) =>
+                                {
+                                    totalIpdPatient = ipdStatistics[year].reduce((total, item) => total + item.totalPatient, 0);
+                                    totalIpdCollection = ipdStatistics[year].reduce((total, item) => total + item.totalCollection, 0);
+                                    return (
+                                        <TabPanel header={year} key={year}>
+                                            <div className="row">
+                                                <table className="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Month</th>
+                                                            <th>No of Patients </th>
+                                                            <th>Total Collection</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            ipdStatistics[year].map(item =>
+                                                            {
+                                                                return (
+                                                                    <tr key={item.monthName}>
+                                                                        <td>{item.monthName}</td>
+                                                                        <td>{item.totalPatient}</td>
+                                                                        <td>{item.totalCollection}</td>
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                        }
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td>Total</td>
+                                                            <td>{totalIpdPatient}</td>
+                                                            <td>{totalIpdCollection}</td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </TabPanel>
+                                    )
+                                })
+                            }
+                        </TabView>
+                    </Panel>
+                </div>
+
             </div >
         );
     }
