@@ -34,12 +34,11 @@
         /*==Nice Scroll ==*/
         if ($.fn.niceScroll) {
 
-
             $(".leftside-navigation").niceScroll({
                 cursorcolor: "#1FB5AD",
                 cursorborder: "0px solid #fff",
                 cursorborderradius: "0px",
-                cursorwidth: "3px"
+                cursorwidth: "5px"
             });
 
             $(".leftside-navigation").getNiceScroll().resize();
@@ -291,6 +290,4 @@
 
         $('.popovers').popover();
     });
-
-
 })(jQuery);

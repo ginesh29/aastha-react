@@ -1,5 +1,8 @@
 export const BASE_API_URL = "http://localhost:61194/api";
 export const ROWS = 10;
+export const TODAY_DATE = new Date()
+TODAY_DATE.setFullYear(TODAY_DATE.getFullYear() - 1);
+export const TEN_YEAR_RANGE = `${ TODAY_DATE.getFullYear() - 10 }:${ TODAY_DATE.getFullYear() + 10 }`;
 
 //Title
 export const PATIENT_REGISTRATION_TITLE = "Patient Registration";

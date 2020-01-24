@@ -3,8 +3,7 @@ html {
     -webkit-font-smoothing: antialiased !important;
 }
 body {
-    color:#767676;
-    font-family:'Open Sans',sans-serif;
+    font-family:sans-serif;
     padding:0px !important;
     margin:0px !important;
     font-size:13px;
@@ -36,6 +35,15 @@ a,a:hover,a:focus {
     -moz-transition:all .3s ease-in-out;
     -o-transition:all .3s ease-in-out;
     transition: all .3s ease-in-out;
+}
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
 }
 /*login page*/
 .login-body {

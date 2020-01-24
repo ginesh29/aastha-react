@@ -63,7 +63,6 @@ export class helper
 
   getAppointments = (fetchInfo, successCallback) =>
   {
-    console.log(fetchInfo)
     const includeProperties = "Patient";
     let date = new Date(this.formatFullcalendarDate(fetchInfo.start));
     date.setDate(date.getDate() + 7);
@@ -150,7 +149,8 @@ export class helper
   getMonthFromDate = (date) =>
   {
     let d = date ? new Date(date) : new Date();
-    return d.getMonth() + 1;
+    let month = d.getMonth() + 1;
+    return month < 10 ? `0${ month }` : month;
   }
   getYearFromDate = (date) =>
   {

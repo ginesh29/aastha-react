@@ -6,6 +6,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import '@fullcalendar/core/main.css';
 import interactionPlugin from "@fullcalendar/interaction";
 import { Dialog } from 'primereact/dialog';
+import { Panel } from 'primereact/panel';
 
 export default class AppointmentCalendar extends Component
 {
@@ -33,7 +34,6 @@ export default class AppointmentCalendar extends Component
     {
         this.setState({ dialog: false });
     }
-
     render()
     {
         const options = {
@@ -42,10 +42,9 @@ export default class AppointmentCalendar extends Component
             hiddenDays: [0],
             height: 900,
             plugins: [dayGridPlugin, interactionPlugin],
+            rerenderDelay: 10,
             dateClick: (arg) =>
             {
-                //console.log(arg.jsEvent)
-                arg.jsEvent.preventDefault();
                 this.setState({ dialog: true });
             },
             // eventClick: function (calEvent, jsEvent, view)
@@ -66,21 +65,23 @@ export default class AppointmentCalendar extends Component
         }
         return (
             <>
-                <h3 className="report-header">Appointment Calendar</h3>
-                <hr />
-                <div className="row">
-                    <div className="col-md-12">
-                        <FullCalendar options={options}
-                            events={
-                                (fetchInfo, successCallback) => this.helper.getAppointments(fetchInfo, successCallback)
-                            } />
+                <Panel header="Appointment Calendar">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <input type="text" onChange={() => this.setState({ dialog: true })} />
+                            <FullCalendar options={options}
+                                events={
+                                    (fetchInfo, successCallback) => this.helper.getAppointments(fetchInfo, successCallback)
+                                } />
+                        </div>
                     </div>
-                </div >
-                <Dialog header="Godfather I" visible={this.state.dialog} onHide={this.onHide} >
+                </Panel>
+
+                <Dialog header="Godfather I" visible={this.state.dialog} onHide={this.onHide}>
                     The story begins as Don Vito Corleone, the head of a New York Mafia family, oversees his daughter's wedding.
-                    His beloved son Michael has just come home from the war, but does not intend to become part of his father's business.
-                    Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family,
-                    kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family.
+                        His beloved son Michael has just come home from the war, but does not intend to become part of his father's business.
+                        Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family,
+                        kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family.
                     </Dialog>
             </>
         );

@@ -34,7 +34,9 @@ label {
 .p-paginator .p-highlight {
   pointer-events: none !important;
 }
-
+.p-panel-titlebar {
+  background: none !important;
+}
 .report-header {
   font-size: 21px;
   text-align: center;
@@ -45,6 +47,13 @@ label {
 }
 hr {
   margin-top: 1px !important;
+}
+.table {
+  padding: 8px;
+}
+.statistics-table th,
+.statistics-table td {
+  padding: 8px !important;
 }
 .report-table th,
 .report-table td,
@@ -60,6 +69,7 @@ hr {
   font-weight: 600;
 }
 .invoice-table th,
+.statistics-table th,
 .report-table th,
 .report-footer td,
 .invoice-footer td {
@@ -83,4 +93,8 @@ hr {
 .fc-event {
   padding: 1px;
   margin: 1px;
+  width: 80%;
+}
+.fc-title {
+  padding: 2px;
 }

@@ -23,7 +23,7 @@ export const reportTypeEnum = {
 
 export const appointmentTypeEnum = {
     DATE: { value: 1, label: "Date", color: "#ff6c60" },
-    SONOGRAPHY: { value: 2, label: "Sonography", color: "#5cb85c" },
+    SONOGRAPHY: { value: 2, label: "Sonography", color: "#1FB5AD " },
     ANOMALY: { value: 3, label: "Anomaly", color: "#FCB322" },
-    OVULATION: { value: 3, label: "Ovulation", color: "#21a9e1" }
+    OVULATION: { value: 3, label: "Ovulation", color: "#59ace2" }
 };

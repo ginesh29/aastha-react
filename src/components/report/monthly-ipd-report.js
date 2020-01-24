@@ -5,13 +5,10 @@ import { helper } from "../../common/helpers";
 import { lookupTypeEnum, reportTypeEnum } from "../../common/enums";
 import _ from 'lodash';
 import numberToWords from 'number-to-words';
-import invoice_header from "../../images/invoice_header.jpg"
-import { Button } from 'primereact/button';
-import { RadioButton } from 'primereact/radiobutton';
-import { Calendar } from 'primereact/calendar';
+import invoice_header from "../../assets/images/invoice_header.jpg"
+import ReportFilter from './report-filter';
+import { TODAY_DATE } from "../../common/constants";
 
-const todayDate = new Date()
-const yearRange = `${ todayDate.getFullYear() - 10 }:${ todayDate.getFullYear() + 10 }`;
 export default class MonthlyIpdReport extends Component
 {
     constructor(props)
@@ -22,6 +19,9 @@ export default class MonthlyIpdReport extends Component
             ipds: [],
             loading: true,
             filterString: "",
+            dateSelection: TODAY_DATE,
+            dateRangeSelection: [TODAY_DATE],
+            monthSelection: TODAY_DATE,
             sortString: "dischargeDate asc",
             controller: "ipds",
             includeProperties: "Patient.Address,Charges.ChargeDetail",
@@ -63,8 +63,8 @@ export default class MonthlyIpdReport extends Component
     }
     componentDidMount = (e) =>
     {
-        const month = this.helper.getMonthFromDate();
-        const year = this.helper.getYearFromDate() - 1;
+        const month = this.helper.getMonthFromDate(TODAY_DATE);
+        const year = this.helper.getYearFromDate(TODAY_DATE);
         const filter = `DischargeDate.Month-eq-{${ month }} and DischargeDate.Year-eq-{${ year }}`;
         this.setState({ filterString: filter }, () =>
         {
@@ -102,8 +102,7 @@ export default class MonthlyIpdReport extends Component
 
     render()
     {
-        const { ipds, chargeNames, reportType, dateSelection, dateRangeSelection, monthSelection } = this.state;
-        const reportTypeOptions = this.helper.enumToObject(reportTypeEnum);
+        const { ipds, chargeNames } = this.state;
         let ipdData;
         let chargesColumns;
         let amount = 0;
@@ -131,41 +130,13 @@ export default class MonthlyIpdReport extends Component
                 return item;
             });
             ipdData = mapWithCharge;
-            chargesColumns = Object.keys(ipdData[0]).filter(m => m.includes("dynamic-charge"));
+            chargesColumns = ipdData[0] && Object.keys(ipdData[0]).filter(m => m.includes("dynamic-charge"));
         }
-        //let ipdCount = ipdData && ipdData.reduce((total, item) => total + Number(item.count), 0);
-        //let amountTotal = ipdData && ipdData.reduce((total, item) => total + Number(item.total), 0);
+
         return (
             <>
                 <Messages ref={(el) => this.messages = el} />
-                <h4>Report Type</h4>
-                <div className="row">
-                    <div className="col-md-5">
-                        <div className="form-group">
-                            {
-                                reportTypeOptions.map((item, i) =>
-                                {
-                                    return (
-                                        <label className="radio-inline" key={i}>
-                                            <RadioButton inputId={`reportType${ i }`} name="reportType" value={item.value} onChange={(e) => this.setState({ reportType: e.value })} checked={reportType === item.value} />
-                                            <label htmlFor={`reportType${ i }`} className="p-radiobutton-label">{item.label}</label>
-                                        </label>
-                                    )
-                                })
-                            }
-                        </div>
-                    </div>
-                    <div className="col-md-7">
-                        <div className="p-inputgroup pull-right">
-                            <div className="form-group">
-                                <Calendar name="dateSelection" value={dateSelection} onChange={this.onDateSelection} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DAILY.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={yearRange} />
-                                <Calendar name="dateRangeSelection" value={dateRangeSelection} onChange={this.onDateSelection} selectionMode="range" readonlyInput={true} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DATERANGE.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={yearRange} />
-                                <Calendar name="monthSelection" value={monthSelection} onChange={this.onDateSelection} view="month" dateFormat="mm/yy" yearNavigator={true} yearRange={yearRange} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.MONTHLY.value ? "" : "none" }} />
-                                <Button icon="pi pi-print" className="p-button-primary" label="Print" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value })} data={ipdData} showSummary={false} />
                 <hr />
                 <div className="row invoice">
                     {

@@ -5,8 +5,10 @@ import { Panel } from 'primereact/panel';
 import { TabView, TabPanel } from 'primereact/tabview';
 import _ from 'lodash';
 
-export default class Statistics extends Component {
-    constructor(props) {
+export default class Statistics extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
             loading: true,
@@ -14,22 +16,27 @@ export default class Statistics extends Component {
         this.repository = new repository();
         this.helper = new helper();
     }
-    getStatistics = () => {
+    getStatistics = () =>
+    {
         this.repository.get("opds/GetStatistics", `filter=0`, this.messages)
-            .then(res => {
+            .then(res =>
+            {
                 let opdStatistics = _.groupBy(res, "year");
                 this.setState({ opdStatistics: opdStatistics })
             })
         this.repository.get("ipds/GetStatistics", `filter=0`, this.messages)
-            .then(res => {
+            .then(res =>
+            {
                 let ipdStatistics = _.groupBy(res, "year");
                 this.setState({ ipdStatistics: ipdStatistics })
             })
     }
-    componentDidMount = () => {
+    componentDidMount = () =>
+    {
         this.getStatistics();
     }
-    render() {
+    render()
+    {
         const { opdStatistics, ipdStatistics, opdActiveTab, ipdActiveTab } = this.state;
         let totalOpdPatient = 0;
         let totalOpdCollection = 0;
@@ -41,13 +48,14 @@ export default class Statistics extends Component {
                     <Panel header="Opd Statistics">
                         <TabView activeIndex={opdActiveTab} onTabChange={(e) => this.setState({ opdActiveTab: e.index })}>
                             {
-                                opdStatistics && Object.keys(opdStatistics).reverse().map((year) => {
+                                opdStatistics && Object.keys(opdStatistics).reverse().map((year) =>
+                                {
                                     totalOpdPatient = opdStatistics[year].reduce((total, item) => total + item.totalPatient, 0);
                                     totalOpdCollection = opdStatistics[year].reduce((total, item) => total + item.totalCollection, 0);
                                     return (
                                         <TabPanel header={year} key={year}>
                                             <div className="row">
-                                                <table className="table table-bordered">
+                                                <table className="table table-bordered statistics-table">
                                                     <thead>
                                                         <tr>
                                                             <th>Month</th>
@@ -57,7 +65,8 @@ export default class Statistics extends Component {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            opdStatistics[year].map(item => {
+                                                            opdStatistics[year].map(item =>
+                                                            {
                                                                 return (
                                                                     <tr key={item.monthName}>
                                                                         <td>{item.monthName}</td>
@@ -68,7 +77,7 @@ export default class Statistics extends Component {
                                                             })
                                                         }
                                                     </tbody>
-                                                    <tfoot>
+                                                    <tfoot className="report-footer">
                                                         <tr>
                                                             <td>Total</td>
                                                             <td>{totalOpdPatient}</td>
@@ -88,13 +97,14 @@ export default class Statistics extends Component {
                     <Panel header="Ipd Statistics">
                         <TabView activeIndex={ipdActiveTab} onTabChange={(e) => this.setState({ ipdActiveTab: e.index })}>
                             {
-                                ipdStatistics && Object.keys(ipdStatistics).reverse().map((year) => {
+                                ipdStatistics && Object.keys(ipdStatistics).reverse().map((year) =>
+                                {
                                     totalIpdPatient = ipdStatistics[year].reduce((total, item) => total + item.totalPatient, 0);
                                     totalIpdCollection = ipdStatistics[year].reduce((total, item) => total + item.totalCollection, 0);
                                     return (
                                         <TabPanel header={year} key={year}>
                                             <div className="row">
-                                                <table className="table table-bordered">
+                                                <table className="table table-bordered statistics-table">
                                                     <thead>
                                                         <tr>
                                                             <th>Month</th>
@@ -104,7 +114,8 @@ export default class Statistics extends Component {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            ipdStatistics[year].map(item => {
+                                                            ipdStatistics[year].map(item =>
+                                                            {
                                                                 return (
                                                                     <tr key={item.monthName}>
                                                                         <td>{item.monthName}</td>
@@ -115,7 +126,7 @@ export default class Statistics extends Component {
                                                             })
                                                         }
                                                     </tbody>
-                                                    <tfoot>
+                                                    <tfoot className="report-footer">
                                                         <tr>
                                                             <td>Total</td>
                                                             <td>{totalIpdPatient}</td>
