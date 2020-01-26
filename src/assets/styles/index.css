@@ -97,3 +97,11 @@ hr {
 .fc-title {
   padding: 2px;
 }
+.icon-button {
+  background: none!important;
+  border: none;
+  color:#ffeeee;
+  text-decoration: underline;
+  cursor: pointer;
+  float: right;
+}

@@ -10,6 +10,7 @@ import { FULLCALENDAR_OPTION } from "../common/constants";
 import InputField from "./shared/InputField";
 import * as Constants from "../common/constants";
 import ReactDOM from 'react-dom';
+import { Button } from 'primereact/button';
 
 const title = "Appointment";
 let operation = "";
@@ -55,8 +56,11 @@ export default class AppointmentCalendar extends Component {
             })
         }
         this.options.eventRender = (info) => {
-            // const content = <div>{info.event.title}<div>{info.event.description}</div></div>;
-            // ReactDOM.render(content, info.el);
+            const content = <div className="fc-content">
+                <span className="fc-title">{info.event.title}</span>
+                <button className="icon-button" onClick={this.handelDelete}><i className="pi pi-times pull-right" /></button>
+            </div >;
+            ReactDOM.render(content, info.el);
         }
     }
     getInitialState = () => ({
@@ -111,6 +115,10 @@ export default class AppointmentCalendar extends Component {
         if (isValidationFired)
             this.handleValidation();
     };
+    handelDelete = (e) => {
+        e.stopPropagation();
+        console.log(e)
+    }
     render() {
         const { appointments, dialog, appointmentTypeOptions } = this.state;
         const { date, patientId, type } = this.state.formFields
