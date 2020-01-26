@@ -245,7 +245,6 @@ export default class IpdForm extends React.Component {
                 let typesofOprationOptions = lookups.filter(l => l.type === lookupTypeEnum.OPERATIONTYPE.value);
                 let generalDiagnosisOptions = lookups.filter(l => l.type === lookupTypeEnum.GENERALDIAGNOSIS.value);
                 let chargeNames = lookups.filter(l => l.type === lookupTypeEnum.CHARGENAME.value);
-                console.log(chargeNames)
                 this.setState({ typesofDeliveryOptions: typesofDeliveryOptions });
                 this.setState({ deliveryDiganosisOptions: deliveryDiganosisOptions });
                 this.setState({ operationDiagnosisOptions: operationDiagnosisOptions });

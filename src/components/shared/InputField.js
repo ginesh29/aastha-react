@@ -50,7 +50,7 @@ export default class InputField extends Component {
         <div className="form-group">
           <label className="control-label">{title}</label>
           <div className="p-inputgroup">
-            <Calendar name={name} value={value} showIcon={true} className={propClassName} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} dataKey={dataKey} minDate={minDate} ref={ref} />
+            <Calendar name={name} value={value} showIcon={true} className={propClassName} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} dataKey={dataKey} minDate={minDate} ref={ref} disabled={disabled} readOnly={readOnly} />
             <span className="p-inputgroup-addon">
               <i className={"fa " + groupIcon}></i>
             </span>
