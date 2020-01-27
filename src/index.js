@@ -19,10 +19,8 @@ import 'bootstrap/dist/js/bootstrap.js';
 // <!--common script init for all pages-->
 // <script src="assets/scripts/scripts.js"></script>
 
-export default class App extends React.Component
-{
-  render()
-  {
+export default class App extends React.Component {
+  render() {
     return routes;
   }
 }

@@ -28,14 +28,23 @@ label {
 .p-growl {
   z-index: 9999 !important;
 }
+.p-panel-titlebar {
+  background: #fafafa !important;
+  border-color: #eff2f7 !important; 
+  padding: 15px !important;
+}
+.p-panel-title{
+  font-size: 18px !important;
+  font-weight: 400 !important;
+}
+.p-panel-content{
+  border: none !important;
+}
 #prescription .p-panel-content {
   background: #fffcab !important;
 }
 .p-paginator .p-highlight {
   pointer-events: none !important;
-}
-.p-panel-titlebar {
-  background: none !important;
 }
 .report-header {
   font-size: 21px;
@@ -106,4 +115,16 @@ hr {
   cursor: pointer;
   /* float: right; */
   padding: 0;
+}
+
+@media print {
+  .report-table th,
+  .report-table td,
+  .invoice-table th,
+  .invoice-table td {
+    padding: 2px !important;
+    border: solid white !important;
+    line-height: 1.42857143 !important;
+    vertical-align: top !important;
+  }
 }
