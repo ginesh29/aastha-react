@@ -10,8 +10,10 @@ import { repository } from "../../common/repository";
 import PatientForm from "../patient/patient-form";
 
 const controller = "opds";
-export default class OpdForm extends React.Component {
-  constructor(props) {
+export default class OpdForm extends React.Component
+{
+  constructor(props)
+  {
     super(props);
     this.state = this.getInitialState();
     this.repository = new repository();
@@ -35,7 +37,8 @@ export default class OpdForm extends React.Component {
     validationErrors: {}
   });
 
-  handleChange = (e, action) => {
+  handleChange = (e, action) =>
+  {
     this.messages.clear();
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
@@ -54,10 +57,10 @@ export default class OpdForm extends React.Component {
     this.setState({
       formFields: fields
     });
-    console.log(fields)
     if (isValidationFired) this.handleValidation();
   };
-  handleSubmit = e => {
+  handleSubmit = e =>
+  {
     const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge } = this.state.formFields;
     e.preventDefault();
     if (this.handleValidation()) {
@@ -71,13 +74,15 @@ export default class OpdForm extends React.Component {
         injectionCharge: injectionCharge,
         otherCharge: otherCharge
       };
-      this.repository.post(controller, opd, this.growl, this.messages).then(res => {
+      this.repository.post(controller, opd, this.growl, this.messages).then(res =>
+      {
         if (res)
           this.handleReset();
       })
     }
   };
-  handleValidation = e => {
+  handleValidation = e =>
+  {
     const { opdDate, caseType, patientId } = this.state.formFields;
     let errors = {};
     let isValid = true;
@@ -101,12 +106,14 @@ export default class OpdForm extends React.Component {
     return isValid;
   };
 
-  handleReset = e => {
+  handleReset = e =>
+  {
     this.messages.clear();
     this.setState(this.getInitialState());
   };
 
-  render() {
+  render()
+  {
     const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields;
     const { patientDialogVisible } = this.state;
     return (

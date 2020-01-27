@@ -93,15 +93,17 @@ hr {
 .fc-event {
   padding: 1px;
   margin: 1px;
+  cursor: pointer;
 }
 .fc-title {
   padding: 2px;
 }
 .icon-button {
-  background: none!important;
+  background: none !important;
   border: none;
-  color:#ffeeee;
+  color: #ffeeee;
   text-decoration: underline;
   cursor: pointer;
-  float: right;
+  /* float: right; */
+  padding: 0;
 }

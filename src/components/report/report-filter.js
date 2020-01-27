@@ -5,6 +5,9 @@ import { helper } from "../../common/helpers";
 import { Calendar } from 'primereact/calendar';
 import { reportTypeEnum } from "../../common/enums";
 import { TEN_YEAR_RANGE } from "../../common/constants";
+import jquery from 'jquery';
+window.$ = window.jQuery = jquery;
+require('jQuery.print');
 
 export default class ReportFilter extends Component
 {
@@ -43,7 +46,7 @@ export default class ReportFilter extends Component
                                 <Calendar name="dateSelection" value={dateSelection} onChange={onDateSelection} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DAILY.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} />
                                 <Calendar name="dateRangeSelection" value={dateRangeSelection} onChange={onDateSelection} selectionMode="range" readonlyInput={true} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.DATERANGE.value ? "" : "none" }} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} />
                                 <Calendar name="monthSelection" value={monthSelection} onChange={onDateSelection} view="month" dateFormat="mm/yy" yearNavigator={true} yearRange={TEN_YEAR_RANGE} readOnlyInput={true} style={{ display: reportType === reportTypeEnum.MONTHLY.value ? "" : "none" }} />
-                                <Button icon="pi pi-print" className="p-button-primary" label="Print" style={{ display: data && data.length ? "" : "none" }} />
+                                <Button icon="pi pi-print" className="p-button-primary" label="Print" style={{ display: data && data.length ? "" : "none" }} onClick={() => jquery("#print-div").print()} />
                             </div>
                         </div>
                     </div>
