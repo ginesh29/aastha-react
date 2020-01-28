@@ -45,7 +45,7 @@ export default class Statistics extends Component
         return (
             <div className="row">
                 <div className="col-md-6">
-                    <Panel header="Opd Statistics">
+                    <Panel header="Opd Statistics" toggleable={true}>
                         <TabView activeIndex={opdActiveTab} onTabChange={(e) => this.setState({ opdActiveTab: e.index })}>
                             {
                                 opdStatistics && Object.keys(opdStatistics).reverse().map((year) =>
@@ -71,7 +71,7 @@ export default class Statistics extends Component
                                                                     <tr key={item.monthName}>
                                                                         <td>{item.monthName}</td>
                                                                         <td>{item.totalPatient}</td>
-                                                                        <td>{item.totalCollection}</td>
+                                                                        <td>{this.helper.formatCurrency(item.totalCollection)}</td>
                                                                     </tr>
                                                                 )
                                                             })
@@ -81,7 +81,7 @@ export default class Statistics extends Component
                                                         <tr>
                                                             <td>Total</td>
                                                             <td>{totalOpdPatient}</td>
-                                                            <td>{totalOpdCollection}</td>
+                                                            <td>{this.helper.formatCurrency(totalOpdCollection)}</td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
@@ -94,7 +94,7 @@ export default class Statistics extends Component
                     </Panel>
                 </div>
                 <div className="col-md-6">
-                    <Panel header="Ipd Statistics">
+                    <Panel header="Ipd Statistics" toggleable={true}>
                         <TabView activeIndex={ipdActiveTab} onTabChange={(e) => this.setState({ ipdActiveTab: e.index })}>
                             {
                                 ipdStatistics && Object.keys(ipdStatistics).reverse().map((year) =>
@@ -120,7 +120,7 @@ export default class Statistics extends Component
                                                                     <tr key={item.monthName}>
                                                                         <td>{item.monthName}</td>
                                                                         <td>{item.totalPatient}</td>
-                                                                        <td>{item.totalCollection}</td>
+                                                                        <td>{this.helper.formatCurrency(item.totalCollection)}</td>
                                                                     </tr>
                                                                 )
                                                             })
@@ -130,7 +130,7 @@ export default class Statistics extends Component
                                                         <tr>
                                                             <td>Total</td>
                                                             <td>{totalIpdPatient}</td>
-                                                            <td>{totalIpdCollection}</td>
+                                                            <td>{this.helper.formatCurrency(totalIpdCollection)}</td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>

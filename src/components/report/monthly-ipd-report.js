@@ -136,96 +136,94 @@ export default class MonthlyIpdReport extends Component
         return (
             <>
                 <Messages ref={(el) => this.messages = el} />
-                <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value })} data={ipdData} showSummary={false} />
-                <hr />
-                <div className="row invoice">
-                    {
-                        ipdData && ipdData.map((items, i) =>
-                        {
-                            return (
-                                <div className={`col-md-6 col-xs-6 ${ i % 2 === 0 ? "vertical-devider" : "" }`} key={i}>
-                                    <div className="" style={{ paddingLeft: "50px" }}>
-                                        <img src={invoice_header} className="img-responsive" alt="Invoice Header" />
-                                        <h3 className="invoice-title">Indoor Invoice</h3>
-                                        <div className="row">
-                                            <div className="col-xs-8">
-                                                <label>Patient Name : </label> <span id="PatientName">{items.fullname}</span>
-                                            </div>
-                                            <div className="col-xs-4">
-                                                <label>Date : </label> <span> {items.formatedDischargeDate}</span>
-                                            </div>
-                                            <div className="col-xs-8">
-                                                <label>Invoice No. : </label> <span id="Invoice_Id"> {items.uniqueId}</span>
-                                            </div>
-
-                                            <div className="col-xs-4">
-                                                <label>Address : </label> <span id="Address"> {items.address}</span>
-                                            </div>
-                                            <div className="col-xs-8">
-                                                <label>Indoor No. : </label> <span id="IPD_Id1"> {items.invoiceNo}</span>
-                                            </div>
-                                            <div className="col-xs-4">
-                                                <label>Room Type : </label> <span id="Room"> {items.roomTypeName}</span>
-                                            </div>
-
-                                            <div className="col-xs-12">
-                                                <table className="table table-bordered invoice-table" id="IPD_Charge_Table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th width="10px">No.</th>
-                                                            <th>Description</th>
-                                                            <th width="50px">Rate</th>
-                                                            <th width="50px">Days</th>
-                                                            <th width="50px">Amount</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {
-                                                            chargesColumns.map((key, i) =>
-                                                            {
-                                                                return (
-                                                                    <tr key={`chrge-${ i }`}>
-                                                                        <td>{i + 1}</td>
-                                                                        <td>{items[key].chargeName}</td>
-                                                                        <td className="text-right"> {items[key].rate}</td>
-                                                                        <td className="text-right"> {items[key].days}</td>
-                                                                        <td className="text-right"> {items[key].amount}</td>
-                                                                    </tr>
-                                                                )
-                                                            })
-                                                        }
-                                                    </tbody>
-                                                    <tfoot className="invoice-footer">
-                                                        <tr>
-                                                            <td colSpan="3">Grand Total <span></span></td>
-                                                            <td colSpan="2" className="text-right"><strong id="Total"> {items.amount}</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td colSpan="3">Discount</td>
-                                                            <td colSpan="2" className="text-right"><strong id="Total"> {items.discount}</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td colSpan="4">Net Payable Amount :<span > {`${ items.amountInWord } Only`}</span></td>
-                                                            <td colSpan="1" className="text-right"><strong id="Total"> {items.payableAmount}</strong></td>
-                                                        </tr>
-                                                    </tfoot>
+                <div className="panel">
+                    <div className="panel-body">
+                        <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value })} data={ipdData} showSummary={false} />
+                        <hr />
+                        <div className="row invoice" id="print-div">
+                            {
+                                ipdData && ipdData.map((items, i) =>
+                                {
+                                    return (
+                                        <div className={`col-md-6 col-xs-6 ${ i % 2 === 0 ? "vertical-devider" : "" }`} key={i}>
+                                            <div className="" style={{ paddingLeft: "50px" }}>
+                                                <img src={invoice_header} className="img-responsive" alt="Invoice Header" />
+                                                <h3 className="invoice-title">Indoor Invoice</h3>
+                                                <table className="table" id="invoice-detail">
+                                                    <tr>
+                                                        <td><b>Name :</b> {items.fullname}</td>
+                                                        <td width="200px"><b>Date :</b> {items.formatedDischargeDate}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>Invoice No. :</b> {items.uniqueId}</td>
+                                                        <td><b>Address :</b> {items.address}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>Indoor No. :</b> {items.invoiceNo}</td>
+                                                        <td><b>Room Type :</b> {items.roomTypeName}</td>
+                                                    </tr>
                                                 </table>
-                                            </div>
-                                            <div style={{ marginTop: "15px" }}>
-                                                <div className="col-xs-7">
-                                                    <span>Rececived By</span>
-                                                </div>
-                                                <div className="col-xs-5 pull-right">
-                                                    <strong>Dr. Bhaumik Tandel</strong>
+                                                <div className="row">
+                                                    <div className="col-xs-12">
+                                                        <table className="table table-bordered invoice-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th width="10px">No.</th>
+                                                                    <th>Description</th>
+                                                                    <th width="50px">Rate</th>
+                                                                    <th width="50px">Days</th>
+                                                                    <th width="50px">Amount</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {
+                                                                    chargesColumns.map((key, i) =>
+                                                                    {
+                                                                        return (
+                                                                            <tr key={`chrge-${ i }`}>
+                                                                                <td>{i + 1}</td>
+                                                                                <td>{items[key].chargeName}</td>
+                                                                                <td className="text-right"> {items[key].rate}</td>
+                                                                                <td className="text-right"> {items[key].days}</td>
+                                                                                <td className="text-right"> {this.helper.formatCurrency(items[key].amount)}</td>
+                                                                            </tr>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </tbody>
+                                                            <tfoot className="invoice-footer">
+                                                                <tr>
+                                                                    <td colSpan="4">Grand Total <span></span></td>
+                                                                    <td className="text-right"><strong> {items.amount}</strong></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colSpan="4">Discount</td>
+                                                                    <td className="text-right"><strong> {this.helper.formatCurrency(items.discount)}</strong></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colSpan="4">Net Payable Amount :<span > {`${ items.amountInWord } Only`}</span></td>
+                                                                    <td className="text-right"><strong> {this.helper.formatCurrency(items.payableAmount)}</strong></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                    <div style={{ marginTop: "15px" }}>
+                                                        <div className="col-xs-7">
+                                                            <span>Rececived By</span>
+                                                        </div>
+                                                        <div className="col-xs-5 pull-right">
+                                                            <strong>Dr. Bhaumik Tandel</strong>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                </div >
             </>
         );
     }

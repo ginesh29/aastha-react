@@ -7,7 +7,7 @@ export class repository
     get(controller, querystring, messageRef)
     {
         return axios.get(`${ BASE_API_URL }/${ controller }?${ querystring }`)
-            .then(res => res.data.Result)
+            .then(res => res.data)
             .catch(error =>
             {
 
@@ -97,5 +97,9 @@ export class repository
                     console.log('Error', error.message);
                 }
             });
+    }
+    file(controller, querystring)
+    {
+        return axios.get(`${ BASE_API_URL }/${ controller }?${ querystring }`, { responseType: 'blob' })
     }
 }

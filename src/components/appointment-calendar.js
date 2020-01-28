@@ -13,6 +13,7 @@ import ReactDOM from 'react-dom';
 import { Button } from 'primereact/button';
 import { Growl } from 'primereact/growl';
 import { Messages } from 'primereact/messages';
+import AppointmentTypeIndicator from './appointment-indicator';
 
 const title = "Appointment";
 export default class AppointmentCalendar extends Component
@@ -229,9 +230,10 @@ export default class AppointmentCalendar extends Component
         );
         return (
             <>
-                <Panel header="Appointment Calendar">
+                <Panel header="Appoinment Calendar" toggleable={true}>
                     <div className="row">
                         <div className="col-md-12">
+                            <AppointmentTypeIndicator options={appointmentTypeOptions} />
                             <FullCalendar options={this.options} events={appointments} ref={(el) => this.fullcalendar = el} />
                         </div>
                     </div>

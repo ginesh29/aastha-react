@@ -11,7 +11,7 @@ export const FULLCALENDAR_OPTION = {
   firstDay: 1,
   eventLimit: 6,
   hiddenDays: [0],
-  height: 1000,
+  // height: 1000,
   plugins: [dayGridPlugin, interactionPlugin]
 }
 

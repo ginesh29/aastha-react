@@ -2626,34 +2626,7 @@ ul.amounts li.grand-total {
     margin:0;
     font-weight:400;
 }
-.invoice-title h1 {
-    font-size:50px;
-    font-weight:lighter;
-    text-align:center;
-    margin:0;
-    text-transform:uppercase;
-    padding:5px;
-    letter-spacing:2px;
-}
-.invoice-list {
-    margin-bottom:30px;
-}
-.invoice-info,.invoice-title {
-    padding:20px;
-}
-.invoice-info {
-    margin-top:5px;
-}
-.invoice-list h4 {
-    font-weight:300;
-    font-size:16px;
-}
-.invoice-to h2 {
-    margin:0;
-    font-size:24px;
-    color:#73737b;
-    font-weight:600;
-}
+
 .table-invoice {
     margin-top:30px;
     border-spacing:5px;

@@ -138,4 +138,8 @@ export class helper
     let d = date ? new Date(date) : new Date();
     return d.getDate();
   }
+  formatCurrency = (number) =>
+  {
+    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(number);
+  }
 }

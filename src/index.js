@@ -11,6 +11,10 @@ import "./assets/styles/index.css";
 
 import 'jquery/src/jquery';
 import 'bootstrap/dist/js/bootstrap.js';
+// import 'jquery.scrollto/jquery.scrollTo.min.js';
+// import "dcjqaccordion/jquery.dcjqaccordion.2.7.min.js"
+// import "dcjqaccordion"
+// import "dcjqaccordion"
 //import './assets/scripts/jquery.dcjqaccordion.2.7.js'
 // import './assets/scripts/jquery.scrollTo.min.js'
 // import '.assets/scripts/jquery.slimscroll.js'
@@ -19,8 +23,10 @@ import 'bootstrap/dist/js/bootstrap.js';
 // <!--common script init for all pages-->
 // <script src="assets/scripts/scripts.js"></script>
 
-export default class App extends React.Component {
-  render() {
+export default class App extends React.Component
+{
+  render()
+  {
     return routes;
   }
 }
