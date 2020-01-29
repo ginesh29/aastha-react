@@ -13,7 +13,7 @@ import ReactDOM from 'react-dom';
 import { Button } from 'primereact/button';
 import { Growl } from 'primereact/growl';
 import { Messages } from 'primereact/messages';
-import AppointmentTypeIndicator from './appointment-indicator';
+import AppointmentTypeIndicator from './shared/appointment-indicator';
 
 const title = "Appointment";
 export default class AppointmentCalendar extends Component

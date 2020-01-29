@@ -32,7 +32,7 @@ export default class MonthlyIpdReport extends Component
     getIpds = () =>
     {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-        return this.repository.get(controller, `filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`, this.messages)
+        this.repository.get(controller, `filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`, this.messages)
             .then(res =>
             {
                 this.getCharges();

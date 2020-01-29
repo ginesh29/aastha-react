@@ -2,11 +2,14 @@ import axios from 'axios';
 import { BASE_API_URL } from "./constants";
 
 
-export class repository {
-    get(controller, querystring, messageRef) {
-        return axios.get(`${BASE_API_URL}/${controller}?${querystring}`)
-            .then(res => res.data)
-            .catch(error => {
+export class repository
+{
+    get(controller, querystring, messageRef)
+    {
+        return axios.get(`${ BASE_API_URL }/${ controller }?${ querystring }`)
+            .then(res => res.data.Result)
+            .catch(error =>
+            {
 
                 messageRef && messageRef.clear();
                 if (error.response) {
@@ -21,14 +24,17 @@ export class repository {
                 }
             })
     }
-    post(controller, model, growlRef, messageRef) {
+    post(controller, model, growlRef, messageRef)
+    {
         if (!model.id)
-            return axios.post(`${BASE_API_URL}/${controller}`, model)
-                .then(res => {
+            return axios.post(`${ BASE_API_URL }/${ controller }`, model)
+                .then(res =>
+                {
                     growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
                     return res.data.Result;
                 })
-                .catch(error => {
+                .catch(error =>
+                {
                     if (error.response) {
                         let errorResult = error.response.data;
                         let errors = errorResult.ValidationSummary;
@@ -44,12 +50,14 @@ export class repository {
                     }
                 });
         else
-            return axios.put(`${BASE_API_URL}/${controller}`, model)
-                .then(res => {
+            return axios.put(`${ BASE_API_URL }/${ controller }`, model)
+                .then(res =>
+                {
                     growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
                     return res.data.Result;
                 })
-                .catch(error => {
+                .catch(error =>
+                {
                     if (error.response) {
                         let errorResult = error.response.data;
                         let errors = errorResult.ValidationSummary;
@@ -65,13 +73,16 @@ export class repository {
                     }
                 });
     }
-    delete(controller, querystring, growlRef, messageRef) {
-        return axios.delete(`${BASE_API_URL}/${controller}/${querystring}`)
-            .then(res => {
+    delete(controller, querystring, growlRef, messageRef)
+    {
+        return axios.delete(`${ BASE_API_URL }/${ controller }/${ querystring }`)
+            .then(res =>
+            {
                 growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
                 return res.data;
             })
-            .catch(error => {
+            .catch(error =>
+            {
                 if (error.response) {
                     let errorResult = error.response.data;
                     let errors = errorResult.ValidationSummary;
@@ -87,7 +98,29 @@ export class repository {
                 }
             });
     }
-    file(controller, querystring) {
-        return axios.get(`${BASE_API_URL}/${controller}?${querystring}`, { responseType: 'blob' })
+    file(controller, model, growlRef, messageRef)
+    {
+        return axios.post(`${ BASE_API_URL }/${ controller }`, model, { responseType: 'blob' })
+            .then(res =>
+            {
+                growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
+                return res.data;
+            })
+            .catch(error =>
+            {
+                if (error.response) {
+                    let errorResult = error.response.data;
+                    let errors = errorResult.ValidationSummary;
+                    messageRef.clear();
+                    errors && Object.keys(errors).map((item, i) => (
+                        messageRef.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
+                    ))
+                } else if (error.request) {
+                    messageRef.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+            });
     }
 }

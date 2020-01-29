@@ -55,6 +55,7 @@ export default class PatientForm extends Component
   {
     const { id, firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
     e.preventDefault();
+    this.onShow();
     if (this.handleValidation()) {
       const patient = {
         id: id,
