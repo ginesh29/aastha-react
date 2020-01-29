@@ -47,7 +47,6 @@ export default class IpdForm extends React.Component {
         validationErrors: {}
     });
     handleChange = (e, action) => {
-        this.messages.clear();
         const { isValidationFired, formFields } = this.state;
         let fields = formFields;
         if (action)
@@ -73,7 +72,6 @@ export default class IpdForm extends React.Component {
     };
 
     handleChargeChange = e => {
-        this.messages.clear();
         const { chargeFormFields, formFields } = this.state;
         const name = e.target.name;
         const lookupId = e.target.name.replace("rate-", "").replace("days-", "");
@@ -258,7 +256,6 @@ export default class IpdForm extends React.Component {
     };
 
     handleReset = e => {
-        this.messages.clear();
         const { chargeNames } = this.state;
         this.setState(this.getInitialState());
         let charges = chargeNames.map(item => {

@@ -34,7 +34,6 @@ export default class OpdForm extends React.Component {
   });
 
   handleChange = (e, action) => {
-    this.messages.clear();
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
     if (action)
@@ -99,7 +98,6 @@ export default class OpdForm extends React.Component {
   };
 
   handleReset = e => {
-    this.messages.clear();
     this.setState(this.getInitialState());
   };
 

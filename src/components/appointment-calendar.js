@@ -162,7 +162,6 @@ export default class AppointmentCalendar extends Component {
         }
     };
     handleReset = e => {
-        this.messages.clear();
         this.setState(this.getInitialState());
     };
     handleValidation = e => {
@@ -184,7 +183,6 @@ export default class AppointmentCalendar extends Component {
         return isValid;
     };
     handleChange = (e, action) => {
-        // this.messages.clear();
         const { isValidationFired, formFields } = this.state;
         let fields = formFields;
         if (action)

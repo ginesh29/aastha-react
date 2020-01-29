@@ -31,7 +31,6 @@ export default class PatientForm extends Component {
     validationErrors: {}
   })
   handleChange = (e, action) => {
-    this.messages.clear();
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
     if (action)
@@ -49,7 +48,6 @@ export default class PatientForm extends Component {
   handleSubmit = e => {
     const { id, firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
     e.preventDefault();
-    this.onShow();
     if (this.handleValidation()) {
       const patient = {
         id: id,
@@ -100,7 +98,6 @@ export default class PatientForm extends Component {
   };
 
   handleReset = e => {
-    this.messages.clear();
     this.setState(this.getInitialState());
   };
 

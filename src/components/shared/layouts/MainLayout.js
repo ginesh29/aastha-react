@@ -224,6 +224,8 @@ export default class MainLayout extends React.Component {
 
                         <div className="row">
                             <div className="col-sm-12">
+                                <div id="toast"></div>
+                                <div id="messages"></div>
                                 {this.props.children}
                             </div>
                         </div>

@@ -121,6 +121,7 @@ export default class OpdReport extends Component {
             <>
                 <div className="panel">
                     <div className="panel-body">
+                        <div id="errors"></div>
                         <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value }, () => this.getOpds())} onShowSummary={(e) => this.op.toggle(e)} data={opdData} exportReport={this.exportReport} />
                         <hr />
                         <div id="print-div">
