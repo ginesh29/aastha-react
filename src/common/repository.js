@@ -1,6 +1,8 @@
+import React from "react";
+import ReactDOM from "react-dom";
 import axios from 'axios';
 import { BASE_API_URL } from "./constants";
-
+import { Growl } from 'primereact/growl';
 
 export class repository
 {
@@ -10,7 +12,8 @@ export class repository
             .then(res => res.data.Result)
             .catch(error =>
             {
-
+                ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
+                this.growl.show({ severity: 'success', summary: 'Success Message', detail: 'Order submitted' });
                 messageRef && messageRef.clear();
                 if (error.response) {
                     // debugger
