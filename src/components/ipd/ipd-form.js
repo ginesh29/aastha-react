@@ -2,12 +2,10 @@ import React from "react";
 import InputField from "../shared/InputField";
 import { roomTypeOptions, genderOptions } from "../../common/constants";
 import { departmentTypeEnum, lookupTypeEnum } from "../../common/enums";
-import { Growl } from "primereact/growl";
 import { Dialog } from 'primereact/dialog';
 import { helper } from "../../common/helpers";
 import moment from 'moment';
 import { InputText } from 'primereact/inputtext';
-import { Messages } from 'primereact/messages';
 import { repository } from "../../common/repository";
 import * as Constants from "../../common/constants";
 import PatientForm from "../patient/patient-form";
@@ -142,7 +140,7 @@ export default class IpdForm extends React.Component {
                 charges: charges,
                 discount: discountAmount
             };
-            this.repository.post(controller, ipd, this.growl, this.messages).then(res => {
+            this.repository.post(controller, ipd).then(res => {
                 if (res)
                     this.handleReset();
             })
@@ -232,7 +230,7 @@ export default class IpdForm extends React.Component {
     };
 
     bindLookups = e => {
-        this.repository.get("lookups", "filter=type-neq-{0}", this.messages).then(res => {
+        this.repository.get("lookups", "filter=type-neq-{0}").then(res => {
 
             let lookups = res && res.data.map(function (item) {
                 return { value: item["id"], label: item["name"], type: item["type"] };
@@ -278,8 +276,6 @@ export default class IpdForm extends React.Component {
         const { departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields, patientInput, patientDialogVisible, patientName } = this.state;
         return (
             <>
-                <Growl ref={el => (this.growl = el)} />
-                <Messages ref={(el) => this.messages = el} />
                 <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
                     <div className="row">
                         <div className="col-md-4">
@@ -288,7 +284,7 @@ export default class IpdForm extends React.Component {
                         <div className="col-md-4">
                             <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
                                 onCreateOption={() => this.setState({ patientDialogVisible: true, patientName: patientInput })} onInputChange={(e) => { this.setState({ patientInput: e }) }}
-                                controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback, this.messages)} />
+                                controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
                         </div>
                         <div className="col-md-4">
                             <InputField name="roomType" title="Room Type" value={roomType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={roomTypeOptions} />
