@@ -8,11 +8,10 @@ import { Checkbox } from 'primereact/checkbox';
 import { appointmentTypeEnum } from "./../common/enums";
 import * as Constants from "./../common/constants";
 import { Calendar } from 'primereact/calendar';
+import { Dialog } from 'primereact/dialog';
 const title = "Prescription";
-export default class Prescription extends React.Component
-{
-    constructor(props)
-    {
+export default class Prescription extends React.Component {
+    constructor(props) {
         super(props);
         this.state = this.getInitialState();
         this.repository = new repository();
@@ -30,8 +29,7 @@ export default class Prescription extends React.Component
         },
         validationErrors: {}
     })
-    handleChange = (e, action) =>
-    {
+    handleChange = (e, action) => {
         const { isValidationFired, formFields } = this.state;
         const { advices, followupDate } = this.state.formFields;
         let fields = formFields;
@@ -49,18 +47,18 @@ export default class Prescription extends React.Component
                 fields[e.target.name] = selectedAdvices;
             }
             else if (e.target.name === "followup") {
-                fields.followupDate = "";
                 if (e.target.value <= 4 && e.target.value !== 0)
-                    followup = `ફરી ${ followupDate ? followupDate : "........." } ના રોજ બતાવવા આવવું`;
+                    followup = `ફરી ${followupDate ? followupDate : "........."} ના રોજ બતાવવા આવવું`;
                 else if (e.target.value === 5)
                     followup = `માસિકના બીજા/ત્રીજા/પાંચમા દિવસે બતાવવા આવવું`;
                 else
                     followup = "";
                 fields.followupInstruction = followup;
+                fields.followupDate = "";
             }
             else if (e.target.name === "followupDate") {
                 let followupDate = this.helper.formatDate(e.target.value);
-                fields.followupInstruction = `ફરી ${ followupDate } ના રોજ બતાવવા આવવું`;
+                fields.followupInstruction = `ફરી ${followupDate} ના રોજ બતાવવા આવવું`;
             }
         }
         this.setState({
@@ -69,162 +67,166 @@ export default class Prescription extends React.Component
         if (isValidationFired)
             this.handleValidation();
     };
-    render()
-    {
+    render() {
         const { patientId, date, clinicDetail, followup, advices, followupInstruction, followupDate } = this.state.formFields;
+        const { dialogVisible } = this.state;
         const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
         return (
-            <div className="row">
-                <div className="col-md-6">
-                    <Panel header={title} toggleable={true}  >
-                        <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
-                                        onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
-                                        controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
-                                </div>
-                                <div className="col-md-6">
-                                    <InputField name="date" title="Date" value={date} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <InputField name="clinicDetail" title="Clinical Detail" value={clinicDetail} onChange={this.handleChange}  {...this.state} controlType="textarea" />
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-lg-3">
-                                    <div className="form-group">
-                                        <button className="btn btn-primary" type="button"> <i className="entypo-plus"></i> Add Medicine</button>
+            <>
+                <div className="row">
+                    <div className="col-md-6">
+                        <Panel header={title} toggleable={true}  >
+                            <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
+                                            onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
+                                            controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <InputField name="date" title="Date" value={date} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
                                     </div>
                                 </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-2"><label> Advice : </label></div>
-                                <div className="col-md-10">
-                                    {
-                                        Constants.adviceOptions.map((item, i) =>
-                                        {
-                                            return (
-                                                <div className="form-group" key={i + 1}>
-                                                    <Checkbox inputId={`advice${ i }`} name="advices" value={item.label} checked={advices.includes(item.label)} onChange={this.handleChange} />
-                                                    <label htmlFor={`advice${ i }`} className="p-radiobutton-label">{item.label}</label>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </div>
-                            <hr />
-                            <div className="row">
-                                <div className="col-md-2"><label>Follow up :</label></div>
-                                <div className="col-md-10">
-                                    {
-                                        followupOptions.map((item, i) =>
-                                        {
-                                            return (
-                                                <div className="form-group" key={i + 1}>
-                                                    <RadioButton inputId={`followup${ i + 1 }`} name="followup" value={item.value} checked={followup === item.value} onChange={this.handleChange} />
-                                                    <label htmlFor={`followup${ i + 1 }`} className="p-radiobutton-label">{item.label}
-                                                        {
-                                                            item.value <= 4 && followup === item.value && (
-                                                                <Calendar value={followupDate && followupDate} onChange={this.handleChange} name="followupDate" />
-                                                            )
-                                                        }
-                                                    </label>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                    <div className="form-group" key={0}>
-                                        <RadioButton inputId={`followup${ 0 }`} name="followup" value={0} checked={followup === 0} onChange={this.handleChange} />
-                                        <label htmlFor={`followup${ 0 }`} className="p-radiobutton-label">None</label>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <InputField name="clinicDetail" title="Clinical Detail" value={clinicDetail} onChange={this.handleChange}  {...this.state} controlType="textarea" />
                                     </div>
                                 </div>
-                            </div>
-                        </form>
-
-                    </Panel>
-                </div>
-                <div className="col-md-6">
-                    <Panel header={`${ title } Preview`} toggleable={true} className="prescription-preview">
-                        <div id="print-div" style={{ marginTop: "20px", marginBottom: "20px" }} >
-                            <div className="row">
-                                <div className="col-xs-8">
-                                    <label>Patient Name : </label> {patientId.label}
+                                <div className="row">
+                                    <div className="col-lg-3">
+                                        <div className="form-group">
+                                            <button className="btn btn-primary" type="button" onClick={(e) => this.setState({ dialogVisible: true })}> <i className="entypo-plus"></i> Add Medicine</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="col-xs-4">
-                                    <label>Date : </label> {date && this.helper.formatDate(date)}
-                                </div>
-                                <div className="col-xs-8">
-                                    <label>Patient Id : </label> {patientId.value}
-                                </div>
-                                <div className="col-xs-4">
-                                    <label>Age : </label> {patientId.age}
-                                </div>
-                            </div>
-                            <hr />
-                            <div className="row">
-                                <div className="col-xs-2">
-                                    <label>Clinical Detail : </label>
-                                </div>
-                                <div className="col-xs-10">
-                                    <span className="display-linebreak">{clinicDetail}</span>
-                                </div>
-                            </div>
-                            <h4>Rx</h4>
-                            <div id="bottom_div">
-                                <table className="table" id="medicine_Table">
-                                    <thead>
-                                        <tr>
-                                            <th width="50px"></th>
-                                            <th></th>
-                                            <th width="30px" className="text-right">Days</th>
-                                            <th width="30px" className="text-right">Qty</th>
-                                        </tr>
-                                    </thead>
-                                </table>
                                 <div className="row">
                                     <div className="col-md-2"><label> Advice : </label></div>
                                     <div className="col-md-10">
-                                        <ul>
-                                            {
-                                                advices.map((item, i) =>
-                                                {
-                                                    return (
-                                                        <li>{item}</li>
-                                                    )
-                                                })
-                                            }
-                                        </ul>
+                                        {
+                                            Constants.adviceOptions.map((item, i) => {
+                                                return (
+                                                    <div className="form-group" key={i + 1}>
+                                                        <Checkbox inputId={`advice${i}`} name="advices" value={item.label} checked={advices.includes(item.label)} onChange={this.handleChange} />
+                                                        <label htmlFor={`advice${i}`} className="p-radiobutton-label">{item.label}</label>
+                                                    </div>
+                                                )
+                                            })
+                                        }
                                     </div>
                                 </div>
-                                {
-                                    followupInstruction && (
-                                        <>
-                                            <hr />
-                                            <div className="row">
-                                                <div className="col-md-2"><label>Follow up : </label></div>
-                                                <div className="col-md-10">
-                                                    <span>{followupInstruction}</span>
+                                <hr />
+                                <div className="row">
+                                    <div className="col-md-2"><label>Follow up :</label></div>
+                                    <div className="col-md-10">
+                                        {
+                                            followupOptions.map((item, i) => {
+                                                return (
+                                                    <div className="form-group" key={i + 1}>
+                                                        <RadioButton inputId={`followup${i + 1}`} name="followup" value={item.value} checked={followup === item.value} onChange={this.handleChange} />
+                                                        <label htmlFor={`followup${i + 1}`} className="p-radiobutton-label">{item.label}
+                                                            {
+                                                                item.value <= 4 && followup === item.value && (
+                                                                    <Calendar value={followupDate && followupDate} onChange={this.handleChange} name="followupDate" />
+                                                                )
+                                                            }
+                                                        </label>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                        <div className="form-group" key={0}>
+                                            <RadioButton inputId={`followup${0}`} name="followup" value={0} checked={followup === 0} onChange={this.handleChange} />
+                                            <label htmlFor={`followup${0}`} className="p-radiobutton-label">None</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </Panel>
+                    </div>
+                    <div className="col-md-6">
+                        <Panel header={`${title} Preview`} toggleable={true} className="prescription-preview">
+                            <div id="print-div" style={{ marginTop: "20px", marginBottom: "20px" }} >
+                                <div className="row">
+                                    <div className="col-xs-8">
+                                        <label>Patient Name : </label> {patientId.label}
+                                    </div>
+                                    <div className="col-xs-4">
+                                        <label>Date : </label> {date && this.helper.formatDate(date)}
+                                    </div>
+                                    <div className="col-xs-8">
+                                        <label>Patient Id : </label> {patientId.value}
+                                    </div>
+                                    <div className="col-xs-4">
+                                        <label>Age : </label> {patientId.age}
+                                    </div>
+                                </div>
+                                <hr />
+                                <div className="row">
+                                    <div className="col-xs-2">
+                                        <label>Clinic Detail : </label>
+                                    </div>
+                                    <div className="col-xs-10">
+                                        <span className="display-linebreak">{clinicDetail}</span>
+                                    </div>
+                                </div>
+                                <h4>Rx</h4>
+                                <div id="bottom_div">
+                                    <table className="table" id="medicine_Table">
+                                        <thead>
+                                            <tr>
+                                                <th width="50px"></th>
+                                                <th></th>
+                                                <th width="30px" className="text-right">Days</th>
+                                                <th width="30px" className="text-right">Qty</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <div className="row">
+                                        <div className="col-md-2"><label> Advice : </label></div>
+                                        <div className="col-md-10">
+                                            <ul>
+                                                {
+                                                    advices.map((item, i) => {
+                                                        return (
+                                                            <li>{item}</li>
+                                                        )
+                                                    })
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {
+                                        followupInstruction && (
+                                            <>
+                                                <hr />
+                                                <div className="row">
+                                                    <div className="col-md-2"><label>Follow up : </label></div>
+                                                    <div className="col-md-10">
+                                                        <span>{followupInstruction}</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <hr />
-                                        </>
-                                    )
-                                }
-                            </div>
-                            <div className="row">
-                                <div className="col-xs-5 pull-right" style={{ marginTop: "50px", textAlign: "right" }}>
-                                    <strong>Dr. Bhaumik Tandel</strong>
+                                                <hr />
+                                            </>
+                                        )
+                                    }
+                                </div>
+                                <div className="row">
+                                    <div className="col-xs-5 pull-right" style={{ marginTop: "50px", textAlign: "right" }}>
+                                        <strong>Dr. Bhaumik Tandel</strong>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </Panel>
+                        </Panel>
+                    </div>
                 </div>
-            </div>
-
+                <Dialog header="Godfather I" visible={dialogVisible} onHide={() => this.setState({ dialogVisible: false })}>
+                    The story begins as Don Vito Corleone, the head of a New York Mafia family, oversees his daughter's wedding.
+                    His beloved son Michael has just come home from the war, but does not intend to become part of his father's business.
+                    Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family,
+                    kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family.
+        </Dialog>
+            </>
         )
     }
 }
