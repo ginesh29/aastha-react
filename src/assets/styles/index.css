@@ -9,7 +9,10 @@ form .p-multiselect {
   width: 100%;
 }
 label {
-  font-weight: 500 !important;
+  font-weight: 600 !important;
+}
+.p-component {
+  font-family: "Titillium Web", sans-serif !important;
 }
 .p-inputtext.error,
 .p-autocomplete.error input,
@@ -30,17 +33,13 @@ label {
 }
 .p-panel-titlebar {
   background: #fafafa !important;
-  border-color: #eff2f7 !important;
   padding: 12px !important;
 }
 .p-panel-title {
   font-size: 18px !important;
-  font-weight: 400 !important;
+  font-weight: 600;
 }
-.p-panel-content {
-  border: none !important;
-}
-#prescription .p-panel-content {
+.prescription-preview .p-panel-content {
   background: #fffcab !important;
 }
 .p-paginator .p-highlight {
@@ -77,15 +76,13 @@ hr {
 .invoice-footer td {
   font-weight: 600;
 }
-/* .invoice-table td {
-  border-top: 1px solid #ebebeb;
-} */
 .invoice-table th,
 .statistics-table th,
 .report-table th,
 .report-footer td,
 .invoice-footer td {
   background-color: rgba(0, 0, 0, 0.075);
+  font-weight: 600;
 }
 .report-group-title td {
   font-weight: 600;
@@ -137,7 +134,9 @@ hr {
   vertical-align: baseline;
   border-radius: 0.25em;
 }
-
+.display-linebreak {
+  white-space: pre-line;
+}
 @media print {
   .report-table,
   .invoice-table {

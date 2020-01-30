@@ -38,3 +38,12 @@ export const genderOptions = [
   { value: 1, label: "Boy" },
   { value: 2, label: "Girl" }
 ];
+
+export const adviceOptions = [
+  { value: 1, label: "Plenty of liquids orally" },
+  { value: 2, label: "USG Pelvis (SOS)" },
+  { value: 3, label: "ANC Profile" },
+  { value: 4, label: "Timed Intercourse on Date" },
+  { value: 5, label: "Abstinece/Condom use for next 7 days" },
+  { value: 6, label: "Infertility work-up" }
+];

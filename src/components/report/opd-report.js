@@ -7,8 +7,10 @@ import _ from 'lodash';
 import ReportFilter from './report-filter';
 import { TODAY_DATE } from "../../common/constants";
 
-export default class OpdReport extends Component {
-    constructor(props) {
+export default class OpdReport extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
             reportType: reportTypeEnum.MONTHLY.value,
@@ -21,15 +23,19 @@ export default class OpdReport extends Component {
             sortString: "id asc",
             controller: "opds",
             includeProperties: "Patient",
+            config: { responseType: 'blob' }
         };
         this.repository = new repository();
         this.helper = new helper();
     }
-    getOpds = () => {
+    getOpds = () =>
+    {
         const { filterString, sortString, includeProperties, controller } = this.state;
-        this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`)
-            .then(res => {
-                res && res.data.map(item => {
+        this.repository.get(controller, `filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`)
+            .then(res =>
+            {
+                res && res.data.map(item =>
+                {
                     item.formatedOpdDate = this.helper.formatDate(item.date);
                     item.fullname = item.patient.fullname
                     return item;
@@ -40,28 +46,33 @@ export default class OpdReport extends Component {
                 });
             })
     }
-    exportReport = () => {
-        const { controller, reportTitle, opds } = this.state;
-        this.repository.file(`${controller}/ExportReport`, opds)
-            .then(res => {
+    exportReport = () =>
+    {
+        const { controller, reportTitle, opds, config } = this.state;
+        this.repository.post(`${ controller }/ExportReport`, opds, config)
+            .then(res =>
+            {
                 const downloadUrl = window.URL.createObjectURL(new Blob([res]));
                 const link = document.createElement('a');
                 link.href = downloadUrl;
-                link.setAttribute('download', `Opd Report ${reportTitle.split('/').join("-")}.xlsx`);
+                link.setAttribute('download', `Opd Report ${ reportTitle.split('/').join("-") }.xlsx`);
                 document.body.appendChild(link);
                 link.click();
                 link.remove();
             })
     }
-    componentDidMount = (e) => {
+    componentDidMount = (e) =>
+    {
         const month = this.helper.getMonthFromDate(TODAY_DATE);
         const year = this.helper.getYearFromDate(TODAY_DATE);
-        const filter = `Date.Month-eq-{${month}} and Date.Year-eq-{${year}}`;
-        this.setState({ filterString: filter, reportTitle: `${month}/${year}` }, () => {
+        const filter = `Date.Month-eq-{${ month }} and Date.Year-eq-{${ year }}`;
+        this.setState({ filterString: filter, reportTitle: `${ month }/${ year }` }, () =>
+        {
             this.getOpds();
         });
     }
-    onDateSelection = (e) => {
+    onDateSelection = (e) =>
+    {
         const { reportType } = this.state;
         let name = e.target.name;
         let value = e.target.value;
@@ -73,7 +84,7 @@ export default class OpdReport extends Component {
         if (reportType === reportTypeEnum.DAILY.value) {
             let date = this.helper.formatDate(value, 'en-US')
             let dateTitle = this.helper.formatDate(value);
-            filter = `Date-eq-{${date}}`;
+            filter = `Date-eq-{${ date }}`;
             title = dateTitle;
         }
         else if (reportType === reportTypeEnum.DATERANGE.value) {
@@ -81,23 +92,26 @@ export default class OpdReport extends Component {
             let endDate = this.helper.formatDate(value[1], 'en-US')
             let startDateTitle = this.helper.formatDate(value[0]);
             let endDateTitle = this.helper.formatDate(value[1]);
-            filter = `Date-gte-{${startDate}} and Date-lte-{${endDate}}`
-            title = `${startDateTitle} - ${endDateTitle}`;
+            filter = `Date-gte-{${ startDate }} and Date-lte-{${ endDate }}`
+            title = `${ startDateTitle } - ${ endDateTitle }`;
         }
         else if (reportType === reportTypeEnum.MONTHLY.value) {
             let month = this.helper.getMonthFromDate(value);
             let year = this.helper.getYearFromDate(value);
-            filter = `Date.Month-eq-{${month}} and Date.Year-eq-{${year}}`
-            title = `${month}/${year}`;
+            filter = `Date.Month-eq-{${ month }} and Date.Year-eq-{${ year }}`
+            title = `${ month }/${ year }`;
         }
-        this.setState({ filterString: filter, reportTitle: title }, () => {
+        this.setState({ filterString: filter, reportTitle: title }, () =>
+        {
             this.getOpds();
         });
     }
-    render() {
+    render()
+    {
         const { opds, reportTitle } = this.state;
         let opdGroupByDate = _.groupBy(opds, "formatedOpdDate");
-        let opdData = _.map(opdGroupByDate, (items, key) => {
+        let opdData = _.map(opdGroupByDate, (items, key) =>
+        {
             let result = {};
             result.opdDate = key;
             result.data = items;
@@ -121,7 +135,6 @@ export default class OpdReport extends Component {
             <>
                 <div className="panel">
                     <div className="panel-body">
-                        <div id="errors"></div>
                         <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value }, () => this.getOpds())} onShowSummary={(e) => this.op.toggle(e)} data={opdData} exportReport={this.exportReport} />
                         <hr />
                         <div id="print-div">
@@ -143,17 +156,19 @@ export default class OpdReport extends Component {
                                 </thead>
                                 <tbody>
                                     {
-                                        opdData.map((items, key) => {
+                                        opdData.map((items, key) =>
+                                        {
                                             return (
-                                                <React.Fragment key={`fragement${key}`}>
+                                                <React.Fragment key={`fragement${ key }`}>
                                                     <tr className="report-group-title">
                                                         <td colSpan="4" className="text-center">Date: {items.opdDate}</td>
                                                         <td colSpan="6" className="text-center">{items.count} Patients</td>
                                                     </tr>
                                                     {
-                                                        items.data.map((subitem) => {
+                                                        items.data.map((subitem) =>
+                                                        {
                                                             return (
-                                                                <tr key={`subitem${subitem.id}`}>
+                                                                <tr key={`subitem${ subitem.id }`}>
                                                                     <td>{subitem.id}</td>
                                                                     <td>{subitem.invoiceNo}</td>
                                                                     <td>{subitem.fullname}</td>
@@ -219,9 +234,10 @@ export default class OpdReport extends Component {
                         </thead>
                         <tbody>
                             {
-                                opdData.map((items, index) => {
+                                opdData.map((items, index) =>
+                                {
                                     return (
-                                        <tr key={`summaryRow${index}`}>
+                                        <tr key={`summaryRow${ index }`}>
                                             <td>{items.opdDate}</td>
                                             <td className="text-right">{items.count}</td>
                                             <td className="text-right">{this.helper.formatCurrency(items.totalCharge)}</td>

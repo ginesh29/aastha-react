@@ -34,12 +34,12 @@ export class helper
   PatientOptions = (inputValue, callback, MessageRef) =>
   {
     let filter = inputValue && `firstname.contains({${ inputValue.toLowerCase() }}) or middlename.contains({${ inputValue.toLowerCase() }}) or lastname.contains({${ inputValue.toLowerCase() }})`;
-    this.repository.get("patients", `fields=id,fullname&take=15&filter=${ filter }`, MessageRef)
+    this.repository.get("patients", `fields=id,fullname,age&take=15&filter=${ filter }`, MessageRef)
       .then(res =>
       {
         let patients = res && res.data.map(function (item)
         {
-          return { value: item["id"], label: item["fullname"] };
+          return { value: item.id, label: item.fullname, age: item.age };
         });
         callback(patients)
       })
@@ -55,7 +55,7 @@ export class helper
       {
         let addresses = res && res.data.map(function (item)
         {
-          return { value: item["id"], label: item["name"] };
+          return { value: item.id, label: item.name };
         });
         callback(addresses)
       })

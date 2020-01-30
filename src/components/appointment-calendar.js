@@ -14,23 +14,28 @@ import { Button } from 'primereact/button';
 import AppointmentTypeIndicator from './shared/appointment-indicator';
 
 const title = "Appointment";
-export default class AppointmentCalendar extends Component {
-    constructor(props) {
+export default class AppointmentCalendar extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = this.getInitialState();
         this.repository = new repository();
         this.helper = new helper();
 
         this.options = FULLCALENDAR_OPTION;
-        this.options.datesRender = (info) => {
+        this.options.datesRender = (info) =>
+        {
             const startDate = this.helper.formatFullcalendarDate(info.view.currentStart);
             const endDate = this.helper.formatFullcalendarDate(info.view.currentEnd);
-            const filter = `Date-gte-{${startDate}} and Date-lte-{${endDate}}`
-            this.setState({ filterString: filter }, () => {
+            const filter = `Date-gte-{${ startDate }} and Date-lte-{${ endDate }}`
+            this.setState({ filterString: filter }, () =>
+            {
                 this.getAppointments()
             });
         }
-        this.options.dateClick = (dateClickInfo) => {
+        this.options.dateClick = (dateClickInfo) =>
+        {
             let formFields = {
                 id: null,
                 date: dateClickInfo.date,
@@ -43,7 +48,8 @@ export default class AppointmentCalendar extends Component {
                 validationErrors: {}
             });
         }
-        this.options.eventClick = (eventClickInfo) => {
+        this.options.eventClick = (eventClickInfo) =>
+        {
             const { controller } = this.state;
             let event = eventClickInfo.event;
             let hasDeleteClass = eventClickInfo.jsEvent.target.classList.contains("pi-times")
@@ -63,10 +69,12 @@ export default class AppointmentCalendar extends Component {
             else {
                 this.setState({
                     deleteDialog: true,
-                    deleteCallback: () => {
+                    deleteCallback: () =>
+                    {
                         let flag = true;
-                        this.repository.delete(controller, `${event.id}?isDeleted=${flag}`)
-                            .then(res => {
+                        this.repository.delete(controller, `${ event.id }?isDeleted=${ flag }`)
+                            .then(res =>
+                            {
                                 event.remove();
                                 this.setState({ deleteDialog: false })
                             })
@@ -74,7 +82,8 @@ export default class AppointmentCalendar extends Component {
                 })
             }
         }
-        this.options.eventRender = (info) => {
+        this.options.eventRender = (info) =>
+        {
             const content = <div className="fc-content">
                 <span className="fc-title">{info.event.title}</span>
                 <div className="pull-right">
@@ -100,15 +109,15 @@ export default class AppointmentCalendar extends Component {
             type: ""
         }
     });
-    componentDidMount = () => {
-        this.setState({ appointmentTypeOptions: this.helper.enumToObject(appointmentTypeEnum) });
-    }
 
-    getAppointments = () => {
+    getAppointments = () =>
+    {
         const { controller, includeProperties, filterString } = this.state;
-        this.repository.get(controller, `filter=${filterString} and isDeleted-neq-{${true}}&includeProperties=${includeProperties}`)
-            .then(res => {
-                res && res.data.map(item => {
+        this.repository.get(controller, `filter=${ filterString } and isDeleted-neq-{${ true }}&includeProperties=${ includeProperties }`)
+            .then(res =>
+            {
+                res && res.data.map(item =>
+                {
                     item.title = item.patient.fullname;
                     item.start = this.helper.formatFullcalendarDate(item.date);
                     item.color = appointmentTypeEnum[item.appointmentType.toUpperCase()].color;
@@ -121,7 +130,8 @@ export default class AppointmentCalendar extends Component {
                 this.setState({ appointments: res.data })
             });
     }
-    handleSubmit = (e) => {
+    handleSubmit = (e) =>
+    {
         const { controller, includeProperties, appointmentTypeOptions } = this.state;
         const { id, date, patientId, type } = this.state.formFields;
         e.preventDefault();
@@ -132,8 +142,9 @@ export default class AppointmentCalendar extends Component {
                 patientId: patientId.value,
                 type: type
             };
-            this.repository.post(`${controller}?includeProperties=${includeProperties}`, appointment)
-                .then(res => {
+            this.repository.post(`${ controller }?includeProperties=${ includeProperties }`, appointment)
+                .then(res =>
+                {
                     if (res) {
                         let event = {
                             id: res.id,
@@ -161,10 +172,12 @@ export default class AppointmentCalendar extends Component {
                 })
         }
     };
-    handleReset = e => {
+    handleReset = e =>
+    {
         this.setState(this.getInitialState());
     };
-    handleValidation = e => {
+    handleValidation = e =>
+    {
         const { patientId, type } = this.state.formFields;
         let errors = {};
         let isValid = true;
@@ -182,7 +195,8 @@ export default class AppointmentCalendar extends Component {
         });
         return isValid;
     };
-    handleChange = (e, action) => {
+    handleChange = (e, action) =>
+    {
         const { isValidationFired, formFields } = this.state;
         let fields = formFields;
         if (action)
@@ -196,9 +210,11 @@ export default class AppointmentCalendar extends Component {
         if (isValidationFired)
             this.handleValidation();
     };
-    render() {
-        const { appointments, editDialog, appointmentTypeOptions, deleteDialog, deleteCallback } = this.state;
+    render()
+    {
+        const { appointments, editDialog, deleteDialog, deleteCallback } = this.state;
         const { id, date, patientId, type } = this.state.formFields
+        const appointmentTypeOptions = this.helper.enumToObject(appointmentTypeEnum);
         const deleteDialogFooter = (
             <div>
                 <Button label="Yes" icon="pi pi-check" onClick={() => deleteCallback()} />
@@ -216,7 +232,7 @@ export default class AppointmentCalendar extends Component {
                     </div>
                 </Panel>
 
-                <Dialog header={`${id > 0 ? "Edit" : "Add"} ${title}`} visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
+                <Dialog header={`${ id > 0 ? "Edit" : "Add" } ${ title }`} visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
                     <form onSubmit={this.handleSubmit}>
                         <InputField name="date" title="Appointment Date" value={date} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
                         <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}

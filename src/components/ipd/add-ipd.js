@@ -3,8 +3,10 @@ import { Panel } from "primereact/panel";
 import * as Constants from "../../common/constants";
 import IpdForm from "./ipd-form";
 
-export default class AddIpd extends React.Component {
-    render() {
+export default class AddIpd extends React.Component
+{
+    render()
+    {
         return (
             <div className="col-md-12">
                 <div className="row">

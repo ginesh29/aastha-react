@@ -22,7 +22,7 @@ export default class ReportFilter extends Component
         const { reportType, dateSelection, dateRangeSelection, monthSelection, onDateSelection, onReportTypeChange, onShowSummary, data, showSummary, exportReport } = this.props;
         return (
             <>
-                <h4>Report Type</h4>
+                <div className="p-panel-title">Report Type</div>
                 <div className="row">
                     <div className="col-md-5">
                         <div className="form-group">

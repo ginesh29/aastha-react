@@ -3,8 +3,10 @@ import { Panel } from "primereact/panel";
 import * as Constants from "../../common/constants";
 import OpdForm from "./opd-form";
 
-export default class AddOpd extends React.Component {
-  render() {
+export default class AddOpd extends React.Component
+{
+  render()
+  {
     return (
       <div className="col-md-10">
         <div className="row">

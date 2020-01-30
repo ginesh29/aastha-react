@@ -7,11 +7,10 @@ export default class AppointmentTypeIndicator extends Component
         return (
             <>
                 {
-                    options && options.map(item =>
+                    options && options.map((item, i) =>
                     {
-                        console.log(item)
                         return (
-                            <div className="event-indicator" style={{ background: item.color }}>{item.label}</div>
+                            <div className="event-indicator" style={{ background: item.color }} key={i}>{item.label}</div>
                         )
                     })
                 }
