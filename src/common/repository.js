@@ -3,37 +3,42 @@ import ReactDOM from "react-dom";
 import axios from 'axios';
 import { BASE_API_URL } from "./constants";
 import { Growl } from 'primereact/growl';
+import { Messages } from 'primereact/messages';
 
 export class repository
 {
-    get(controller, querystring, messageRef)
+    get(controller, querystring)
     {
+        ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
+        ReactDOM.render(<Messages ref={(el) => this.messages = el} />, document.getElementById("messages"));
+        ReactDOM.render(<Messages ref={(el) => this.errors = el} />, document.getElementById("errors"));
         return axios.get(`${ BASE_API_URL }/${ controller }?${ querystring }`)
             .then(res => res.data.Result)
             .catch(error =>
             {
-                ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
-                this.growl.show({ severity: 'success', summary: 'Success Message', detail: 'Order submitted' });
-                messageRef && messageRef.clear();
+                this.messages.clear();
                 if (error.response) {
                     // debugger
                     // let errorResult = error.response.data;
 
                 } else if (error.request) {
-                    messageRef && messageRef.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
+                    this.messages.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
                 } else {
                     // Something happened in setting up the request that triggered an Error
                     console.log('Error', error.message);
                 }
             })
     }
-    post(controller, model, growlRef, messageRef)
+    post(controller, model)
     {
+        ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
+        ReactDOM.render(<Messages ref={(el) => this.messages = el} />, document.getElementById("messages"));
+        ReactDOM.render(<Messages ref={(el) => this.errors = el} />, document.getElementById("errors"));
         if (!model.id)
             return axios.post(`${ BASE_API_URL }/${ controller }`, model)
                 .then(res =>
                 {
-                    growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
+                    this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
                     return res.data.Result;
                 })
                 .catch(error =>
@@ -41,12 +46,12 @@ export class repository
                     if (error.response) {
                         let errorResult = error.response.data;
                         let errors = errorResult.ValidationSummary;
-                        messageRef.clear();
+                        this.errors.clear();
                         errors && Object.keys(errors).map((item, i) => (
-                            messageRef.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
+                            this.errors.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
                         ))
                     } else if (error.request) {
-                        messageRef.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
+                        this.messages.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
                     } else {
                         // Something happened in setting up the request that triggered an Error
                         console.log('Error', error.message);
@@ -56,7 +61,7 @@ export class repository
             return axios.put(`${ BASE_API_URL }/${ controller }`, model)
                 .then(res =>
                 {
-                    growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
+                    this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
                     return res.data.Result;
                 })
                 .catch(error =>
@@ -64,24 +69,27 @@ export class repository
                     if (error.response) {
                         let errorResult = error.response.data;
                         let errors = errorResult.ValidationSummary;
-                        messageRef.clear();
+                        this.errors.clear();
                         errors && Object.keys(errors).map((item, i) => (
-                            messageRef.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
+                            this.errors.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
                         ))
                     } else if (error.request) {
-                        messageRef.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
+                        this.messages.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
                     } else {
                         // Something happened in setting up the request that triggered an Error
                         console.log('Error', error.message);
                     }
                 });
     }
-    delete(controller, querystring, growlRef, messageRef)
+    delete(controller, querystring)
     {
+        ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
+        ReactDOM.render(<Messages ref={(el) => this.messages = el}></Messages>, document.getElementById("messages"));
+        ReactDOM.render(<Messages ref={(el) => this.errors = el} />, document.getElementById("errors"));
         return axios.delete(`${ BASE_API_URL }/${ controller }/${ querystring }`)
             .then(res =>
             {
-                growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
+                this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
                 return res.data;
             })
             .catch(error =>
@@ -89,24 +97,27 @@ export class repository
                 if (error.response) {
                     let errorResult = error.response.data;
                     let errors = errorResult.ValidationSummary;
-                    messageRef.clear();
+                    this.errors.clear();
                     errors && Object.keys(errors).map((item, i) => (
-                        messageRef.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
+                        this.errors.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
                     ))
                 } else if (error.request) {
-                    messageRef.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
+                    this.messages.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
                 } else {
                     // Something happened in setting up the request that triggered an Error
                     console.log('Error', error.message);
                 }
             });
     }
-    file(controller, model, growlRef, messageRef)
+    file(controller, model)
     {
+        ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
+        ReactDOM.render(<Messages ref={(el) => this.messages = el}></Messages>, document.getElementById("messages"));
+        ReactDOM.render(<Messages ref={(el) => this.errors = el} />, document.getElementById("errors"));
         return axios.post(`${ BASE_API_URL }/${ controller }`, model, { responseType: 'blob' })
             .then(res =>
             {
-                growlRef.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
+                this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
                 return res.data;
             })
             .catch(error =>
@@ -114,12 +125,12 @@ export class repository
                 if (error.response) {
                     let errorResult = error.response.data;
                     let errors = errorResult.ValidationSummary;
-                    messageRef.clear();
+                    this.errors.clear();
                     errors && Object.keys(errors).map((item, i) => (
-                        messageRef.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
+                        this.errors.show({ severity: 'error', summary: errorResult.Message, detail: errors[item], sticky: true })
                     ))
                 } else if (error.request) {
-                    messageRef.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
+                    this.messages.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
                 } else {
                     // Something happened in setting up the request that triggered an Error
                     console.log('Error', error.message);

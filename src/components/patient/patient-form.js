@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import InputField from "../shared/InputField";
 import { helper } from "../../common/helpers";
 import { repository } from "../../common/repository";
-import { Growl } from 'primereact/growl';
-import { Messages } from 'primereact/messages';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
@@ -11,10 +9,8 @@ import * as Constants from "../../common/constants";
 import { lookupTypeEnum } from "../../common/enums";
 
 const controller = "patients";
-export default class PatientForm extends Component
-{
-  constructor(props)
-  {
+export default class PatientForm extends Component {
+  constructor(props) {
     super(props);
     this.state = this.getInitialState();
     this.repository = new repository();
@@ -34,9 +30,7 @@ export default class PatientForm extends Component
     isValidationFired: false,
     validationErrors: {}
   })
-  handleChange = (e, action) =>
-  {
-    this.messages.clear();
+  handleChange = (e, action) => {
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
     if (action)
@@ -51,11 +45,9 @@ export default class PatientForm extends Component
       this.handleValidation();
   };
 
-  handleSubmit = e =>
-  {
+  handleSubmit = e => {
     const { id, firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
     e.preventDefault();
-    this.onShow();
     if (this.handleValidation()) {
       const patient = {
         id: id,
@@ -66,17 +58,15 @@ export default class PatientForm extends Component
         mobile: mobile,
         addressId: addressId.value
       };
-      this.repository.post(controller, patient, this.growl, this.messages)
-        .then(res =>
-        {
+      this.repository.post(controller, patient)
+        .then(res => {
           this.props.onHidePatientDialog && this.props.onHidePatientDialog();
           res && this.handleReset();
         })
     }
   };
 
-  handleValidation = e =>
-  {
+  handleValidation = e => {
     const { firstname, middlename, lastname, age, addressId } = this.state.formFields;
     let errors = {};
     let isValid = true;
@@ -107,14 +97,11 @@ export default class PatientForm extends Component
     return isValid;
   };
 
-  handleReset = e =>
-  {
-    this.messages.clear();
+  handleReset = e => {
     this.setState(this.getInitialState());
   };
 
-  saveAddress = () =>
-  {
+  saveAddress = () => {
     const { address } = this.state;
     let addressError = "";
     let isValid = true;
@@ -133,15 +120,13 @@ export default class PatientForm extends Component
         name: address,
         type: lookupTypeEnum.ADDRESS.value
       };
-      this.repository.post("lookups", lookup, this.growl, this.messages)
-        .then(res =>
-        {
+      this.repository.post("lookups", lookup)
+        .then(res => {
           this.setState({ address: "", addressDialogVisible: false });
         })
     }
   }
-  render()
-  {
+  render() {
     const { firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
     const { addressDialogVisible, address, addressError } = this.state;
     let addressDialogFooter = <div className="ui-dialog-buttonpane p-clearfix">
@@ -150,8 +135,6 @@ export default class PatientForm extends Component
     </div>;
     return (
       <>
-        <Messages ref={(el) => this.messages = el} />
-        <Growl ref={(el) => this.growl = el} />
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col-md-4">
@@ -176,7 +159,7 @@ export default class PatientForm extends Component
             <div className="col-md-12">
               <InputField name="addressId" title="Address" value={addressId} onChange={this.handleChange}
                 onCreateOption={() => this.setState({ addressDialogVisible: true, address: address, addressError: "" })} {...this.state}
-                controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback, this.messages)} onInputChange={(e) => { e && this.setState({ address: e }) }} />
+                controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback)} onInputChange={(e) => { e && this.setState({ address: e }) }} />
             </div>
           </div>
           <div className="modal-footer">

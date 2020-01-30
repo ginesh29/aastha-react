@@ -2,18 +2,14 @@ import React from "react";
 import InputField from "../shared/InputField";
 import { caseTypeOptions } from "../../common/constants";
 import { helper } from "../../common/helpers";
-import { Growl } from "primereact/growl";
-import { Messages } from 'primereact/messages';
 import { Dialog } from 'primereact/dialog';
 import * as Constants from "../../common/constants";
 import { repository } from "../../common/repository";
 import PatientForm from "../patient/patient-form";
 
 const controller = "opds";
-export default class OpdForm extends React.Component
-{
-  constructor(props)
-  {
+export default class OpdForm extends React.Component {
+  constructor(props) {
     super(props);
     this.state = this.getInitialState();
     this.repository = new repository();
@@ -37,9 +33,7 @@ export default class OpdForm extends React.Component
     validationErrors: {}
   });
 
-  handleChange = (e, action) =>
-  {
-    this.messages.clear();
+  handleChange = (e, action) => {
     const { isValidationFired, formFields } = this.state;
     let fields = formFields;
     if (action)
@@ -59,8 +53,7 @@ export default class OpdForm extends React.Component
     });
     if (isValidationFired) this.handleValidation();
   };
-  handleSubmit = e =>
-  {
+  handleSubmit = e => {
     const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge } = this.state.formFields;
     e.preventDefault();
     if (this.handleValidation()) {
@@ -74,15 +67,13 @@ export default class OpdForm extends React.Component
         injectionCharge: injectionCharge,
         otherCharge: otherCharge
       };
-      this.repository.post(controller, opd, this.growl, this.messages).then(res =>
-      {
+      this.repository.post(controller, opd).then(res => {
         if (res)
           this.handleReset();
       })
     }
   };
-  handleValidation = e =>
-  {
+  handleValidation = e => {
     const { opdDate, caseType, patientId } = this.state.formFields;
     let errors = {};
     let isValid = true;
@@ -106,20 +97,15 @@ export default class OpdForm extends React.Component
     return isValid;
   };
 
-  handleReset = e =>
-  {
-    this.messages.clear();
+  handleReset = e => {
     this.setState(this.getInitialState());
   };
 
-  render()
-  {
+  render() {
     const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields;
     const { patientDialogVisible } = this.state;
     return (
       <>
-        <Messages ref={(el) => this.messages = el} />
-        <Growl ref={(el) => this.growl = el} />
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col-md-4">
@@ -133,7 +119,7 @@ export default class OpdForm extends React.Component
             <div className="col-md-8">
               <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
                 onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
-                controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback, this.messages)} />
+                controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
             </div>
           </div>
           <div className="row">
