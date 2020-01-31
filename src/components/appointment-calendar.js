@@ -127,7 +127,7 @@ export default class AppointmentCalendar extends Component
                     };
                     return item;
                 });
-                this.setState({ appointments: res.data })
+                this.setState({ appointments: res && res.data })
             });
     }
     handleSubmit = (e) =>
@@ -233,18 +233,21 @@ export default class AppointmentCalendar extends Component
                 </Panel>
 
                 <Dialog header={`${ id > 0 ? "Edit" : "Add" } ${ title }`} visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
-                    <form onSubmit={this.handleSubmit}>
-                        <InputField name="date" title="Appointment Date" value={date} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
-                        <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
-                            onCreateOption={() => this.setState({ patienteditDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
-                            controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
-                        <InputField name="type" value={type} title="Appointment Type" onChange={this.handleChange} {...this.state} controlType="dropdown" options={appointmentTypeOptions} />
-                        <div className="modal-footer">
-                            <div className="row">
-                                <button type="submit" className="btn btn-primary">Save changes</button>
+                    {
+                        editDialog &&
+                        <form onSubmit={this.handleSubmit}>
+                            <InputField name="date" title="Appointment Date" value={date} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
+                            <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
+                                onCreateOption={() => this.setState({ patienteditDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
+                                controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
+                            <InputField name="type" value={type} title="Appointment Type" onChange={this.handleChange} {...this.state} controlType="dropdown" options={appointmentTypeOptions} />
+                            <div className="modal-footer">
+                                <div className="row">
+                                    <button type="submit" className="btn btn-primary">Save changes</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    }
                 </Dialog>
                 <Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })}>
                     Are you sure you want to delete this item?

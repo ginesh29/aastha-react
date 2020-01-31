@@ -8,8 +8,8 @@ export const lookupTypeEnum = {
     OPERATIONTYPE: { value: 2, label: "Operation Type" },
     OPERATIONDIAGNOSIS: { value: 3, label: "Operation Diagnosis" },
     GENERALDIAGNOSIS: { value: 4, label: "General Diagnosis" },
-    MEDICINTYPE: { value: 5, label: "Medicine Type" },
-    MEDICINE: { value: 6, label: "Medicine" },
+    MEDICINETYPE: { value: 5, label: "Medicine Type" },
+    MEDICINENAME: { value: 6, label: "Medicine Name" },
     CHARGENAME: { value: 7, label: "ChargeName" },
     DELIVERYDIAGNOSIS: { value: 8, label: "DeliveryDiagnosis" },
     ADDRESS: { value: 9, label: "Address" }

@@ -56,21 +56,21 @@ export class repository
     handleError(error)
     {
         ReactDOM.render(<Messages ref={(el) => this.messages = el} />, document.getElementById("messages"));
-        var length = $(".p-dialog-content").length;
-        if (length)
-            $(".p-dialog-content").prepend('<div id="errors"></div>');
-        else
-            $(".p-panel-content").prepend('<div id="errors"></div>');
-        ReactDOM.render(<Messages ref={(el) => this.errors = el} />, document.getElementById("errors"));
         if (error.response) {
+            if ($(".p-dialog-content").length)
+                $(".p-dialog-content").prepend('<div id="errors"></div>');
+            else if ($(".p-panel-content").length)
+                $(".p-panel-content").prepend('<div id="errors"></div>');
+            ReactDOM.render(<Messages ref={(el) => this.errors = el} />, document.getElementById("errors"));
+            this.errors.clear();
             let errorResult = error.response.data;
             let errors = errorResult.ValidationSummary;
-            this.errors.clear();
             errors && Object.keys(errors).map((item, i) => (
-                this.errors.show({ severity: 'warn', summary: errorResult.Message, detail: errors[item], sticky: true })
+                errors && this.errors.show({ severity: 'warn', summary: errorResult.Message, detail: errors[item], sticky: true })
             ))
         } else if (error.request) {
-            this.messages.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
+            if ($("#messages div").is(':empty'))
+                this.messages.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
         } else {
             console.log('Error', error.message);
         }

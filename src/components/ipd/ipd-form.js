@@ -280,13 +280,13 @@ export default class IpdForm extends React.Component
     componentDidMount = e =>
     {
         this.bindLookups();
-        this.setState({ departmentTypeOptions: this.helper.enumToObject(departmentTypeEnum) });
     };
 
     render()
     {
+        const departmentTypeOptions = this.helper.enumToObject(departmentTypeEnum)
         const { uniqueId, patientId, roomType, departmentType, addmissionDate, dischargeDate, deliveryDate, deliveryTime, typesOfDelivery, deliveryDiagnosis, babyGender, babyWeight, operationDate, operationDiagnosis, typesOfOperation, generalDiagnosis, discountAmount } = this.state.formFields;
-        const { departmentTypeOptions, typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields, patientInput, patientDialogVisible, patientName } = this.state;
+        const { typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields, patientInput, patientDialogVisible, patientName } = this.state;
         return (
             <>
                 <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
@@ -410,7 +410,6 @@ export default class IpdForm extends React.Component
                             </tr>
                         </tfoot>
                     </table>
-
                     <div className="modal-footer">
                         <button type="reset" className="btn btn-default">
                             Reset
@@ -421,7 +420,10 @@ export default class IpdForm extends React.Component
                     </div>
                 </form>
                 <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialogVisible} onHide={() => this.setState({ patientDialogVisible: false })} baseZIndex={50}>
-                    <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} patientName={patientName} />
+                    {
+                        patientDialogVisible &&
+                        <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} patientName={patientName} />
+                    }
                 </Dialog>
             </>
         );

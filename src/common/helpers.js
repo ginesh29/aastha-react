@@ -31,10 +31,10 @@ export class helper
     return result;
   };
 
-  PatientOptions = (inputValue, callback, MessageRef) =>
+  PatientOptions = (inputValue, callback) =>
   {
     let filter = inputValue && `firstname.contains({${ inputValue.toLowerCase() }}) or middlename.contains({${ inputValue.toLowerCase() }}) or lastname.contains({${ inputValue.toLowerCase() }})`;
-    this.repository.get("patients", `fields=id,fullname,age&take=15&filter=${ filter }`, MessageRef)
+    this.repository.get("patients", `fields=id,fullname,age&take=15&filter=${ filter }`)
       .then(res =>
       {
         let patients = res && res.data.map(function (item)
@@ -44,13 +44,39 @@ export class helper
         callback(patients)
       })
   }
-
-  AddressOptions = (inputValue, callback, MessageRef) =>
+  MedicineTypeOptions = (inputValue, callback) =>
+  {
+    let filter = `type-eq-{${ lookupTypeEnum.MEDICINETYPE.value }} and name.contains({${ inputValue.toLowerCase() }})`;
+    this.repository.get("lookups", `fields=id,name&take=15&filter=${ filter }`)
+      .then(res =>
+      {
+        let medicineTypes = res && res.data.map(function (item)
+        {
+          return { value: item.id, label: item.name };
+        });
+        callback(medicineTypes)
+      })
+  }
+  MedicineNameOptions = (inputValue, callback, medicineType) =>
+  {
+    console.log(medicineType)
+    let filter = `type-eq-{${ lookupTypeEnum.MEDICINENAME.value }} and parentId-eq-{${ 401 }} and name.contains({${ inputValue.toLowerCase() }})`;
+    this.repository.get("lookups", `fields=id,name&take=15&filter=${ filter }`)
+      .then(res =>
+      {
+        let medicineTypes = res && res.data.map(function (item)
+        {
+          return { value: item.id, label: item.name };
+        });
+        callback(medicineTypes)
+      })
+  }
+  AddressOptions = (inputValue, callback) =>
   {
     let filter = `type-eq-{${ lookupTypeEnum.ADDRESS.value }}`;
     if (inputValue)
       filter = filter + ` and name.contains({${ inputValue.toLowerCase() }})`
-    this.repository.get("lookups", `take=15&filter=${ filter }`, MessageRef)
+    this.repository.get("lookups", `take=15&filter=${ filter }`)
       .then(res =>
       {
         let addresses = res && res.data.map(function (item)
