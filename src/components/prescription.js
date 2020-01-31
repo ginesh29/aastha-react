@@ -5,15 +5,13 @@ import { helper } from "./../common/helpers";
 import { repository } from "./../common/repository";
 import { RadioButton } from 'primereact/radiobutton';
 import { Checkbox } from 'primereact/checkbox';
-import { appointmentTypeEnum } from "./../common/enums";
+import { appointmentTypeEnum, lookupTypeEnum } from "./../common/enums";
 import * as Constants from "./../common/constants";
 import { Calendar } from 'primereact/calendar';
 import { Dialog } from 'primereact/dialog';
 const title = "Prescription";
-export default class Prescription extends React.Component
-{
-    constructor(props)
-    {
+export default class Prescription extends React.Component {
+    constructor(props) {
         super(props);
         this.state = this.getInitialState();
         this.repository = new repository();
@@ -29,13 +27,12 @@ export default class Prescription extends React.Component
             advices: [],
             followupInstruction: "",
             medicineType: null,
-            medicineName: "",
+            medicineName: null,
             days: ""
         },
         validationErrors: {}
     })
-    handleChange = (e, action) =>
-    {
+    handleChange = (e, action) => {
         const { isValidationFired, formFields } = this.state;
         const { advices, followupDate } = this.state.formFields;
         let fields = formFields;
@@ -54,7 +51,7 @@ export default class Prescription extends React.Component
             }
             else if (e.target.name === "followup") {
                 if (e.target.value <= 4 && e.target.value !== 0)
-                    followup = `ફરી ${ followupDate ? followupDate : "........." } ના રોજ બતાવવા આવવું`;
+                    followup = `ફરી ${followupDate ? followupDate : "........."} ના રોજ બતાવવા આવવું`;
                 else if (e.target.value === 5)
                     followup = `માસિકના બીજા/ત્રીજા/પાંચમા દિવસે બતાવવા આવવું`;
                 else
@@ -64,23 +61,45 @@ export default class Prescription extends React.Component
             }
             else if (e.target.name === "followupDate") {
                 let followupDate = this.helper.formatDate(e.target.value);
-                fields.followupInstruction = `ફરી ${ followupDate } ના રોજ બતાવવા આવવું`;
+                fields.followupInstruction = `ફરી ${followupDate} ના રોજ બતાવવા આવવું`;
+            }
+            else if (e.target.name === "medicineType") {
+                this.bindMedicineName(e.target.value)
             }
         }
+
         this.setState({
             formFields: fields
         });
         if (isValidationFired)
             this.handleValidation();
     };
-
-    render()
-    {
+    componentDidMount = () => {
+        this.bindMedicineType();
+    }
+    bindMedicineType = e => {
+        this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.MEDICINETYPE.value}}`).then(res => {
+            res.data = res.data.map(function (item) {
+                return { value: item.id, label: item.name };
+            });
+            this.setState({ medicineTypeOptions: res.data })
+        })
+    };
+    bindMedicineName = (medicineType) => {
+        medicineType = medicineType ? medicineType : 0;
+        this.repository.get("lookups", `filter=parentId-eq-{${medicineType}}`).then(res => {
+            res.data = res && res.data.map(function (item) {
+                return { value: item.id, label: item.name };
+            });
+            this.setState({ medicineName: null, medicineNameOptions: res.data })
+        })
+    };
+    render() {
         const { patientId, date, clinicDetail, followup, advices, followupInstruction, followupDate, medicineType, days, medicineName } = this.state.formFields;
-        const { dialogVisible } = this.state;
+        const { dialogVisible, medicineTypeOptions, medicineNameOptions } = this.state;
         const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
         return (
-            <>
+            <div className="col-md-12">
                 <div className="row">
                     <div className="col-md-6">
                         <Panel header={title} toggleable={true}  >
@@ -111,12 +130,11 @@ export default class Prescription extends React.Component
                                     <div className="col-md-2"><label> Advice : </label></div>
                                     <div className="col-md-10">
                                         {
-                                            Constants.adviceOptions.map((item, i) =>
-                                            {
+                                            Constants.adviceOptions.map((item, i) => {
                                                 return (
                                                     <div className="form-group" key={i + 1}>
-                                                        <Checkbox inputId={`advice${ i }`} name="advices" value={item.label} checked={advices.includes(item.label)} onChange={this.handleChange} />
-                                                        <label htmlFor={`advice${ i }`} className="p-radiobutton-label">{item.label}</label>
+                                                        <Checkbox inputId={`advice${i}`} name="advices" value={item.label} checked={advices.includes(item.label)} onChange={this.handleChange} />
+                                                        <label htmlFor={`advice${i}`} className="p-radiobutton-label">{item.label}</label>
                                                     </div>
                                                 )
                                             })
@@ -128,12 +146,11 @@ export default class Prescription extends React.Component
                                     <div className="col-md-2"><label>Follow up :</label></div>
                                     <div className="col-md-10">
                                         {
-                                            followupOptions.map((item, i) =>
-                                            {
+                                            followupOptions.map((item, i) => {
                                                 return (
                                                     <div className="form-group" key={i + 1}>
-                                                        <RadioButton inputId={`followup${ i + 1 }`} name="followup" value={item.value} checked={followup === item.value} onChange={this.handleChange} />
-                                                        <label htmlFor={`followup${ i + 1 }`} className="p-radiobutton-label">{item.label}
+                                                        <RadioButton inputId={`followup${i + 1}`} name="followup" value={item.value} checked={followup === item.value} onChange={this.handleChange} />
+                                                        <label htmlFor={`followup${i + 1}`} className="p-radiobutton-label">{item.label}
                                                             {
                                                                 item.value <= 4 && followup === item.value && (
                                                                     <Calendar value={followupDate && followupDate} onChange={this.handleChange} name="followupDate" />
@@ -145,8 +162,8 @@ export default class Prescription extends React.Component
                                             })
                                         }
                                         <div className="form-group" key={0}>
-                                            <RadioButton inputId={`followup${ 0 }`} name="followup" value={0} checked={followup === 0} onChange={this.handleChange} />
-                                            <label htmlFor={`followup${ 0 }`} className="p-radiobutton-label">None</label>
+                                            <RadioButton inputId={`followup${0}`} name="followup" value={0} checked={followup === 0} onChange={this.handleChange} />
+                                            <label htmlFor={`followup${0}`} className="p-radiobutton-label">None</label>
                                         </div>
                                     </div>
                                 </div>
@@ -155,11 +172,11 @@ export default class Prescription extends React.Component
                         </Panel>
                     </div>
                     <div className="col-md-6">
-                        <Panel header={`${ title } Preview`} toggleable={true} className="prescription-preview">
+                        <Panel header={`${title} Preview`} toggleable={true} className="prescription-preview">
                             <div id="print-div" style={{ marginTop: "20px", marginBottom: "20px" }} >
                                 <div className="row">
                                     <div className="col-xs-8">
-                                        <label>Patient Name : </label> {patientId.label}
+                                        <label>Patient Name : </label> {patientId && patientId.label}
                                     </div>
                                     <div className="col-xs-4">
                                         <label>Date : </label> {date && this.helper.formatDate(date)}
@@ -197,8 +214,7 @@ export default class Prescription extends React.Component
                                         <div className="col-md-10">
                                             <ul>
                                                 {
-                                                    advices.map((item, i) =>
-                                                    {
+                                                    advices.map((item, i) => {
                                                         return (
                                                             <li>{item}</li>
                                                         )
@@ -231,21 +247,17 @@ export default class Prescription extends React.Component
                         </Panel>
                     </div>
                 </div>
-                <Dialog header="Add Medicine" visible={dialogVisible} onHide={() => this.setState({ dialogVisible: false })} style={{ width: '50vw' }}>
+                <Dialog header="Add Medicine" visible={dialogVisible} onHide={() => this.setState({ dialogVisible: false })}  >
                     {
                         dialogVisible &&
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="row">
                                     <div className="col-md-4">
-                                        <InputField name="medicineType" value={medicineType} title="Medicine Type" onChange={this.handleChange} {...this.state}
-                                            onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ medicineType: e }) }}
-                                            controlType="select2" loadOptions={(e, callback) => this.helper.MedicineTypeOptions(e, callback)} />
+                                        <InputField name="medicineType" title="Medicine Type" value={medicineType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={medicineTypeOptions} filter={true} />
                                     </div>
                                     <div className="col-md-5">
-                                        <InputField name="medicineName" value={medicineName} title="Medicine Name" onChange={this.handleChange} {...this.state}
-                                            onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ medicineName: e }) }}
-                                            controlType="select2" loadOptions={(e, callback) => this.helper.MedicineNameOptions(e, callback, medicineType)} />
+                                        <InputField name="medicineName" title="Medicine Name" value={medicineName} onChange={this.handleChange} {...this.state} controlType="dropdown" options={medicineNameOptions} filter={true} />
                                     </div>
                                     <div className="col-md-3">
                                         <InputField name="days" title="Days" value={days} onChange={this.handleChange} {...this.state} keyfilter="pint" />
@@ -258,7 +270,7 @@ export default class Prescription extends React.Component
                         </div>
                     }
                 </Dialog>
-            </>
+            </div>
         )
     }
 }

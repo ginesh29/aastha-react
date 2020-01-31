@@ -1,15 +1,19 @@
-form .p-dropdown,
-form .p-dropdown-filter,
-form .p-inputtext,
-.p-inputtext,
-form .p-autocomplete,
-form .p-calendar,
-form .p-dropdown-filter-container,
-form .p-multiselect {
+ .p-dropdown,
+ .p-dropdown-filter,
+ .p-inputtext,
+ .p-autocomplete,
+ .p-calendar,
+ .p-dropdown-filter-container,
+ .p-multiselect {
   width: 100%;
 }
-label {
-  font-weight: 600 !important;
+.p-readonly{
+  background-color: #eee !important;
+  pointer-events: none;
+}
+
+.p-dropdown-label{
+  font-weight: 500 !important;
 }
 .p-component {
   font-family: "Titillium Web", sans-serif !important;
