@@ -15,6 +15,9 @@
 .p-dropdown-label{
   font-weight: 500 !important;
 }
+.p-dialog{
+  top:180px;
+}
 .p-component {
   font-family: "Titillium Web", sans-serif !important;
 }

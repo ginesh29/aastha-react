@@ -296,31 +296,35 @@ export default class IpdForm extends React.Component {
                             <InputField name="dischargeDate" title="Discharge Date" value={dischargeDate} onChange={this.handleChange} {...this.state} controlType="datepicker" minDate={addmissionDate} />
                         </div>
                     </div>
-                    <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.DELIVERY.label ? "" : "none" }}>
-                        <div className="row">
-                            <div className="col-md-4">
-                                <InputField name="deliveryDate" title="Delivery Date" value={deliveryDate} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-calendar" />
+                    {
+                        departmentType && departmentType.label === departmentTypeEnum.DELIVERY.label &&
+                        <>
+                            <div className="row">
+                                <div className="col-md-4">
+                                    <InputField name="deliveryDate" title="Delivery Date" value={deliveryDate} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-calendar" />
+                                </div>
+                                <div className="col-md-4">
+                                    <InputField name="deliveryTime" title="Delivery Time" value={deliveryTime} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-clock" timeOnly={true} hourFormat="12" />
+                                </div>
+                                <div className="col-md-4">
+                                    <InputField name="typesOfDelivery" title="Types Of Delivery" value={typesOfDelivery} onChange={this.handleChange} {...this.state} controlType="multiselect" options={typesofDeliveryOptions} filter={true} />
+                                </div>
                             </div>
-                            <div className="col-md-4">
-                                <InputField name="deliveryTime" title="Delivery Time" value={deliveryTime} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-clock" timeOnly={true} hourFormat="12" />
+                            <div className="row">
+                                <div className="col-md-4">
+                                    <InputField name="deliveryDiagnosis" title="Delivery Diagnosis" value={deliveryDiagnosis} onChange={this.handleChange} {...this.state} controlType="dropdown" options={deliveryDiganosisOptions} />
+                                </div>
+                                <div className="col-md-4">
+                                    <InputField name="babyGender" title="Baby Gender" value={babyGender} onChange={this.handleChange} {...this.state} controlType="dropdown" options={genderOptions} />
+                                </div>
+                                <div className="col-md-4">
+                                    <InputField name="babyWeight" title="Baby Weight" value={babyWeight} onChange={this.handleChange} {...this.state} keyfilter="pnum" />
+                                </div>
                             </div>
-                            <div className="col-md-4">
-                                <InputField name="typesOfDelivery" title="Types Of Delivery" value={typesOfDelivery} onChange={this.handleChange} {...this.state} controlType="multiselect" options={typesofDeliveryOptions} filter={true} />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-4">
-                                <InputField name="deliveryDiagnosis" title="Delivery Diagnosis" value={deliveryDiagnosis} onChange={this.handleChange} {...this.state} controlType="dropdown" options={deliveryDiganosisOptions} />
-                            </div>
-                            <div className="col-md-4">
-                                <InputField name="babyGender" title="Baby Gender" value={babyGender} onChange={this.handleChange} {...this.state} controlType="dropdown" options={genderOptions} />
-                            </div>
-                            <div className="col-md-4">
-                                <InputField name="babyWeight" title="Baby Weight" value={babyWeight} onChange={this.handleChange} {...this.state} keyfilter="pnum" />
-                            </div>
-                        </div>
-                    </div>
-                    <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.OPERATION.label ? "" : "none" }}>
+                        </>
+                    }
+                    {
+                        departmentType && departmentType.label === departmentTypeEnum.OPERATION.label &&
                         <div className="row">
                             <div className="col-md-4">
                                 <InputField name="operationDate" title="Operation Date" value={operationDate} onChange={this.handleChange} {...this.state} controlType="datepicker" icon="pi pi-calendar" />
@@ -332,14 +336,15 @@ export default class IpdForm extends React.Component {
                                 <InputField name="typesOfOperation" title="Types Of Operation" value={typesOfOperation} onChange={this.handleChange} {...this.state} controlType="multiselect" options={typesofOprationOptions} filter={true} />
                             </div>
                         </div>
-                    </div>
-                    <div style={{ display: departmentType && departmentType.label === departmentTypeEnum.GENERAL.label ? "" : "none" }}>
+                    }
+                    {
+                        departmentType && departmentType.label === departmentTypeEnum.GENERAL.label &&
                         <div className="row">
                             <div className="col-md-4">
                                 <InputField name="generalDiagnosis" title="General Diagnosis" value={generalDiagnosis} onChange={this.handleChange} {...this.state} controlType="multiselect" options={generalDiagnosisOptions} filter={true} />
                             </div>
                         </div>
-                    </div>
+                    }
                     <table className="table table-bordered">
                         <thead>
                             <tr>

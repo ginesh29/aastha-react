@@ -79,10 +79,10 @@ export default class Prescription extends React.Component {
     }
     bindMedicineType = e => {
         this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.MEDICINETYPE.value}}`).then(res => {
-            res.data = res.data.map(function (item) {
+            let medicineTypes = res && res.data.map(function (item) {
                 return { value: item.id, label: item.name };
             });
-            this.setState({ medicineTypeOptions: res.data })
+            this.setState({ medicineTypeOptions: medicineTypes })
         })
     };
     bindMedicineName = (medicineType) => {
@@ -99,7 +99,7 @@ export default class Prescription extends React.Component {
         const { dialogVisible, medicineTypeOptions, medicineNameOptions } = this.state;
         const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
         return (
-            <div className="col-md-12">
+            <>
                 <div className="row">
                     <div className="col-md-6">
                         <Panel header={title} toggleable={true}  >
@@ -270,7 +270,7 @@ export default class Prescription extends React.Component {
                         </div>
                     }
                 </Dialog>
-            </div>
+            </>
         )
     }
 }
