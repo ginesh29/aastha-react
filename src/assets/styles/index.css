@@ -1,22 +1,22 @@
- .p-dropdown,
- .p-dropdown-filter,
- .p-inputtext,
- .p-autocomplete,
- .p-calendar,
- .p-dropdown-filter-container,
- .p-multiselect {
+.p-dropdown,
+.p-dropdown-filter,
+.p-inputtext,
+.p-autocomplete,
+.p-calendar:not(.report-filter),
+.p-dropdown-filter-container,
+.p-multiselect {
   width: 100%;
 }
-.p-readonly{
+.p-readonly {
   background-color: #eee !important;
   pointer-events: none;
 }
 
-.p-dropdown-label{
+.p-dropdown-label {
   font-weight: 500 !important;
 }
-.p-dialog{
-  top:180px;
+.p-dialog {
+  top: 180px;
 }
 .p-component {
   font-family: "Titillium Web", sans-serif !important;

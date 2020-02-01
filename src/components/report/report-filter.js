@@ -9,12 +9,15 @@ import jquery from 'jquery';
 window.jQuery = jquery;
 require('jQuery.print');
 
-export default class ReportFilter extends Component {
-    constructor(props) {
+export default class ReportFilter extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.helper = new helper();
     }
-    render() {
+    render()
+    {
         const reportTypeOptions = this.helper.enumToObject(reportTypeEnum);
         const { reportType, dateSelection, dateRangeSelection, monthSelection, onDateSelection, onReportTypeChange, onShowSummary, data, showSummary, exportReport } = this.props;
         return (
@@ -24,11 +27,12 @@ export default class ReportFilter extends Component {
                     <div className="col-md-5">
                         <div className="form-group">
                             {
-                                reportTypeOptions.map((item, i) => {
+                                reportTypeOptions.map((item, i) =>
+                                {
                                     return (
                                         <label className="radio-inline" key={i}>
-                                            <RadioButton inputId={`reportType${i}`} name="reportType" value={item.value} onChange={onReportTypeChange} checked={reportType === item.value} />
-                                            <label htmlFor={`reportType${i}`} className="p-radiobutton-label">{item.label}</label>
+                                            <RadioButton inputId={`reportType${ i }`} name="reportType" value={item.value} onChange={onReportTypeChange} checked={reportType === item.value} />
+                                            <label htmlFor={`reportType${ i }`} className="p-radiobutton-label">{item.label}</label>
                                         </label>
                                     )
                                 })
@@ -44,15 +48,15 @@ export default class ReportFilter extends Component {
                                 }
                                 {
                                     reportType === reportTypeEnum.DAILY.value &&
-                                    <Calendar name="dateSelection" value={dateSelection} onChange={onDateSelection} readOnlyInput={true} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} />
+                                    <Calendar name="dateSelection" value={dateSelection} onChange={onDateSelection} readOnlyInput={true} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} className="report-filter" />
                                 }
                                 {
                                     reportType === reportTypeEnum.DATERANGE.value &&
-                                    <Calendar name="dateRangeSelection" value={dateRangeSelection} onChange={onDateSelection} selectionMode="range" readonlyInput={true} readOnlyInput={true} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} />
+                                    <Calendar name="dateRangeSelection" value={dateRangeSelection} onChange={onDateSelection} selectionMode="range" readonlyInput={true} readOnlyInput={true} dateFormat="dd/mm/yy" monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} className="report-filter" />
                                 }
                                 {
                                     reportType === reportTypeEnum.MONTHLY.value &&
-                                    <Calendar name="monthSelection" value={monthSelection} onChange={onDateSelection} view="month" dateFormat="mm/yy" yearNavigator={true} yearRange={TEN_YEAR_RANGE} readOnlyInput={true} />
+                                    <Calendar name="monthSelection" value={monthSelection} onChange={onDateSelection} view="month" dateFormat="mm/yy" yearNavigator={true} yearRange={TEN_YEAR_RANGE} readOnlyInput={true} className="report-filter" />
                                 }
                                 {
                                     data && data.length &&
