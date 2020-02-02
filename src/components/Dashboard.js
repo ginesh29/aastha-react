@@ -14,7 +14,7 @@ export default class Dashboard extends React.Component {
     }
     getStatistics = () => {
         const { controller } = this.state;
-        this.repository.get(`${controller}/GetPatientStatistics`, `filter=0`)
+        this.repository.get(`${controller}/GetPatientStatistics`)
             .then(res => {
                 this.setState({
                     patientStatistics: res && res.patients,

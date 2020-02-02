@@ -17,7 +17,7 @@ export default class Statistics extends Component {
     }
     getStatistics = () => {
         const { controller } = this.state;
-        this.repository.get(`${controller}/GetOpdIpdStatistics`, `filter=0`)
+        this.repository.get(`${controller}/GetOpdIpdStatistics`, "")
             .then(res => {
                 let opdStatistics = res && _.groupBy(res.opds, "year");
                 let ipdStatistics = res && _.groupBy(res.ipds, "year");
