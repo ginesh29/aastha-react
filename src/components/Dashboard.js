@@ -3,10 +3,8 @@ import { repository } from "../common/repository";
 import { helper } from "../common/helpers";
 import { TODAY_DATE } from "../common/constants";
 
-export default class Dashboard extends React.Component
-{
-    constructor(props)
-    {
+export default class Dashboard extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {
             controller: "statistics",
@@ -14,12 +12,10 @@ export default class Dashboard extends React.Component
         this.repository = new repository();
         this.helper = new helper();
     }
-    getStatistics = () =>
-    {
+    getStatistics = () => {
         const { controller } = this.state;
-        this.repository.get(`${ controller }/GetPatientStatistics`, `filter=0`)
-            .then(res =>
-            {
+        this.repository.get(`${controller}/GetPatientStatistics`, `filter=0`)
+            .then(res => {
                 this.setState({
                     patientStatistics: res && res.patients,
                     opdStatistics: res && res.opds,
@@ -27,12 +23,10 @@ export default class Dashboard extends React.Component
                 })
             })
     }
-    componentDidMount = () =>
-    {
+    componentDidMount = () => {
         this.getStatistics();
     }
-    render()
-    {
+    render() {
         const month = Number(this.helper.getMonthFromDate(TODAY_DATE));
         const year = this.helper.getYearFromDate(TODAY_DATE);
         const { patientStatistics, opdStatistics, ipdStatistics } = this.state;
@@ -43,14 +37,12 @@ export default class Dashboard extends React.Component
         const currentMonthPatients = patientStatistics && patientStatistics.filter(m => m.year === year && m.month === month).reduce((total, item) => total + item.totalPatient, 0)
         const currentMonthOpds = opdStatistics && opdStatistics.filter(m => m.year === year && m.month === month).reduce((total, item) => total + item.totalPatient, 0)
         const currentMonthIpds = ipdStatistics && ipdStatistics.filter(m => m.year === year && m.month === month).reduce((total, item) => total + item.totalPatient, 0)
-
         const currentYearPatients = patientStatistics && patientStatistics.filter(m => m.year === year).reduce((total, item) => total + item.totalPatient, 0)
         const currentYearOpds = opdStatistics && opdStatistics.filter(m => m.year === year).reduce((total, item) => total + item.totalPatient, 0)
         const currentYearIpds = ipdStatistics && ipdStatistics.filter(m => m.year === year).reduce((total, item) => total + item.totalPatient, 0)
         return (
             <div className="panel">
                 <div className="panel-body">
-
                     {
                         <div className="row">
                             <div className="col-md-4">
