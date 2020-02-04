@@ -47,3 +47,28 @@ export const adviceOptions = [
   { value: 5, label: "Abstinece/Condom use for next 7 days" },
   { value: 6, label: "Infertility work-up" }
 ];
+
+export const medicineInstructionOptions = [
+  { value: 1, label: "૧ સવારે" },
+  { value: 2, label: "૧ બપોરે" },
+  { value: 3, label: "૧ સાંજે" },
+  { value: 4, label: "૧ રાત્રે" },
+
+  { value: 5, label: "૨ સવારે" },
+  { value: 6, label: "૨ બપોરે" },
+  { value: 7, label: "૨ સાંજે" },
+  { value: 8, label: "૨ રાત્રે" },
+
+  { value: 9, label: "જમ્યા પહેલા" },
+  { value: 10, label: "જમ્યા પછી" },
+  { value: 11, label: "નાસ્તા પહેલા" },
+  { value: 12, label: "નાસ્તા પછી" },
+
+  { value: 13, label: "૧ ગોળી રોજ રાત્રે સૂતા પહેલા માસિકના ભાગે મૂકવી" },
+  { value: 14, label: "ટ્યુબ રોજ રાત્રે સૂતા પહેલા માસિકના અંદરના ભાગે લગાવવી" },
+  { value: 15, label: "૨ ચમચી અડધા ગ્લાસ પાણીમાં નાખીને દિવસમાં ત્રણવાર જમ્યા પછી પીવુ" },
+  { value: 16, label: "૨ ચમચી પાઉડર ૧ ગ્લાસ પાણી/દુધમાં નાખીને દિવસમાં બેવાર પીવુ" },
+  { value: 17, label: "૧ ગોળી તાવ આવે ત્યારે જ લેવી." },
+  { value: 18, label: "૧ ગોળી માથુ દુખે ત્યારે જ લેવી." },
+  { value: 19, label: "૧ ગોળી પેટમાં દુખે ત્યારે જ લેવી." },
+];

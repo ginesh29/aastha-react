@@ -1,10 +1,10 @@
-.p-dropdown,
-.p-dropdown-filter,
-.p-inputtext,
-.p-autocomplete,
-.p-calendar:not(.report-filter),
-.p-dropdown-filter-container,
-.p-multiselect {
+form .p-dropdown,
+form .p-dropdown-filter,
+form .p-inputtext,
+form .p-autocomplete,
+form .p-calendar,
+form .p-dropdown-filter-container,
+form .p-multiselect {
   width: 100%;
 }
 .p-readonly {
@@ -14,9 +14,6 @@
 
 .p-dropdown-label {
   font-weight: 500 !important;
-}
-.p-dialog {
-  top: 180px;
 }
 .p-component {
   font-family: "Titillium Web", sans-serif !important;
@@ -48,6 +45,13 @@
 }
 .prescription-preview .p-panel-content {
   background: #fffcab !important;
+}
+.instruction-check{
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+.followup-check{
+  margin-bottom: 5px;
 }
 .p-paginator .p-highlight {
   pointer-events: none !important;
