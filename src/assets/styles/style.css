@@ -3046,7 +3046,7 @@ ul.amounts li {
     width: 100%;
 }
 /*form validation*/
-.form-group span.error {
+span.error {
     display:inline;
     margin:5px 0;
     color:#B94A48;
