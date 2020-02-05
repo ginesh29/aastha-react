@@ -46,11 +46,17 @@ form .p-multiselect {
 .prescription-preview .p-panel-content {
   background: #fffcab !important;
 }
-.instruction-check{
+.prescription-preview table:not(.medicine-table) th {
+  width: 80px !important;
+}
+/* .medicine-dialog .icon-button {
+  color: #333 !important;
+} */
+.instruction-check {
   margin-bottom: 5px;
   font-size: 12px;
 }
-.followup-check{
+.followup-check {
   margin-bottom: 5px;
 }
 .p-paginator .p-highlight {
@@ -125,10 +131,15 @@ hr {
 .icon-button {
   background: none !important;
   border: none;
-  color: #ffeeee;
   text-decoration: underline;
   cursor: pointer;
   padding: 0;
+}
+.input-sm {
+  height: 28px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border-radius: 2px !important;
 }
 .event-indicator {
   cursor: move;
