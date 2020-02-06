@@ -19,6 +19,7 @@ import MonthlyIpdReport from "./components/report/monthly-ipd-report";
 import AppointmentCalendar from "./components/appointment-calendar";
 import Statistics from "./components/statistics";
 
+
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 
 const routes = (
