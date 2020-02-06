@@ -25,19 +25,19 @@ export default class ReportFilter extends Component
                 <div className="p-panel-title">Report Type</div>
                 <div className="row">
                     <div className="col-md-5">
-                        <ul className="inline-control">
+                        <div className="d-flex">
                             {
                                 reportTypeOptions.map((item, i) =>
                                 {
                                     return (
-                                        <li key={i}>
+                                        <div key={i} className="p-2">
                                             <RadioButton inputId={`reportType${ i }`} name="reportType" value={item.value} onChange={onReportTypeChange} checked={reportType === item.value} />
                                             <label htmlFor={`reportType${ i }`} className="p-radiobutton-label">{item.label}</label>
-                                        </li>
+                                        </div>
                                     )
                                 })
                             }
-                        </ul>
+                        </div>
                     </div>
                     <div className="col-md-7">
                         <div className="p-inputgroup float-right">

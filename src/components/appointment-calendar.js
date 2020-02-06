@@ -246,7 +246,7 @@ export default class AppointmentCalendar extends Component
                             <InputField name="type" value={type} title="Appointment Type" onChange={this.handleChange} {...this.state} controlType="dropdown" options={appointmentTypeOptions} />
                             <div className="modal-footer">
                                 <div className="row">
-                                    <button type="submit" className="btn btn-primary">Save changes</button>
+                                    <button type="submit" className="btn btn-info">Save changes</button>
                                 </div>
                             </div>
                         </form>

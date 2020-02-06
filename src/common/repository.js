@@ -73,7 +73,6 @@ export class repository
             if ($("#messages div").is(':empty'))
                 this.messages.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
         } else {
-            console.log('Error', error.message);
         }
     }
 }

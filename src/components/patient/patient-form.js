@@ -24,7 +24,7 @@ export default class PatientForm extends Component
       id: null,
       firstname: "",
       middlename: "",
-      fathername: "",
+      fathername: null,
       lastname: "",
       age: "",
       addressId: null,

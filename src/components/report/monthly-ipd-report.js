@@ -122,7 +122,7 @@ export default class MonthlyIpdReport extends Component
                     hash.amount = _.sumBy(item.charges, x => x.amount);
                     hash.discount = hash.discount ? hash.discount : 0;
                     hash.payableAmount = hash.amount - hash.discount;
-                    hash.amountInWord = numberToWords.toWords(hash.payableAmount).toUpperCase();
+                    hash.amountInWord = numberToWords.toWords(hash.payableAmount);
                     return hash;
                 }, item);
                 //delete item.charges;
@@ -147,7 +147,7 @@ export default class MonthlyIpdReport extends Component
                                             <div className="" style={{ paddingLeft: "50px" }}>
                                                 <img src={invoice_header} className="img-fluid" alt="Invoice Header" />
                                                 <h3 className="invoice-title">Indoor Invoice</h3>
-                                                <table className="table" id="invoice-detail">
+                                                <table className="table table-borderless invoice-detail">
                                                     <tr>
                                                         <td><b>Name :</b> {items.fullname}</td>
                                                         <td width="200px"><b>Date :</b> {items.formatedDischargeDate}</td>
@@ -199,18 +199,18 @@ export default class MonthlyIpdReport extends Component
                                                                     <td className="text-right"><strong> {this.helper.formatCurrency(items.discount)}</strong></td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td colSpan="4">Net Payable Amount :<span> {`${ items.amountInWord } Only`}</span></td>
+                                                                    <td colSpan="4">Net Payable Amount :<span className="text-capitalize"> {`${ items.amountInWord } Only`}</span></td>
                                                                     <td className="text-right"><strong> {this.helper.formatCurrency(items.payableAmount)}</strong></td>
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-                                                    </div>
-                                                    <div className="row" style={{ marginTop: "15px" }}>
-                                                        <div className="col-md-7">
-                                                            <span>Rececived By</span>
-                                                        </div>
-                                                        <div className="col-md-5">
-                                                            <strong>Dr. Bhaumik Tandel</strong>
+                                                        <div className="row" style={{ marginTop: "15px" }}>
+                                                            <div className="col-md-9">
+                                                                <span>Rececived By</span>
+                                                            </div>
+                                                            <div className="col-md-3">
+                                                                <label>Dr. Bhaumik Tandel</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

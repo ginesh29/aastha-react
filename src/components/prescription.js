@@ -294,7 +294,7 @@ export default class Prescription extends React.Component
             <>
                 <div className="row">
                     <div className="col-md-6">
-                        <Panel header={title} toggleable={true} >
+                        <Panel header={title} toggleable={true}  >
                             <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
                                 <div className="row">
                                     <div className="col-md-6">
@@ -343,25 +343,29 @@ export default class Prescription extends React.Component
                                                 followupOptions.map((item, i) =>
                                                 {
                                                     return (
-                                                        <ul className="inline-control" key={i + 1}>
-                                                            <li>
-                                                                <RadioButton inputId={`followup${ i + 1 }`} name="followup" value={item.value} checked={followup === item.value} onChange={(e) => { this.handleChange(e); this.setState({ validationErrors: {} }) }} />
+                                                        <div className="d-flex" key={i + 1}>
+                                                            <div className="mr-2">
+                                                                <RadioButton inputId={`followup${ i + 1 }`} name="followup" value={item.value} checked={followup === item.value} onChange={(e) => { this.handleChange(e); this.setState({ validationErrors: { ...validationErrors, followupDate: "" } }) }} />
                                                                 <label htmlFor={`followup${ i + 1 }`} className="p-radiobutton-label">{item.label}</label>
-                                                            </li>
+                                                            </div>
+
                                                             {
                                                                 item.value <= 4 && followup === item.value && (
                                                                     <>
-                                                                        <li>
+                                                                        <div className="mr-2">
                                                                             <Calendar inputClassName={`input-sm ${ validationErrors.followupDate ? "error" : "" }`} value={followupDate && followupDate} onChange={this.handleChange} name="followupDate" />
-                                                                        </li>
+                                                                        </div>
                                                                         {
                                                                             validationErrors.followupDate &&
-                                                                            <span className="error">Followup Date is required</span>
+                                                                            <div className="mr-2">
+                                                                                <span className="error">Followup Date is required</span>
+                                                                            </div>
                                                                         }
                                                                     </>
                                                                 )
                                                             }
-                                                        </ul>
+
+                                                        </div>
                                                     )
                                                 })
                                             }
@@ -380,13 +384,15 @@ export default class Prescription extends React.Component
                         <Panel header={header} className="prescription-preview">
                             <div id="print-div">
                                 <div className="row">
-                                    <div className="col-md-8">
+                                    <div className="col-md">
                                         <label>Patient Name : </label> {patientId && patientId.label}
                                     </div>
                                     <div className="col-md-4">
                                         <label>Date : </label> {date && this.helper.formatDate(date)}
                                     </div>
-                                    <div className="col-md-8">
+                                </div>
+                                <div className="row">
+                                    <div className="col-md">
                                         <label>Patient Id : </label> {patientId.value}
                                     </div>
                                     <div className="col-md-4">
@@ -397,8 +403,8 @@ export default class Prescription extends React.Component
                                 <table>
                                     <tbody>
                                         <tr>
-                                            <th style={{ verticalAlign: 'top' }} width="80px">Clinic&nbsp;Detail&nbsp;:&nbsp;</th>
-                                            <td style={{ verticalAlign: 'top' }}><span className="display-linebreak"> {clinicDetail}</span></td>
+                                            <th className="align-top" width="80px">Clinic&nbsp;Detail&nbsp;:&nbsp;</th>
+                                            <td className="align-top"><span className="display-linebreak"> {clinicDetail}</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -419,7 +425,7 @@ export default class Prescription extends React.Component
                                                 {
                                                     return (
                                                         <tr key={i}>
-                                                            <td style={{ verticalAlign: 'top' }}>{item.medicineType.label}</td>
+                                                            <td className="align-top">{item.medicineType.label}</td>
                                                             <td>{item.medicineName.label}<br />
                                                                 <span className="gujarati-text">
                                                                     {item.medicineInstructions.join(" --- ")}
@@ -437,7 +443,7 @@ export default class Prescription extends React.Component
                                     <table>
                                         <tbody>
                                             <tr>
-                                                <th width="80px" style={{ verticalAlign: 'top' }}>Advice&nbsp;:</th>
+                                                <th width="80px" className="align-top">Advice&nbsp;:</th>
                                                 <td>
                                                     <ul style={{ paddingLeft: '20px' }}>
                                                         {
@@ -458,13 +464,13 @@ export default class Prescription extends React.Component
                                             <table>
                                                 <tr>
                                                     <th width="80px">Follow up&nbsp;:&nbsp;</th>
-                                                    <td className="gujarati-text" style={{ verticalAlign: "bottom" }}>{followupInstruction}</td>
+                                                    <td className="gujarati-text align-bottom">{followupInstruction}</td>
                                                 </tr>
                                             </table>
                                         )
                                     }
                                 </div>
-                                <div className="col-md-12 text-right" style={{ marginTop: "50px" }}>
+                                <div className="text-right" style={{ marginTop: "50px" }}>
                                     <label>Dr. Bhaumik Tandel</label>
                                 </div>
                             </div>
@@ -485,14 +491,14 @@ export default class Prescription extends React.Component
                                             <InputField name="medicineName" title="Medicine Name" value={medicineName} onChange={this.handleMedicineChange} {...this.state} controlType="dropdown" options={medicineNameOptions} filter={true} optionLabel="label" />
                                         </div>
                                         <div className="col-md-4">
-                                            <ul className="inline-control">
-                                                <li style={{ width: "75%" }}>
+                                            <div className="d-flex">
+                                                <div className="mr-2">
                                                     <InputField name="days" title="Days" value={days} onChange={this.handleMedicineChange} {...this.state} keyfilter="pint" />
-                                                </li>
-                                                <li>
-                                                    <button className="btn btn-sm btn-secondary" type="button" onClick={this.addMedicine} style={{ verticalAlign: 'unset' }}> <i className="fa fa-plus"></i></button>
-                                                </li>
-                                            </ul>
+                                                </div>
+                                                <div>
+                                                    <button className="btn btn-sm btn-secondary" type="button" onClick={this.addMedicine} style={{ marginTop: '30px' }}> <i className="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="row gujarati-text">
@@ -525,7 +531,7 @@ export default class Prescription extends React.Component
                                                 {
                                                     return (
                                                         <tr key={i}>
-                                                            <td style={{ verticalAlign: 'top' }}>{item.medicineType.label}</td>
+                                                            <td className="align-top">{item.medicineType.label}</td>
                                                             <td>{item.medicineName.label}<br />
                                                                 <span className="gujarati-text">
                                                                     {item.medicineInstructions.join(" --- ")}
