@@ -7,7 +7,8 @@ import "primereact/resources/themes/nova-light/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 // import "primeflex/primeflex.css"
-import "./assets/styles/style.css";
+import "./assets/styles/theme.css";
+import "./assets/styles/prime-custom.css";
 import "./assets/styles/index.css";
 
 import 'jquery/src/jquery';

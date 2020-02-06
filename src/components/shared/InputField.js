@@ -7,16 +7,14 @@ import { MultiSelect } from 'primereact/multiselect';
 import { InputTextarea } from 'primereact/inputtextarea';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 
-export default class InputField extends Component
-{
-  render()
-  {
+export default class InputField extends Component {
+  render() {
     const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref, loadOptions, onCreateOption, onInputChange } = this.props;
     let errorClass = validationErrors[name] ? "error" : "";
     let propClassName = className ? className : "";
-    let finalClassName = `${ propClassName } ${ errorClass }`;
+    let finalClassName = `${propClassName} ${errorClass}`;
     return (
-      <div className="form-group">
+      <>
         <label>{title}</label>
         {
           controlType === "input-group-addon" &&
@@ -61,7 +59,7 @@ export default class InputField extends Component
           <InputText name={name} value={value} className={finalClassName} placeholder={"Enter " + title} onChange={onChange} onInput={onInput} disabled={disabled} keyfilter={keyfilter} maxLength={maxLength} onFocus={this.onFocus} autoFocus={this.autoFocus} ref={ref} />
         }
         <span className="error">{validationErrors[name]}</span>
-      </div>
+      </>
     )
   }
 }

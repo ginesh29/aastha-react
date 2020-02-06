@@ -8,7 +8,7 @@ import { helper } from "../common/helpers";
 import { ROWS } from "../common/constants";
 import { lookupTypeEnum } from "../common/enums";
 import { Dialog } from 'primereact/dialog';
-
+import { Panel } from 'primereact/panel';
 import { NavLink } from 'react-router-dom';
 import { Dropdown } from "primereact/dropdown";
 // import PatientForm from "./patient-form";
@@ -85,8 +85,8 @@ export default class AdminPanel extends Component {
 
     actionTemplate(rowData, column) {
         return <>
-            <button type="button" class="btn btn-warning btn-xs" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}><i class="fa fa-pencil"></i></button>
-            <button type="button" class="btn btn-danger btn-xs" onClick={() => this.onRowDelete(rowData)}><i class="fa fa-times"></i></button>
+            <button type="button" class="btn btn-warning grid-action-btn" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}><i class="fa fa-pencil"></i></button>
+            <button type="button" class="btn btn-danger grid-action-btn" onClick={() => this.onRowDelete(rowData)}><i class="fa fa-times"></i></button>
         </>;
     }
 
@@ -140,10 +140,10 @@ export default class AdminPanel extends Component {
         );
 
         return (
-            <>
+            <Panel header={header} toggleable={true} >
                 <div className="col-md-6">
                     <div className="row">
-                        <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" header={header} onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter} selectionMode="single">
+                        <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter} selectionMode="single">
                             <Column field="name" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
                             <Column field="type" header="Age" />
                             <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '8em' }} />
@@ -157,7 +157,7 @@ export default class AdminPanel extends Component {
 
                 <Dialog header="Edit Patient" visible={editDialogVisible} footer={deleteDialogFooter} onHide={this.onHide}>
                 </Dialog>
-            </>
+            </Panel>
         );
     }
 }

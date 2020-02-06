@@ -82,8 +82,17 @@ export default class Patients extends Component {
 
   actionTemplate(rowData, column) {
     return <div>
-      <Button type="button" icon="pi pi-pencil" className="p-button-warning" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}></Button>
-      <Button type="button" icon="pi pi-times" className="p-button-danger" onClick={() => this.onRowDelete(rowData)}></Button>
+      {/* <button type="button" class="btn btn-secondary btn-xs"><i class="fa fa-pencil"></i></button> */}
+      <button type="button" class="btn btn-labeled btn-secondary btn-grid mr-2">
+        <span class="btn-label"><i class="fa fa-pencil"></i></span>Edit
+      </button>
+      <button type="button" class="btn btn-labeled btn-danger btn-grid">
+        <span class="btn-label"><i class="fa fa-times"></i></span>Delete
+      </button>
+      {/* <Button type="button" icon="pi pi-pencil" className="p-button-warning grid-action-btn" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}></Button>
+      <Button type="button" icon="pi pi-times" className="p-button-danger grid-action-btn" onClick={() => this.onRowDelete(rowData)}></Button> */}
+      {/* <button type="button" class="btn btn-secondary grid-action-btn mr-1"><i class="fa fa-pencil"></i></button>
+      <button type="button" class="btn btn-danger grid-action-btn"><i class="fa fa-times"></i></button> */}
     </div>;
   }
 
@@ -136,7 +145,7 @@ export default class Patients extends Component {
           <Column field="age" style={{ "width": "100px" }} header="Age" />
           <Column field="mobile" style={{ "width": "150px" }} header="Mobile" filter={true} filterMatchMode="contains" />
           <Column field="address.name" style={{ "width": "150px" }} header="Address" sortable={true} filter={true} filterMatchMode="contains" />
-          {/* <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '8em' }} /> */}
+          <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '190px' }} />
         </DataTable>
         <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
 

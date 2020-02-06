@@ -51,9 +51,14 @@ form .p-multiselect,
 .prescription-preview table:not(.medicine-table) th {
   width: 80px !important;
 }
-/* .medicine-dialog .icon-button {
-  color: #333 !important;
-} */
+
+.btn-grid {
+  font-size: 11px;
+  line-height: 0.5;
+  border-radius: 2px;
+}
+.btn-label {position: relative;left: -12px;display: inline-block;padding: 5px 8px;background: rgba(0,0,0,0.15);border-radius: 3px 0 0 3px;}
+.btn-labeled {padding-top: 0;padding-bottom: 0;}
 .modal-footer {
   padding: 10px 0 10px 0 !important;
 }

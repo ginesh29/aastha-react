@@ -5,7 +5,7 @@ export const BASE_API_URL = "http://localhost:61194/api";
 export const ROWS = 10;
 export const TODAY_DATE = new Date()
 TODAY_DATE.setFullYear(TODAY_DATE.getFullYear() - 1);
-export const TEN_YEAR_RANGE = `${ TODAY_DATE.getFullYear() - 10 }:${ TODAY_DATE.getFullYear() + 10 }`;
+export const TEN_YEAR_RANGE = `${TODAY_DATE.getFullYear() - 10}:${TODAY_DATE.getFullYear() + 10}`;
 
 export const FULLCALENDAR_OPTION = {
   firstDay: 1,
@@ -64,11 +64,12 @@ export const medicineInstructionOptions = [
   { id: 11, label: "નાસ્તા પહેલા" },
   { id: 12, label: "નાસ્તા પછી" },
 
-  { id: 13, label: "૧ ગોળી રોજ રાત્રે સૂતા પહેલા માસિકના ભાગે મૂકવી" },
-  { id: 14, label: "ટ્યુબ રોજ રાત્રે સૂતા પહેલા માસિકના અંદરના ભાગે લગાવવી" },
-  { id: 15, label: "૨ ચમચી અડધા ગ્લાસ પાણીમાં નાખીને દિવસમાં ત્રણવાર જમ્યા પછી પીવુ" },
-  { id: 16, label: "૨ ચમચી પાઉડર ૧ ગ્લાસ પાણી/દુધમાં નાખીને દિવસમાં બેવાર પીવુ" },
-  { id: 17, label: "૧ ગોળી તાવ આવે ત્યારે જ લેવી." },
-  { id: 18, label: "૧ ગોળી માથુ દુખે ત્યારે જ લેવી." },
-  { id: 19, label: "૧ ગોળી પેટમાં દુખે ત્યારે જ લેવી." },
+  { id: 13, label: "૧ ગોળી તાવ આવે ત્યારે જ લેવી." },
+  { id: 14, label: "૧ ગોળી માથુ દુખે ત્યારે જ લેવી." },
+  { id: 15, label: "૧ ગોળી પેટમાં દુખે ત્યારે જ લેવી." },
+
+  { id: 16, label: "૧ ગોળી રોજ રાત્રે સૂતા પહેલા માસિકના ભાગે મૂકવી" },
+  { id: 17, label: "ટ્યુબ રોજ રાત્રે સૂતા પહેલા માસિકના અંદરના ભાગે લગાવવી" },
+  { id: 18, label: "૨ ચમચી અડધા ગ્લાસ પાણીમાં નાખીને દિવસમાં ત્રણવાર જમ્યા પછી પીવુ" },
+  { id: 19, label: "૨ ચમચી પાઉડર ૧ ગ્લાસ પાણી/દુધમાં નાખીને દિવસમાં બેવાર પીવુ" }
 ];

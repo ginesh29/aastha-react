@@ -16,6 +16,8 @@ ul, .list-unstyled {
 }
 label {
     font-weight: 600 !important;
+    margin-top: 0.5rem;
+    margin-bottom: 0 ;
   }
 a,a:hover,a:focus {
     text-decoration:none;
@@ -4336,6 +4338,10 @@ tr.odd.gradeX td.sorting_1,tr.even.gradeX td.sorting_1,table.display tr.even.gra
 .most-popular .price-actions .btn {
     background:#1fb5ad !important;
     cursor:pointer;
+}
+.btn{
+    padding: 4px 0.75rem;
+    white-space: nowrap;
 }
 .pricing-table .price-actions .btn {
     border-radius:5px;
