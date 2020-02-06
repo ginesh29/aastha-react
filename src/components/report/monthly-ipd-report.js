@@ -134,8 +134,8 @@ export default class MonthlyIpdReport extends Component
 
         return (
             <>
-                <div className="panel">
-                    <div className="panel-body">
+                <div className="card">
+                    <div className="card-body">
                         <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value })} data={ipdData} showSummary={false} />
                         <hr />
                         <div className="row invoice" id="print-div">
@@ -143,9 +143,9 @@ export default class MonthlyIpdReport extends Component
                                 ipdData && ipdData.map((items, i) =>
                                 {
                                     return (
-                                        <div className={`col-md-6 col-xs-6 ${ i % 2 === 0 ? "vertical-devider" : "" }`} key={i}>
+                                        <div className={`col-md-6 ${ i % 2 === 0 ? "vertical-devider" : "" }`} key={i}>
                                             <div className="" style={{ paddingLeft: "50px" }}>
-                                                <img src={invoice_header} className="img-responsive" alt="Invoice Header" />
+                                                <img src={invoice_header} className="img-fluid" alt="Invoice Header" />
                                                 <h3 className="invoice-title">Indoor Invoice</h3>
                                                 <table className="table" id="invoice-detail">
                                                     <tr>
@@ -162,7 +162,7 @@ export default class MonthlyIpdReport extends Component
                                                     </tr>
                                                 </table>
                                                 <div className="row">
-                                                    <div className="col-xs-12">
+                                                    <div className="col-md-12">
                                                         <table className="table table-bordered invoice-table">
                                                             <thead>
                                                                 <tr>
@@ -199,17 +199,17 @@ export default class MonthlyIpdReport extends Component
                                                                     <td className="text-right"><strong> {this.helper.formatCurrency(items.discount)}</strong></td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td colSpan="4">Net Payable Amount :<span > {`${ items.amountInWord } Only`}</span></td>
+                                                                    <td colSpan="4">Net Payable Amount :<span> {`${ items.amountInWord } Only`}</span></td>
                                                                     <td className="text-right"><strong> {this.helper.formatCurrency(items.payableAmount)}</strong></td>
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
                                                     </div>
-                                                    <div style={{ marginTop: "15px" }}>
-                                                        <div className="col-xs-7">
+                                                    <div className="row" style={{ marginTop: "15px" }}>
+                                                        <div className="col-md-7">
                                                             <span>Rececived By</span>
                                                         </div>
-                                                        <div className="col-xs-5 pull-right">
+                                                        <div className="col-md-5">
                                                             <strong>Dr. Bhaumik Tandel</strong>
                                                         </div>
                                                     </div>
@@ -221,7 +221,7 @@ export default class MonthlyIpdReport extends Component
                             }
                         </div>
                     </div>
-                </div >
+                </div>
             </>
         );
     }

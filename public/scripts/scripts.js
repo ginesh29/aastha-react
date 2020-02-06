@@ -203,11 +203,11 @@
 
         /*==Sidebar Toggle==*/
 
-        $(".leftside-navigation .sub-menu > a").click(function ()
+        $(".leftside-navigation .sub-menu> a").click(function ()
         {
             var o = ($(this).offset());
             var diff = 80 - o.top;
-            if (diff > 0)
+            if (diff> 0)
                 $(".leftside-navigation").scrollTo("-=" + Math.abs(diff), 500);
             else
                 $(".leftside-navigation").scrollTo("+=" + Math.abs(diff), 500);
@@ -280,14 +280,5 @@
                 el.slideDown(200);
             }
         });
-
-
-        // tool tips
-
-        $('.tooltips').tooltip();
-
-        // popovers
-
-        $('.popovers').popover();
     });
 })(jQuery);

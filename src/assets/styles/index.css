@@ -4,7 +4,8 @@ form .p-inputtext,
 form .p-autocomplete,
 form .p-calendar,
 form .p-dropdown-filter-container,
-form .p-multiselect {
+form .p-multiselect,
+.p-panel {
   width: 100%;
 }
 .p-readonly {
@@ -12,7 +13,8 @@ form .p-multiselect {
   pointer-events: none;
 }
 
-.p-dropdown-label {
+.p-dropdown-label,
+.p-radiobutton-label {
   font-weight: 500 !important;
 }
 .p-component {
@@ -52,12 +54,16 @@ form .p-multiselect {
 /* .medicine-dialog .icon-button {
   color: #333 !important;
 } */
-.instruction-check label,.followup-check label {
+.modal-footer {
+  padding: 10px 0 10px 0 !important;
+}
+.instruction-check label,
+.followup-check label {
   margin-bottom: 5px !important;
   font-weight: 500 !important;
 }
 .inline-control {
-  list-style-type: none; 
+  list-style-type: none;
   padding: 0;
   margin: 0;
 }
@@ -66,7 +72,7 @@ form .p-multiselect {
   display: inline-block;
 }
 
-.gujarati-text  {
+.gujarati-text {
   font-size: 12px !important;
 }
 .p-paginator .p-highlight {

@@ -7,6 +7,7 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import * as Constants from "../../common/constants";
 import { lookupTypeEnum } from "../../common/enums";
+import $ from "jquery";
 
 const controller = "patients";
 export default class PatientForm extends Component
@@ -23,6 +24,7 @@ export default class PatientForm extends Component
       id: null,
       firstname: "",
       middlename: "",
+      fathername: "",
       lastname: "",
       age: "",
       addressId: null,
@@ -30,11 +32,13 @@ export default class PatientForm extends Component
     },
     address: "",
     isValidationFired: false,
-    validationErrors: {}
+    validationErrors: {},
+    isExist: false
   })
   handleChange = (e, action) =>
   {
     const { isValidationFired, formFields } = this.state;
+    $("#errors").remove();
     let fields = formFields;
     if (action)
       fields[action.name] = action !== Constants.SELECT2_ACTION_CLEAR_TEXT ? e && { value: e.value, label: e.label } : null;
@@ -50,13 +54,14 @@ export default class PatientForm extends Component
 
   handleSubmit = e =>
   {
-    const { id, firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
+    const { id, firstname, middlename, fathername, lastname, age, addressId, mobile } = this.state.formFields;
     e.preventDefault();
     if (this.handleValidation()) {
       const patient = {
         id: id,
         firstname: firstname,
         middlename: middlename,
+        fathername: fathername,
         lastname: lastname,
         age: age,
         mobile: mobile,
@@ -65,14 +70,16 @@ export default class PatientForm extends Component
       this.repository.post(controller, patient)
         .then(res =>
         {
-          if (res) {
+          if (res && !res.errors) {
             this.props.onHidePatientDialog && this.props.onHidePatientDialog();
             this.handleReset();
           }
+          res.errors && this.setState({
+            isExist: true
+          })
         })
     }
-  };
-
+  }
   handleValidation = e =>
   {
     const { firstname, middlename, lastname, age, addressId } = this.state.formFields;
@@ -139,8 +146,8 @@ export default class PatientForm extends Component
   }
   render()
   {
-    const { firstname, middlename, lastname, age, addressId, mobile } = this.state.formFields;
-    const { addressDialogVisible, address, addressError } = this.state;
+    const { firstname, middlename, fathername, lastname, age, addressId, mobile } = this.state.formFields;
+    const { addressDialogVisible, address, addressError, isExist } = this.state;
     let addressDialogFooter = <div className="ui-dialog-buttonpane p-clearfix">
       <Button label="Close" icon="pi pi-times" className="p-button-secondary" onClick={(e) => this.setState({ addressDialogVisible: false })} />
       <Button label="Save" icon="pi pi-check" onClick={this.saveAddress} />
@@ -149,13 +156,20 @@ export default class PatientForm extends Component
       <>
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
-            <div className="col-md-4">
+            <div className="col">
               <InputField name="firstname" title="Firstname" value={this.helper.toSentenceCase(firstname)} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
             </div>
-            <div className="col-md-4">
+            <div className="col">
               <InputField name="middlename" title="Middlename" value={this.helper.toSentenceCase(middlename)} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
             </div>
-            <div className="col-md-4">
+            {
+              isExist &&
+              <div className="col">
+                <InputField name="fathername" title="Fathername" value={this.helper.toSentenceCase(fathername)} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              </div>
+            }
+
+            <div className="col">
               <InputField name="lastname" title="Lastname" value={this.helper.toSentenceCase(lastname)} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
             </div>
           </div>
@@ -175,10 +189,8 @@ export default class PatientForm extends Component
             </div>
           </div>
           <div className="modal-footer">
-            <div className="row">
-              <button type="reset" className="btn btn-default">Reset</button>
-              <button type="submit" className="btn btn-primary">Save changes</button>
-            </div>
+            <button type="reset" className="btn btn-secondary">Reset</button>
+            <button type="submit" className="btn btn-info">Save changes</button>
           </div>
         </form>
         <Dialog header={Constants.ADD_ADDRESS_TITLE} footer={addressDialogFooter} visible={addressDialogVisible} onHide={() => this.setState({ addressDialogVisible: false })} baseZIndex={0}>

@@ -80,7 +80,7 @@ export default class LeftMenu extends React.Component {
                         </ul>
                     </div>
                 </div>
-            </aside >
+            </aside>
         );
     }
 }

@@ -344,7 +344,7 @@
             // scroll position isn't rounded away when the scrollbar's CSS is set
             // this flooring of delta would happened automatically when
             // bar.css is set below, but we floor here for clarity
-            delta = (y > 0) ? Math.ceil(delta) : Math.floor(delta);
+            delta = (y> 0) ? Math.ceil(delta) : Math.floor(delta);
 
             // scroll the scrollbar
             bar.css({ top: delta + 'px' });
@@ -426,7 +426,7 @@
           lastScroll = percentScroll;
 
           // show only when required
-          if(barHeight >= me.outerHeight()) {
+          if(barHeight>= me.outerHeight()) {
             //allow window scroll
             releaseScroll = true;
             return;

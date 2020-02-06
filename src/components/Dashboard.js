@@ -50,8 +50,8 @@ export default class Dashboard extends React.Component
         const currentYearOpds = opdStatistics && opdStatistics.reduce((total, item) => total + item.totalPatient, 0)
         const currentYearIpds = ipdStatistics && ipdStatistics.reduce((total, item) => total + item.totalPatient, 0)
         return (
-            <div className="panel">
-                <div className="panel-body">
+            <div className="card">
+                <div className="card-body">
                     {
                         <div className="row">
                             <div className="col-md-4">
@@ -83,8 +83,8 @@ export default class Dashboard extends React.Component
                             </div>
                         </div>
                     }
-                </div >
-            </div >
+                </div>
+            </div>
         )
     }
 }

@@ -91,9 +91,9 @@ export default class Ipds extends Component {
 
     actionTemplate(rowData, column) {
         return <div>
-            <Button type="button" icon="pi pi-pencil" className="p-button-warning" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}></Button >
+            <Button type="button" icon="pi pi-pencil" className="p-button-warning" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}></Button>
             <Button type="button" icon="pi pi-times" className="p-button-danger" onClick={() => this.onRowDelete(rowData)}></Button>
-        </div >;
+        </div>;
     }
 
     onRowDelete = (row) => {

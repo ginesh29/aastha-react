@@ -42,7 +42,7 @@ export default class Opds extends Component {
                     item.formatedDate = this.helper.formatDate(item.date);
                     item.patient = { value: item.patient.id, label: item.patient.fullname }
                     let totalCharge = Number(item.consultCharge) + Number(item.usgCharge) + Number(item.uptCharge) + Number(item.injectionCharge) + Number(item.otherCharge);
-                    item.totalCharge = totalCharge > 0 && totalCharge;
+                    item.totalCharge = totalCharge> 0 && totalCharge;
                     return item;
                 });
                 this.setState({
@@ -94,9 +94,9 @@ export default class Opds extends Component {
 
     actionTemplate(rowData, column) {
         return <div>
-            <Button type="button" icon="pi pi-pencil" className="p-button-warning" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}></Button >
+            <Button type="button" icon="pi pi-pencil" className="p-button-warning" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}></Button>
             <Button type="button" icon="pi pi-times" className="p-button-danger" onClick={() => this.onRowDelete(rowData)}></Button>
-        </div >;
+        </div>;
     }
 
     onRowDelete = (row) => {

@@ -1,10 +1,12 @@
 import React from 'react';
 import LeftMenu from "./../LeftMenu";
 
-export default class MainLayout extends React.Component {
-    render() {
+export default class MainLayout extends React.Component
+{
+    render()
+    {
         return (
-            <section id="container" >
+            <section id="container">
                 <header className="header fixed-top clearfix">
                     <div className="brand">
                         <a href="index-2.html" className="logo">
@@ -32,7 +34,7 @@ export default class MainLayout extends React.Component {
                                                     <h5>Target Sell</h5>
                                                     <p>25% , Deadline  12 June’13</p>
                                                 </div>
-                                                <span className="notification-pie-chart pull-right" data-percent="45">
+                                                <span className="notification-pie-chart float-right" data-percent="45">
                                                     <span className="percent"></span>
                                                 </span>
                                             </div>
@@ -45,7 +47,7 @@ export default class MainLayout extends React.Component {
                                                     <h5>Product Delivery</h5>
                                                     <p>45% , Deadline  12 June’13</p>
                                                 </div>
-                                                <span className="notification-pie-chart pull-right" data-percent="78">
+                                                <span className="notification-pie-chart float-right" data-percent="78">
                                                     <span className="percent"></span>
                                                 </span>
                                             </div>
@@ -58,7 +60,7 @@ export default class MainLayout extends React.Component {
                                                     <h5>Payment collection</h5>
                                                     <p>87% , Deadline  12 June’13</p>
                                                 </div>
-                                                <span className="notification-pie-chart pull-right" data-percent="60">
+                                                <span className="notification-pie-chart float-right" data-percent="60">
                                                     <span className="percent"></span>
                                                 </span>
                                             </div>
@@ -71,7 +73,7 @@ export default class MainLayout extends React.Component {
                                                     <h5>Target Sell</h5>
                                                     <p>33% , Deadline  12 June’13</p>
                                                 </div>
-                                                <span className="notification-pie-chart pull-right" data-percent="90">
+                                                <span className="notification-pie-chart float-right" data-percent="90">
                                                     <span className="percent"></span>
                                                 </span>
                                             </div>
@@ -189,7 +191,7 @@ export default class MainLayout extends React.Component {
                     </div>
                     <div className="top-nav clearfix">
 
-                        <ul className="nav pull-right top-menu">
+                        <ul className="nav float-right top-menu">
                             <li>
                                 <input type="text" className="form-control search" placeholder=" Search" />
                             </li>
@@ -241,7 +243,7 @@ export default class MainLayout extends React.Component {
                             <li className="widget-collapsible">
                                 <a href="{#}" className="head widget-head red-bg active clearfix">
                                     <span className="pull-left">work progress (5)</span>
-                                    <span className="pull-right widget-collapse"><i className="ico-minus"></i></span>
+                                    <span className="float-right widget-collapse"><i className="ico-minus"></i></span>
                                 </a>
                                 <ul className="widget-container">
                                     <li>
@@ -317,7 +319,7 @@ export default class MainLayout extends React.Component {
                             <li className="widget-collapsible">
                                 <a href="{#}" className="head widget-head terques-bg active clearfix">
                                     <span className="pull-left">contact online (5)</span>
-                                    <span className="pull-right widget-collapse"><i className="ico-minus"></i></span>
+                                    <span className="float-right widget-collapse"><i className="ico-minus"></i></span>
                                 </a>
                                 <ul className="widget-container">
                                     <li>
@@ -400,7 +402,7 @@ export default class MainLayout extends React.Component {
                             <li className="widget-collapsible">
                                 <a href="{#}" className="head widget-head purple-bg active">
                                     <span className="pull-left"> recent activity (3)</span>
-                                    <span className="pull-right widget-collapse"><i className="ico-minus"></i></span>
+                                    <span className="float-right widget-collapse"><i className="ico-minus"></i></span>
                                 </a>
                                 <ul className="widget-container">
                                     <li>
@@ -449,7 +451,7 @@ export default class MainLayout extends React.Component {
                             <li className="widget-collapsible">
                                 <a href="{#}" className="head widget-head yellow-bg active">
                                     <span className="pull-left"> shipment status</span>
-                                    <span className="pull-right widget-collapse"><i className="ico-minus"></i></span>
+                                    <span className="float-right widget-collapse"><i className="ico-minus"></i></span>
                                 </a>
                                 <ul className="widget-container">
                                     <li>
@@ -459,7 +461,7 @@ export default class MainLayout extends React.Component {
                                                     Full sleeve baby wear (SL: 17665)
             </p>
                                                 <div className="progress progress-xs mtop10">
-                                                    <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" >
+                                                    <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
                                                         <span className="sr-only">40% Complete</span>
                                                     </div>
                                                 </div>

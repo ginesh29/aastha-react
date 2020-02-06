@@ -164,8 +164,8 @@ export default class IpdReport extends Component
         let amountTotal = ipdData && ipdData.reduce((total, item) => total + Number(item.total), 0);
         return (
             <>
-                <div className="panel">
-                    <div className="panel-body">
+                <div className="card">
+                    <div className="card-body">
                         <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value })} onShowSummary={(e) => this.op.toggle(e)} data={ipdData} exportReport={this.exportReport} />
                         <hr />
                         <div id="print-div">

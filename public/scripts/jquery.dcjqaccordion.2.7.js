@@ -42,7 +42,7 @@
 //				checkCookie(defaults.cookie, obj);
 //			}
 			if(defaults.autoExpand == true){
-				$('li.'+defaults.classExpand+' > a').addClass(defaults.classActive);
+				$('li.'+defaults.classExpand+'> a').addClass(defaults.classActive);
 			}
 			resetAccordion();
 
@@ -71,7 +71,7 @@
 				if(defaults.disableLink == true){
 
 					$('li a',obj).click(function(e){
-						if($(this).siblings('ul').length >0){
+						if($(this).siblings('ul').length>0){
 							e.preventDefault();
 						}
 					});
@@ -87,7 +87,7 @@
 
 					// Prevent browsing to link if has child links
 					if(defaults.disableLink == true){
-						if($(this).siblings('ul').length >0){
+						if($(this).siblings('ul').length>0){
 							e.preventDefault();
 						}
 					}
@@ -119,7 +119,7 @@
 				var classParentLi = defaults.classParent+'-li';
 				$('> ul',obj).show();
 				$('li',obj).each(function(){
-					if($('> ul',this).length > 0){
+					if($('> ul',this).length> 0){
 						$(this).addClass(classParentLi);
 						$('> a',this).addClass(defaults.classParent).append($arrow);
 					}
