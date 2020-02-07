@@ -54,8 +54,9 @@ export default class PatientForm extends Component
 
   handleSubmit = e =>
   {
-    const { id, firstname, middlename, fathername, lastname, age, addressId, mobile } = this.state.formFields;
     e.preventDefault();
+    const { id, firstname, middlename, fathername, lastname, age, addressId, mobile } = this.state.formFields;
+    const { hideEditDialog, savePatient } = this.props;
     if (this.handleValidation()) {
       const patient = {
         id: id,
@@ -71,7 +72,8 @@ export default class PatientForm extends Component
         .then(res =>
         {
           if (res && !res.errors) {
-            this.props.onHidePatientDialog && this.props.onHidePatientDialog();
+            hideEditDialog && hideEditDialog();
+            savePatient && savePatient();
             this.handleReset();
           }
           res.errors && this.setState({
@@ -144,9 +146,17 @@ export default class PatientForm extends Component
         })
     }
   }
+  componentDidMount = () =>
+  {
+    const { selectedPatient } = this.props;
+    if (selectedPatient)
+      this.setState({
+        formFields: selectedPatient
+      })
+  }
   render()
   {
-    const { firstname, middlename, fathername, lastname, age, addressId, mobile } = this.state.formFields;
+    const { id, firstname, middlename, fathername, lastname, age, addressId, mobile } = this.state.formFields;
     const { addressDialogVisible, address, addressError, isExist } = this.state;
     let addressDialogFooter = <div className="ui-dialog-buttonpane p-clearfix">
       <Button label="Close" icon="pi pi-times" className="p-button-secondary" onClick={(e) => this.setState({ addressDialogVisible: false })} />
@@ -189,7 +199,10 @@ export default class PatientForm extends Component
             </div>
           </div>
           <div className="modal-footer">
-            <button type="reset" className="btn btn-secondary">Reset</button>
+            {
+              !id &&
+              <button type="reset" className="btn btn-secondary">Reset</button>
+            }
             <button type="submit" className="btn btn-info">Save changes</button>
           </div>
         </form>

@@ -95,7 +95,7 @@ export class helper
     let filterValue = "";
     let operator = "";
     let filterData = Object.keys(filters)
-    filterData.map((field, index) =>
+    return filterData.map((field, index) =>
     {
       operator = index !== filterData.length - 1 ? " and" : "";
       filterMatchMode = filters[field].matchMode;
@@ -122,7 +122,7 @@ export class helper
     let sortOrder = "";
     let operator = "";
     let operatorCondition = "";
-    sortMeta.map((item, index) =>
+    return sortMeta.map((item, index) =>
     {
       operator = index !== sortMeta.length - 1 ? "," : "";
       sortField = item.field;

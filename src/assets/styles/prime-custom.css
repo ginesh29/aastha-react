@@ -45,15 +45,17 @@ form .p-multiselect,
   font-size: 18px !important;
   font-weight: 600;
 }
-.p-inputtext.p-component.p-column-filter{
-padding: 3px;
+.p-inputtext.p-component.p-column-filter {
+  padding: 3px;
 }
-.p-sortable-column-icon{
-float: right;
+.p-sortable-column-icon {
+  float: right;
 }
 .p-datatable-thead th {
- vertical-align: top;
+  vertical-align: top;
 }
-table tr{
-  background: none;
+
+.p-datatable .p-sortable-column.p-highlight {
+  background-color: #ffeeee !important;
+  color: black;
 }
