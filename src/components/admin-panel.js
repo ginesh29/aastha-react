@@ -85,8 +85,8 @@ export default class AdminPanel extends Component {
 
     actionTemplate(rowData, column) {
         return <>
-            <button type="button" class="btn btn-warning grid-action-btn" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}><i class="fa fa-pencil"></i></button>
-            <button type="button" class="btn btn-danger grid-action-btn" onClick={() => this.onRowDelete(rowData)}><i class="fa fa-times"></i></button>
+            <button type="button" className="btn btn-warning grid-action-btn" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}><i className="fa fa-pencil"></i></button>
+            <button type="button" className="btn btn-danger grid-action-btn" onClick={() => this.onRowDelete(rowData)}><i className="fa fa-times"></i></button>
         </>;
     }
 

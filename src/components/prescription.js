@@ -27,7 +27,7 @@ export default class Prescription extends React.Component {
     }
     getInitialState = () => ({
         formFields: {
-            patientId: "",
+            patient: null,
             date: "",
             clinicDetail: "",
             followup: 0,
@@ -50,7 +50,7 @@ export default class Prescription extends React.Component {
     })
     handleChange = (e, action) => {
         const { isValidationFired, formFields } = this.state;
-        const { advices } = this.state.formFields;
+        const { advices } = this.state.formFields
         let fields = formFields;
         let followup = "";
         if (action)
@@ -141,7 +141,7 @@ export default class Prescription extends React.Component {
         })
     };
     handleValidation = e => {
-        const { date, patientId, followup, followupDate } = this.state.formFields;
+        const { date, patient, followup, followupDate } = this.state.formFields
         const { validationErrors } = this.state;
         let errors = {};
         let isValid = true;
@@ -150,9 +150,9 @@ export default class Prescription extends React.Component {
             isValid = false;
             errors.date = "Select Date";
         }
-        if (!patientId) {
+        if (!patient) {
             isValid = false;
-            errors.patientId = "Select Patient";
+            errors.patient = "Select Patient";
         }
         if (followup <= 4 && followup !== 0 && !followupDate) {
             isValid = false;
@@ -246,12 +246,12 @@ export default class Prescription extends React.Component {
         })
     }
     saveAppointment = () => {
-        const { followupDate, patientId, followup } = this.state.formFields;
+        const { followupDate, patient, followup } = this.state.formFields
         const { submitted } = this.state;
         if (this.handleValidation()) {
             const appointment = {
                 date: this.helper.formatDate(followupDate, "en-US"),
-                patientId: patientId.value,
+                patient: patient.value,
                 type: followup
             };
             if (!submitted && followupDate && this.handleValidation()) {
@@ -262,7 +262,7 @@ export default class Prescription extends React.Component {
         }
     }
     render() {
-        const { patientId, date, clinicDetail, followup, advices, followupInstruction, followupDate } = this.state.formFields;
+        const { patient, date, clinicDetail, followup, advices, followupInstruction, followupDate } = this.state.formFields
         const { id, medicineType, days, medicineName, medicineInstructions } = this.state.medicineFormFields;
         const { dialogVisible, medicineTypeOptions, medicineNameOptions, medicineData, validationErrors } = this.state;
         const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
@@ -282,7 +282,7 @@ export default class Prescription extends React.Component {
                             <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
                                 <div className="row">
                                     <div className="col-md-6">
-                                        <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
+                                        <InputField name="patient" value={patient} title="Patient" onChange={this.handleChange} {...this.state}
                                             onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
                                             controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
                                     </div>
@@ -367,7 +367,7 @@ export default class Prescription extends React.Component {
                             <div id="print-div">
                                 <div className="row">
                                     <div className="col-md">
-                                        <label>Patient Name : </label> {patientId && patientId.label}
+                                        <label>Patient Name : </label> {patient && patient.label}
                                     </div>
                                     <div className="col-md-4">
                                         <label>Date : </label> {date && this.helper.formatDate(date)}
@@ -375,10 +375,10 @@ export default class Prescription extends React.Component {
                                 </div>
                                 <div className="row">
                                     <div className="col-md">
-                                        <label>Patient Id : </label> {patientId.value}
+                                        <label>Patient Id : </label> {patient.value}
                                     </div>
                                     <div className="col-md-4">
-                                        <label>Age : </label> {patientId.age}
+                                        <label>Age : </label> {patient.age}
                                     </div>
                                 </div>
                                 <hr />

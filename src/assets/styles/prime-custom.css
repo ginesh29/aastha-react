@@ -54,8 +54,20 @@ form .p-multiselect,
 .p-datatable-thead th {
   vertical-align: top;
 }
-
-.p-datatable .p-sortable-column.p-highlight {
-  background-color: #ffeeee !important;
-  color: black;
+.p-datatable tr:not(.p-highlight) {
+  background-color:#ffffff !important;
 }
+
+.p-datatable tr.p-highlight{
+  background-color: #bdedbc !important;
+  color: black !important;
+}
+.p-paginator-pages .p-highlight{
+  background-color:#6c757d !important;
+}
+/* .p-datatable .p-datatable-thead{
+  background-color !important;
+} */
+/* .p-datatable .p-sortable-column.p-highlight {
+ 
+} */

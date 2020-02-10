@@ -14,7 +14,7 @@ export default class InputField extends Component {
     let propClassName = className ? className : "";
     let finalClassName = `${propClassName} ${errorClass}`;
     return (
-      <>
+      <div>
         <label>{title}</label>
         {
           controlType === "input-group-addon" &&
@@ -58,8 +58,11 @@ export default class InputField extends Component {
           !controlType &&
           <InputText name={name} value={value} className={finalClassName} placeholder={"Enter " + title} onChange={onChange} onInput={onInput} disabled={disabled} keyfilter={keyfilter} maxLength={maxLength} onFocus={this.onFocus} autoFocus={this.autoFocus} ref={ref} />
         }
-        <span className="error">{validationErrors[name]}</span>
-      </>
+        {
+          validationErrors[name] &&
+          <span className="error"><i className="fa fa-info-circle" aria-hidden="true" tooltip="Click to proceed"></i> {validationErrors[name]}</span>
+        }
+      </div>
     )
   }
 }

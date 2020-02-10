@@ -9,10 +9,8 @@ import PatientForm from "../patient/patient-form";
 import $ from "jquery";
 
 const controller = "opds";
-export default class OpdForm extends React.Component
-{
-  constructor(props)
-  {
+export default class OpdForm extends React.Component {
+  constructor(props) {
     super(props);
     this.state = this.getInitialState();
     this.repository = new repository();
@@ -23,7 +21,7 @@ export default class OpdForm extends React.Component
     formFields: {
       opdDate: "",
       caseType: null,
-      patientId: null,
+      patient: null,
       consultCharge: "",
       usgCharge: "",
       uptCharge: "",
@@ -36,8 +34,7 @@ export default class OpdForm extends React.Component
     validationErrors: {}
   });
 
-  handleChange = (e, action) =>
-  {
+  handleChange = (e, action) => {
     const { isValidationFired, formFields } = this.state;
     $("#errors").remove();
     let fields = formFields;
@@ -52,37 +49,34 @@ export default class OpdForm extends React.Component
     fields.otherCharge = fields.otherCharge ? fields.otherCharge : "";
 
     let total = Number(fields.consultCharge) + Number(fields.usgCharge) + Number(fields.uptCharge) + Number(fields.injectionCharge) + Number(fields.otherCharge);
-    fields.totalCharge = total> 0 ? total : "";
+    fields.totalCharge = total > 0 ? total : "";
     this.setState({
       formFields: fields
     });
     if (isValidationFired) this.handleValidation();
   };
-  handleSubmit = e =>
-  {
-    const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge } = this.state.formFields;
+  handleSubmit = e => {
+    const { opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge } = this.state.formFields
     e.preventDefault();
     if (this.handleValidation()) {
       const opd = {
         date: this.helper.formatDate(opdDate, "en-US"),
         caseType: caseType,
-        patientId: patientId.value,
+        patient: patient.value,
         consultCharge: consultCharge,
         usgCharge: usgCharge,
         uptCharge: uptCharge,
         injectionCharge: injectionCharge,
         otherCharge: otherCharge
       };
-      this.repository.post(controller, opd).then(res =>
-      {
+      this.repository.post(controller, opd).then(res => {
         if (res)
           this.handleReset();
       })
     }
   };
-  handleValidation = e =>
-  {
-    const { opdDate, caseType, patientId } = this.state.formFields;
+  handleValidation = e => {
+    const { opdDate, caseType, patient } = this.state.formFields
     let errors = {};
     let isValid = true;
 
@@ -94,9 +88,10 @@ export default class OpdForm extends React.Component
       isValid = false;
       errors.caseType = "Select Case Type";
     }
-    if (!patientId) {
+    console.log(patient)
+    if (!patient) {
       isValid = false;
-      errors.patientId = "Select Patient";
+      errors.patient = "Select Patient";
     }
     this.setState({
       validationErrors: errors,
@@ -105,14 +100,12 @@ export default class OpdForm extends React.Component
     return isValid;
   };
 
-  handleReset = e =>
-  {
+  handleReset = e => {
     this.setState(this.getInitialState());
   };
 
-  render()
-  {
-    const { opdDate, caseType, patientId, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields;
+  render() {
+    const { opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields
     const { patientDialogVisible } = this.state;
     return (
       <>
@@ -127,7 +120,7 @@ export default class OpdForm extends React.Component
               <InputField name="caseType" title="Case Type" value={caseType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
             </div>
             <div className="col-md-8">
-              <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
+              <InputField name="patient" value={patient} title="Patient" onChange={this.handleChange} {...this.state}
                 onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
                 controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
             </div>
