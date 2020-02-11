@@ -63,7 +63,6 @@ export default class Patients extends Component {
     this.setState({ filterString: filter }, () => {
       this.getPatients();
     });
-
   }
   onPageChange = (e) => {
     this.setState({
@@ -182,7 +181,7 @@ export default class Patients extends Component {
         <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialogVisible: false })} className="p-button-secondary" />
       </div>
     );
-    let paginatorRight = <div className="m-1">Showing {this.helper.formatAmount(startNo)} to {this.helper.formatAmount(endNo)} of {this.helper.formatAmount(totalRecords)} records</div>;
+    let paginatorRight = totalRecords && <div className="m-1">Showing {this.helper.formatAmount(startNo)} to {this.helper.formatAmount(endNo)} of {this.helper.formatAmount(totalRecords)} records</div>;
     return (
       <>
         <div className="card">
@@ -202,7 +201,7 @@ export default class Patients extends Component {
             <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" ref={(el) => this.dt = el}
               onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta}
               filters={filters} onFilter={this.onFilter}
-              paginator={totalRecords && true} rowsPerPageOptions={[10, 30, 45]} rows={rows} lazy={true} totalRecords={totalRecords} first={first} onPage={this.onPageChange} paginatorRight={paginatorRight}
+              paginator={totalRecords ? true : false} rowsPerPageOptions={[10, 30, 45]} rows={rows} lazy={true} totalRecords={totalRecords} first={first} onPage={this.onPageChange} paginatorRight={paginatorRight}
               selectionMode="single" selection={selectedPatient} onSelectionChange={e => this.setState({ selectedPatient: e.value })}>
 
               <Column field="id" header="Id" style={{ "width": "100px" }} sortable={true} filter={true} filterMatchMode="eq" />

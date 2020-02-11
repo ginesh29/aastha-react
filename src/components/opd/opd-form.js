@@ -88,7 +88,6 @@ export default class OpdForm extends React.Component {
       isValid = false;
       errors.caseType = "Select Case Type";
     }
-    console.log(patient)
     if (!patient) {
       isValid = false;
       errors.patient = "Select Patient";
@@ -103,48 +102,56 @@ export default class OpdForm extends React.Component {
   handleReset = e => {
     this.setState(this.getInitialState());
   };
-
+  componentDidMount = () => {
+    $("#errors").remove();
+    const { selectedOpd } = this.props;
+    selectedOpd.opdDate = selectedOpd.date && new Date(selectedOpd.date);
+    if (selectedOpd)
+      this.setState({
+        formFields: selectedOpd
+      })
+  }
   render() {
     const { opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields
-    const { patientDialogVisible } = this.state;
+    const { patientDialogVisible, editDialogVisible } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col-md-4">
-              <InputField name="opdDate" title="Opd Date" value={opdDate} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
+              <InputField name="opdDate" title="Opd Date" value={opdDate || ""} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
             </div>
           </div>
           <div className="row">
             <div className="col-md-4">
-              <InputField name="caseType" title="Case Type" value={caseType} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
+              <InputField name="caseType" title="Case Type" value={caseType || ""} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
             </div>
             <div className="col-md-8">
-              <InputField name="patient" value={patient} title="Patient" onChange={this.handleChange} {...this.state}
+              <InputField name="patient" value={patient || ""} title="Patient" onChange={this.handleChange} {...this.state}
                 onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
                 controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
             </div>
           </div>
           <div className="row">
             <div className="col-md-4">
-              <InputField name="consultCharge" title="Consulting Charges" value={consultCharge} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
+              <InputField name="consultCharge" title="Consulting Charges" value={consultCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
             <div className="col-md-4">
-              <InputField name="usgCharge" title="USG Charges" value={usgCharge} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
+              <InputField name="usgCharge" title="USG Charges" value={usgCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
             <div className="col-md-4">
-              <InputField name="uptCharge" title="UPT Charges" value={uptCharge} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
+              <InputField name="uptCharge" title="UPT Charges" value={uptCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
           </div>
           <div className="row">
             <div className="col-md-4">
-              <InputField name="injectionCharge" title="Injection Charges" value={injectionCharge} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
+              <InputField name="injectionCharge" title="Injection Charges" value={injectionCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
             <div className="col-md-4">
-              <InputField name="otherCharge" title="Other Charges" value={otherCharge} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
+              <InputField name="otherCharge" title="Other Charges" value={otherCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
             <div className="col-md-4">
-              <InputField name="totalCharge" title="Total Charges" value={totalCharge} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" readOnly="readOnly" className="p-readonly" />
+              <InputField name="totalCharge" title="Total Charges" value={totalCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" readOnly="readOnly" className="p-readonly" />
             </div>
           </div>
           <div className="modal-footer">
@@ -152,9 +159,12 @@ export default class OpdForm extends React.Component {
             <button type="submit" className="btn btn-info">Save changes</button>
           </div>
         </form>
-        <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialogVisible} onHide={() => this.setState({ patientDialogVisible: false })} baseZIndex={50}>
-          <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} {...this.state} />
-        </Dialog>
+        {/* <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialogVisible} onHide={() => this.setState({ patientDialogVisible: false })} baseZIndex={50}>
+          {
+            editDialogVisible &&
+            <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} {...this.state} />
+          }
+        </Dialog> */}
       </>
     );
   }

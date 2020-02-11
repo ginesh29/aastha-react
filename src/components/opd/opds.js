@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom';
 import { helper } from "../../common/helpers";
 import { ROWS } from "../../common/constants";
 import { Dialog } from 'primereact/dialog';
+import OpdForm from "./opd-form";
 
 export default class Opds extends Component {
     constructor(props) {
@@ -25,7 +26,6 @@ export default class Opds extends Component {
         };
         this.repository = new repository();
         this.helper = new helper();
-        this.onRowEdit = this.onRowEdit.bind(this);
     }
     getOpds = () => {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
@@ -53,9 +53,12 @@ export default class Opds extends Component {
             })
     }
     componentDidMount = (e) => {
-        this.getOpds();
+        const { isArchive } = this.state;
+        const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        this.setState({ filterString: filter }, () => {
+            this.getOpds();
+        });
     }
-
     onPageChange = (e) => {
         this.setState({
             rows: e.rows,
@@ -107,32 +110,30 @@ export default class Opds extends Component {
     onRowDelete = (row) => {
         this.setState({
             deleteDialogVisible: true,
-            selectedPatient: Object.assign({}, row)
+            selectedOpd: Object.assign({}, row)
         });
     }
     onRowEdit = (row) => {
-        row.addressId = { value: row.address.id, label: row.address.name }
-        delete row.address;
         this.setState({
             editDialogVisible: true,
-            selectedPatient: Object.assign({}, row),
+            selectedOpd: Object.assign({}, row),
         });
     }
 
     deleteRow = () => {
-        const { opds, selectedPatient, isArchive, controller } = this.state;
+        const { opds, selectedOpd, isArchive, controller } = this.state;
         let flag = isArchive ? false : true;
-        this.repository.delete(controller, `id=${selectedPatient.id}&isDeleted=${flag}`)
+        this.repository.delete(controller, `id=${selectedOpd.id}&isDeleted=${flag}`)
             .then(res => {
                 this.setState({
-                    opds: opds.filter(patient => patient.id !== selectedPatient.id),
-                    selectedPatient: null,
+                    opds: opds.filter(patient => patient.id !== selectedOpd.id),
+                    selectedOpd: null,
                     deleteDialogVisible: false
                 });
             })
     }
     render() {
-        const { opds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialogVisible, isArchive, selectedPatient } = this.state;
+        const { opds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialogVisible, isArchive, selectedOpd, editDialogVisible, includeProperties } = this.state;
         let linkUrl = isArchive ? "/opds" : "/archive-opds";
         let panelTitle = isArchive ? "Archived Opds" : "Opds";
         let buttonText = !isArchive ? "Archived Opds" : "Opds";
@@ -145,7 +146,7 @@ export default class Opds extends Component {
                 <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialogVisible: false })} className="p-button-secondary" />
             </div>
         );
-        let paginatorRight = <div className="m-1">Showing {this.helper.formatAmount(startNo)} to {this.helper.formatAmount(endNo)} of {this.helper.formatAmount(totalRecords)} records</div>;
+        let paginatorRight = totalRecords && <div className="m-1">Showing {this.helper.formatAmount(startNo)} to {this.helper.formatAmount(endNo)} of {this.helper.formatAmount(totalRecords)} records</div>;
         return (
             <>
                 <div className="card">
@@ -165,8 +166,8 @@ export default class Opds extends Component {
                         <DataTable value={opds} loading={loading} responsive={true} emptyMessage="No records found"
                             onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta}
                             filters={filters} onFilter={this.onFilter}
-                            paginator={totalRecords && true} rowsPerPageOptions={[10, 30, 45]} rows={rows} lazy={true} totalRecords={totalRecords} first={first} onPage={this.onPageChange} paginatorRight={paginatorRight}
-                            selectionMode="single" selection={selectedPatient} onSelectionChange={e => this.setState({ selectedPatient: e.value })}>
+                            paginator={totalRecords ? true : false} rowsPerPageOptions={[10, 30, 45]} rows={rows} lazy={true} totalRecords={totalRecords} first={first} onPage={this.onPageChange} paginatorRight={paginatorRight}
+                            selectionMode="single" selection={selectedOpd} onSelectionChange={e => this.setState({ selectedOpd: e.value })}>
 
                             <Column style={{ "width": "80px" }} field="id" header="Invoice Id" sortable={true} filter={true} filterMatchMode="equals" />
                             <Column style={{ "width": "100px" }} field="invoiceNo" header="Outdoor No." sortable={true} filter={true} filterMatchMode="equals" />
@@ -185,11 +186,14 @@ export default class Opds extends Component {
                 </div>
                 <Dialog header="Confirmation" visible={deleteDialogVisible} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialogVisible: false })}>
                     Are you sure you want to {action} this item?
-        </Dialog>
+                </Dialog>
 
-                {/* <Dialog header="Edit Patient" visible={editDialogVisible} onHide={() => this.setState({ editDialogVisible: false })}>
-                    <PatientForm {...this.state} />
-                </Dialog> */}
+                <Dialog header="Edit Opd" visible={editDialogVisible} onHide={() => this.setState({ editDialogVisible: false })}>
+                    {
+                        editDialogVisible &&
+                        <OpdForm selectedOpd={selectedOpd} hideEditDialog={() => this.setState({ editDialogVisible: false })} saveOpd={this.saveOpd} includeProperties={includeProperties} />
+                    }
+                </Dialog>
             </>
         );
     }
