@@ -57,7 +57,7 @@ export default class Patients extends Component
         {
           return { value: item.id, label: item.name };
         });
-        addresses.splice(0, 0, { value: null, label: "[All]" })
+        addresses && addresses.splice(0, 0, { value: null, label: "[All]" })
         this.setState({
           addressOptions: res && addresses,
         });
@@ -206,7 +206,7 @@ export default class Patients extends Component
         <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialogVisible: false })} className="p-button-secondary" />
       </div>
     );
-    let paginatorRight = <div className="m-2">Showing {first + 1} to {totalRecords > end ? end : totalRecords} of {totalRecords} entries</div>;
+    let paginatorRight = <div className="m-1">Showing {first.length && first + 1} to {totalRecords > end ? end : totalRecords} of {totalRecords} entries</div>;
     return (
       <>
         <div className="card">

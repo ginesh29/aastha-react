@@ -58,8 +58,9 @@ export class repository
     {
         ReactDOM.render(<Messages ref={(el) => this.messages = el} />, document.getElementById("messages"));
         if (error.response) {
+            $("#errors").remove();
             if ($(".p-dialog-content:visible").length)
-                $(".p-dialog-content").prepend('<div id="errors"></div>');
+                $(".p-dialog-content:visible").prepend('<div id="errors"></div>');
             else if ($(".p-panel-content").length)
                 $(".p-panel-content").prepend('<div id="errors"></div>');
             ReactDOM.render(<Messages ref={(el) => this.errors = el} />, document.getElementById("errors"));

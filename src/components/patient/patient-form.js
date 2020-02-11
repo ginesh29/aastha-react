@@ -71,6 +71,7 @@ export default class PatientForm extends Component
       this.repository.post(`${ controller }?includeProperties=${ includeProperties }`, patient)
         .then(res =>
         {
+          console.log(res)
           if (res && !res.errors) {
             hideEditDialog && hideEditDialog();
             savePatient && savePatient(res, patient.id);
@@ -148,6 +149,7 @@ export default class PatientForm extends Component
   }
   componentDidMount = () =>
   {
+    $("#errors").remove();
     const { selectedPatient } = this.props;
     if (selectedPatient)
       this.setState({

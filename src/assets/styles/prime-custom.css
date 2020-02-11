@@ -76,3 +76,6 @@ form .p-multiselect,
   background-color: #6c757d !important;
   border: none !important;
 }
+.p-dialog-content .p-messages {
+  margin: 0 !important;
+}
