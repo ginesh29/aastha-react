@@ -218,7 +218,7 @@ export default class Patients extends Component
               </div>
               <div className="report-header">{panelTitle}</div>
               <div>
-                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon="fa fa-archive" tooltip={`Show ${ buttonText }`} /></NavLink>
+                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${ !isArchive ? "archive" : "file-text-o" }`} tooltip={`Show ${ buttonText }`} /></NavLink>
               </div>
             </div>
             <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" ref={(el) => this.dt = el}
