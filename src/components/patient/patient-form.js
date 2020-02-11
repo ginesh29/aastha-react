@@ -10,8 +10,10 @@ import { lookupTypeEnum } from "../../common/enums";
 import $ from "jquery";
 
 const controller = "patients";
-export default class PatientForm extends Component {
-  constructor(props) {
+export default class PatientForm extends Component
+{
+  constructor(props)
+  {
     super(props);
     this.state = this.getInitialState();
     this.repository = new repository();
@@ -33,7 +35,8 @@ export default class PatientForm extends Component {
     validationErrors: {},
     isExist: false
   })
-  handleChange = (e, action) => {
+  handleChange = (e, action) =>
+  {
     const { isValidationFired, formFields } = this.state;
     $("#errors").remove();
     let fields = formFields;
@@ -49,7 +52,8 @@ export default class PatientForm extends Component {
       this.handleValidation();
   };
 
-  handleSubmit = e => {
+  handleSubmit = e =>
+  {
     e.preventDefault();
     const { id, firstname, middlename, fathername, lastname, age, address, mobile } = this.state.formFields;
     const { hideEditDialog, savePatient, includeProperties } = this.props;
@@ -64,8 +68,9 @@ export default class PatientForm extends Component {
         mobile: mobile,
         addressId: address.value
       };
-      this.repository.post(`${controller}?includeProperties=${includeProperties}`, patient)
-        .then(res => {
+      this.repository.post(`${ controller }?includeProperties=${ includeProperties }`, patient)
+        .then(res =>
+        {
           if (res && !res.errors) {
             hideEditDialog && hideEditDialog();
             savePatient && savePatient(res, patient.id);
@@ -77,7 +82,8 @@ export default class PatientForm extends Component {
         })
     }
   }
-  handleValidation = e => {
+  handleValidation = e =>
+  {
     const { firstname, middlename, lastname, age, address } = this.state.formFields;
     let errors = {};
     let isValid = true;
@@ -108,11 +114,13 @@ export default class PatientForm extends Component {
     return isValid;
   };
 
-  handleReset = e => {
+  handleReset = e =>
+  {
     this.setState(this.getInitialState());
   };
 
-  saveAddress = () => {
+  saveAddress = () =>
+  {
     const { addressText } = this.state;
     let addressError = "";
     let isValid = true;
@@ -132,19 +140,22 @@ export default class PatientForm extends Component {
         type: lookupTypeEnum.ADDRESS.value
       };
       this.repository.post("lookups", lookup)
-        .then(res => {
+        .then(res =>
+        {
           res && this.setState({ addressText: "", addressDialogVisible: false });
         })
     }
   }
-  componentDidMount = () => {
+  componentDidMount = () =>
+  {
     const { selectedPatient } = this.props;
     if (selectedPatient)
       this.setState({
         formFields: selectedPatient
       })
   }
-  render() {
+  render()
+  {
     const { id, firstname, middlename, fathername, lastname, age, address, mobile } = this.state.formFields;
     const { addressDialogVisible, addressText, addressError, isExist } = this.state;
     let addressDialogFooter = <div className="ui-dialog-buttonpane p-clearfix">

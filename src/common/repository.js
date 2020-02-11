@@ -45,6 +45,7 @@ export class repository
     delete(controller, querystring)
     {
         ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
+        console.log(`${ BASE_API_URL }/${ controller }/${ querystring }`)
         return axios.delete(`${ BASE_API_URL }/${ controller }/${ querystring }`)
             .then(res =>
             {

@@ -125,7 +125,6 @@ export default class MonthlyIpdReport extends Component
                     hash.amountInWord = numberToWords.toWords(hash.payableAmount);
                     return hash;
                 }, item);
-                //delete item.charges;
                 return item;
             });
             ipdData = mapWithCharge;
