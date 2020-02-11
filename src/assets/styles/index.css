@@ -57,6 +57,12 @@ form .p-multiselect,
   line-height: 0.5;
   border-radius: 2px;
 }
+.btn-grid {
+  padding: 1px 5px;
+  font-size: 11px;
+  line-height: 1.5;
+  border-radius: 2px;
+}
 .btn-label {position: relative;left: -12px;display: inline-block;padding: 5px 8px;background: rgba(0,0,0,0.15);border-radius: 3px 0 0 3px;}
 .btn-labeled {padding-top: 0;padding-bottom: 0;}
 .modal-footer {

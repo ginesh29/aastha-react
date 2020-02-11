@@ -11,10 +11,8 @@ import PatientForm from "./patient-form";
 import { lookupTypeEnum } from "../../common/enums";
 import { Dropdown } from 'primereact/dropdown';
 
-export default class Patients extends Component
-{
-  constructor(props)
-  {
+export default class Patients extends Component {
+  constructor(props) {
     super(props);
     this.state = {
       patients: [],
@@ -33,12 +31,10 @@ export default class Patients extends Component
     this.repository = new repository();
     this.helper = new helper();
   }
-  getPatients = () =>
-  {
+  getPatients = () => {
     const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-    this.repository.get(controller, `take=${ rows }&skip=${ first }&filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`)
-      .then(res =>
-      {
+    this.repository.get(controller, `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`)
+      .then(res => {
         this.setState({
           first: first,
           rows: rows,
@@ -48,13 +44,10 @@ export default class Patients extends Component
         });
       })
   }
-  getAddresses = () =>
-  {
-    this.repository.get("lookups", `&filter=type-eq-{${ lookupTypeEnum.ADDRESS.value }} and isDeleted-neq-{${ false }}&sort=name asc`)
-      .then(res =>
-      {
-        let addresses = res && res.data.map(function (item)
-        {
+  getAddresses = () => {
+    this.repository.get("lookups", `&filter=type-eq-{${lookupTypeEnum.ADDRESS.value}} and isDeleted-neq-{${false}}&sort=name asc`)
+      .then(res => {
+        let addresses = res && res.data.map(function (item) {
           return { value: item.id, label: item.name };
         });
         addresses && addresses.splice(0, 0, { value: null, label: "[All]" })
@@ -63,74 +56,62 @@ export default class Patients extends Component
         });
       })
   }
-  componentDidMount = (e) =>
-  {
+  componentDidMount = (e) => {
     const { isArchive } = this.state;
-    const filter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
+    const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
     this.getAddresses();
-    this.setState({ filterString: filter }, () =>
-    {
+    this.setState({ filterString: filter }, () => {
       this.getPatients();
     });
 
   }
-  onPageChange = (e) =>
-  {
+  onPageChange = (e) => {
     this.setState({
       rows: e.rows,
       first: e.first,
       loading: true
-    }, () =>
-    {
+    }, () => {
       this.getPatients();
     })
   }
-  onSort = (e) =>
-  {
+  onSort = (e) => {
     const { multiSortMeta } = this.state;
     let SortMetaOld = multiSortMeta ? multiSortMeta.filter(item => item.field !== e.multiSortMeta[0].field) : [];
     this.setState({
       first: 0,
       multiSortMeta: [...e.multiSortMeta, ...SortMetaOld],
       loading: true
-    }, () =>
-    {
+    }, () => {
       const { multiSortMeta } = this.state;
       let sortString = this.helper.generateSortString(multiSortMeta);
-      this.setState({ sortString: sortString }, () =>
-      {
-        setTimeout(() =>
-        {
+      this.setState({ sortString: sortString }, () => {
+        setTimeout(() => {
           this.getPatients();
         }, 10);
       });
     });
   }
 
-  onFilter = (e) =>
-  {
+  onFilter = (e) => {
     this.setState({ filters: e.filters, loading: true });
     const { isArchive } = this.state;
-    const deleteFilter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
+    const deleteFilter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
     const filter = this.helper.generateFilterString(e.filters);
     const operator = filter ? "and" : "";
-    let filterString = `${ deleteFilter } ${ operator } ${ filter }`;
-    this.setState({ first: 0, filterString: filterString }, () =>
-    {
+    let filterString = `${deleteFilter} ${operator} ${filter}`;
+    this.setState({ first: 0, filterString: filterString }, () => {
       this.getPatients();
     });
   }
 
-  onRowDelete = (row) =>
-  {
+  onRowDelete = (row) => {
     this.setState({
       deleteDialogVisible: true,
       selectedPatient: Object.assign({}, row)
     });
   }
 
-  onRowEdit = (row) =>
-  {
+  onRowEdit = (row) => {
     if (row)
       row.address = { value: row.addressId, label: row.address.name, name: row.address.name }
     this.setState({
@@ -139,8 +120,7 @@ export default class Patients extends Component
     });
   }
 
-  savePatient = (updatedPatient, id) =>
-  {
+  savePatient = (updatedPatient, id) => {
     const { patients } = this.state;
     const isAdd = !id ? true : false;
     let patientData = [...patients];
@@ -158,12 +138,10 @@ export default class Patients extends Component
     });
   }
 
-  deleteRow = () =>
-  {
+  deleteRow = () => {
     const { patients, selectedPatient, isArchive, controller } = this.state;
-    this.repository.delete(controller, `${ selectedPatient.id }?isDeleted=${ !isArchive }`)
-      .then(res =>
-      {
+    this.repository.delete(controller, `${selectedPatient.id}?isDeleted=${!isArchive}`)
+      .then(res => {
         this.setState({
           patients: patients.filter(patient => patient.id !== selectedPatient.id),
           selectedPatient: null,
@@ -172,8 +150,7 @@ export default class Patients extends Component
       })
   }
 
-  actionTemplate(rowData, column)
-  {
+  actionTemplate(rowData, column) {
     return (
       <div>
         <button type="button" className="btn btn-labeled btn-secondary icon-btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
@@ -185,28 +162,27 @@ export default class Patients extends Component
       </div>
     )
   }
-  onAddressChange = (event) =>
-  {
+  onFilterChange = (event) => {
     this.dt.filter(event.value, 'address.id', 'eq');
     this.setState({ selectedAddress: event.value });
   }
-  render()
-  {
+  render() {
     let { patients, totalRecords, rows, first, loading, multiSortMeta,
       filters, deleteDialogVisible, editDialogVisible, isArchive, selectedPatient, includeProperties, selectedAddress, addressOptions } = this.state;
-    let addressFilter = <Dropdown className="text-left" placeholder="Select Address" value={selectedAddress} options={addressOptions} onChange={this.onAddressChange} filter={true} filterPlaceholder="Select Address" filterBy="label,value" showClear={true} />
+    let addressFilter = <Dropdown className="text-left" value={selectedAddress} options={addressOptions} onChange={this.onFilterChange} filter={true} showClear={true} />
     let linkUrl = isArchive ? "/patients" : "/archive-patients";
     let panelTitle = isArchive ? "Archived Patients" : "Patients";
     let buttonText = !isArchive ? "Archived Patients" : "Patients";
     let action = isArchive ? "restore" : "delete";
-    const end = first + rows;
+    const startNo = first + 1;
+    const endNo = first + rows;
     const deleteDialogFooter = (
       <div>
         <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
         <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialogVisible: false })} className="p-button-secondary" />
       </div>
     );
-    let paginatorRight = <div className="m-1">Showing {first.length && first + 1} to {totalRecords > end ? end : totalRecords} of {totalRecords} entries</div>;
+    let paginatorRight = <div className="m-1">Showing {this.helper.formatAmount(startNo)} to {this.helper.formatAmount(endNo)} of {this.helper.formatAmount(totalRecords)} records</div>;
     return (
       <>
         <div className="card">
@@ -220,13 +196,13 @@ export default class Patients extends Component
               </div>
               <div className="report-header">{panelTitle}</div>
               <div>
-                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${ !isArchive ? "archive" : "file-text-o" }`} tooltip={`Show ${ buttonText }`} /></NavLink>
+                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`} tooltip={`Show ${buttonText}`} /></NavLink>
               </div>
             </div>
             <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" ref={(el) => this.dt = el}
               onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta}
               filters={filters} onFilter={this.onFilter}
-              paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} lazy={true} totalRecords={totalRecords} first={first} onPage={this.onPageChange} paginatorRight={paginatorRight}
+              paginator={totalRecords && true} rowsPerPageOptions={[10, 30, 45]} rows={rows} lazy={true} totalRecords={totalRecords} first={first} onPage={this.onPageChange} paginatorRight={paginatorRight}
               selectionMode="single" selection={selectedPatient} onSelectionChange={e => this.setState({ selectedPatient: e.value })}>
 
               <Column field="id" header="Id" style={{ "width": "100px" }} sortable={true} filter={true} filterMatchMode="eq" />
