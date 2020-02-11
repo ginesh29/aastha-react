@@ -57,6 +57,7 @@ export default class Patients extends Component
         {
           return { value: item.id, label: item.name };
         });
+        addresses.splice(0, 0, { value: null, label: "[All]" })
         this.setState({
           addressOptions: res && addresses,
         });
@@ -89,6 +90,7 @@ export default class Patients extends Component
     const { multiSortMeta } = this.state;
     let SortMetaOld = multiSortMeta ? multiSortMeta.filter(item => item.field !== e.multiSortMeta[0].field) : [];
     this.setState({
+      first: 0,
       multiSortMeta: [...e.multiSortMeta, ...SortMetaOld],
       loading: true
     }, () =>
@@ -113,7 +115,7 @@ export default class Patients extends Component
     const filter = this.helper.generateFilterString(e.filters);
     const operator = filter ? "and" : "";
     let filterString = `${ deleteFilter } ${ operator } ${ filter }`;
-    this.setState({ filterString: filterString }, () =>
+    this.setState({ first: 0, filterString: filterString }, () =>
     {
       this.getPatients();
     });
@@ -192,7 +194,7 @@ export default class Patients extends Component
   {
     let { patients, totalRecords, rows, first, loading, multiSortMeta,
       filters, deleteDialogVisible, editDialogVisible, isArchive, selectedPatient, includeProperties, selectedAddress, addressOptions } = this.state;
-    let addressFilter = <Dropdown className="text-left" value={selectedAddress} options={addressOptions} onChange={this.onAddressChange} filter={true} filterPlaceholder="Select Address" filterBy="label,value" showClear={true} />
+    let addressFilter = <Dropdown className="text-left" placeholder="Select Address" value={selectedAddress} options={addressOptions} onChange={this.onAddressChange} filter={true} filterPlaceholder="Select Address" filterBy="label,value" showClear={true} />
     let linkUrl = isArchive ? "/patients" : "/archive-patients";
     let panelTitle = isArchive ? "Archived Patients" : "Patients";
     let buttonText = !isArchive ? "Archived Patients" : "Patients";
