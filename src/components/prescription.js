@@ -18,8 +18,10 @@ require('jQuery.print');
 
 const title = "Prescription";
 let cnt = 0;
-export default class Prescription extends React.Component {
-    constructor(props) {
+export default class Prescription extends React.Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = this.getInitialState();
         this.repository = new repository();
@@ -48,7 +50,8 @@ export default class Prescription extends React.Component {
         validationErrors: {},
         submitted: false
     })
-    handleChange = (e, action) => {
+    handleChange = (e, action) =>
+    {
         const { isValidationFired, formFields } = this.state;
         const { advices } = this.state.formFields
         let fields = formFields;
@@ -77,7 +80,7 @@ export default class Prescription extends React.Component {
             }
             else if (e.target.name === "followupDate") {
                 let followupDate = this.helper.formatDate(e.target.value);
-                fields.followupInstruction = `ફરી ${followupDate} ના રોજ બતાવવા આવવું`;
+                fields.followupInstruction = `ફરી ${ followupDate } ના રોજ બતાવવા આવવું`;
             }
         }
 
@@ -89,7 +92,8 @@ export default class Prescription extends React.Component {
             this.handleValidation();
     };
 
-    handleMedicineChange = (e, weight) => {
+    handleMedicineChange = (e, weight) =>
+    {
         const { isValidationFired, medicineFormFields } = this.state;
         const { medicineInstructions, medicineInstructionsValue, } = this.state.medicineFormFields;
         let fields = medicineFormFields;
@@ -119,28 +123,36 @@ export default class Prescription extends React.Component {
             this.handleValidation();
     };
 
-    componentDidMount = () => {
+    componentDidMount = () =>
+    {
         this.bindMedicineType();
     }
-    bindMedicineType = e => {
-        this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.MEDICINETYPE.value}}`).then(res => {
-            let medicineTypes = res && res.data.map(function (item) {
+    bindMedicineType = e =>
+    {
+        this.repository.get("lookups", `filter=type-eq-{${ lookupTypeEnum.MEDICINETYPE.value }}`).then(res =>
+        {
+            let medicineTypes = res && res.data.map(function (item)
+            {
                 return { value: item.id, label: item.name };
             });
             this.setState({ medicineTypeOptions: medicineTypes })
         })
     };
-    bindMedicineName = (medicineType) => {
+    bindMedicineName = (medicineType) =>
+    {
         medicineType = medicineType ? medicineType : 0;
-        this.repository.get("lookups", `filter=parentId-eq-{${medicineType}}`).then(res => {
-            let medicineNames = res && res.data.map(function (item) {
+        this.repository.get("lookups", `filter=parentId-eq-{${ medicineType }}`).then(res =>
+        {
+            let medicineNames = res && res.data.map(function (item)
+            {
                 return { value: item.id, label: item.name };
             });
             medicineNames = _.uniqBy(medicineNames, 'label')
             this.setState({ medicineName: null, medicineNameOptions: medicineNames })
         })
     };
-    handleValidation = e => {
+    handleValidation = e =>
+    {
         const { date, patient, followup, followupDate } = this.state.formFields
         const { validationErrors } = this.state;
         let errors = {};
@@ -165,7 +177,8 @@ export default class Prescription extends React.Component {
         });
         return isValid;
     };
-    handleMedicineValidation = e => {
+    handleMedicineValidation = e =>
+    {
         const { medicineType, medicineName, days } = this.state.medicineFormFields;
         let errors = {};
         let isValid = true;
@@ -188,7 +201,8 @@ export default class Prescription extends React.Component {
         });
         return isValid;
     };
-    addMedicine = (e) => {
+    addMedicine = (e) =>
+    {
         e.preventDefault();
         if (this.handleMedicineValidation()) {
             const { id, medicineType, medicineName, days, medicineInstructions, medicineInstructionsValue } = this.state.medicineFormFields;
@@ -203,7 +217,8 @@ export default class Prescription extends React.Component {
                         medicineData: [...prevState.medicineData, newMedicineData]
                     }));
             else {
-                medicineData.filter(m => m.id === id).map(item => {
+                medicineData.filter(m => m.id === id).map(item =>
+                {
                     item.medicineType = medicineType ? medicineType : item.medicineType;
                     item.medicineName = medicineName ? medicineName : item.medicineName;
                     item.days = days ? days : item.days;
@@ -219,7 +234,8 @@ export default class Prescription extends React.Component {
             }
         }
     }
-    removeMedicine = (id) => {
+    removeMedicine = (id) =>
+    {
         const { medicineData } = this.state;
         let data = medicineData.filter(m => m.id !== id)
         this.setState({
@@ -228,7 +244,8 @@ export default class Prescription extends React.Component {
             validationErrors: {}
         })
     }
-    editMedicine = (id) => {
+    editMedicine = (id) =>
+    {
         const { medicineData } = this.state;
         let data = medicineData.filter(m => m.id === id)[0]
         this.bindMedicineName(data.medicineType.value)
@@ -245,7 +262,8 @@ export default class Prescription extends React.Component {
             validationErrors: {}
         })
     }
-    saveAppointment = () => {
+    saveAppointment = () =>
+    {
         const { followupDate, patient, followup } = this.state.formFields
         const { submitted } = this.state;
         if (this.handleValidation()) {
@@ -261,14 +279,15 @@ export default class Prescription extends React.Component {
             jquery("#print-div").print()
         }
     }
-    render() {
+    render()
+    {
         const { patient, date, clinicDetail, followup, advices, followupInstruction, followupDate } = this.state.formFields
         const { id, medicineType, days, medicineName, medicineInstructions } = this.state.medicineFormFields;
         const { dialogVisible, medicineTypeOptions, medicineNameOptions, medicineData, validationErrors } = this.state;
         const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
         const header =
             <>
-                <span className="p-panel-title">{`${title} Preview`}</span>
+                <span className="p-panel-title">{`${ title } Preview`}</span>
                 <div className="float-right">
                     <Button icon="pi pi-print" tooltip="Save & Print" tooltipOptions={{ position: 'bottom' }} onClick={this.saveAppointment} />
                 </div>
@@ -306,11 +325,12 @@ export default class Prescription extends React.Component {
                                     <div className="col-md-2"><label> Advice : </label></div>
                                     <div className="col-md-10">
                                         {
-                                            adviceOptions.map((item, i) => {
+                                            adviceOptions.map((item, i) =>
+                                            {
                                                 return (
                                                     <div className="followup-check" key={i + 1}>
-                                                        <Checkbox inputId={`advice${i}`} name="advices" value={item.label} checked={advices.includes(item.label)} onChange={this.handleChange} />
-                                                        <label htmlFor={`advice${i}`} className="p-radiobutton-label">{item.label}</label>
+                                                        <Checkbox inputId={`advice${ i }`} name="advices" value={item.label} checked={advices.includes(item.label)} onChange={this.handleChange} />
+                                                        <label htmlFor={`advice${ i }`} className="p-radiobutton-label">{item.label}</label>
                                                     </div>
                                                 )
                                             })
@@ -323,19 +343,20 @@ export default class Prescription extends React.Component {
                                     <div className="col-md-10">
                                         <div className="followup-check">
                                             {
-                                                followupOptions.map((item, i) => {
+                                                followupOptions.map((item, i) =>
+                                                {
                                                     return (
                                                         <div className="d-flex" key={i + 1}>
                                                             <div className="mr-2">
-                                                                <RadioButton inputId={`followup${i + 1}`} name="followup" value={item.value} checked={followup === item.value} onChange={(e) => { this.handleChange(e); this.setState({ validationErrors: { ...validationErrors, followupDate: "" } }) }} />
-                                                                <label htmlFor={`followup${i + 1}`} className="p-radiobutton-label">{item.label}</label>
+                                                                <RadioButton inputId={`followup${ i + 1 }`} name="followup" value={item.value} checked={followup === item.value} onChange={(e) => { this.handleChange(e); this.setState({ validationErrors: { ...validationErrors, followupDate: "" } }) }} />
+                                                                <label htmlFor={`followup${ i + 1 }`} className="p-radiobutton-label">{item.label}</label>
                                                             </div>
 
                                                             {
                                                                 item.value <= 4 && followup === item.value && (
                                                                     <>
                                                                         <div className="mr-2">
-                                                                            <Calendar inputClassName={`input-sm ${validationErrors.followupDate ? "error" : ""}`} value={followupDate && followupDate} onChange={this.handleChange} name="followupDate" />
+                                                                            <Calendar inputClassName={`input-sm ${ validationErrors.followupDate ? "error" : "" }`} value={followupDate && followupDate} onChange={this.handleChange} name="followupDate" />
                                                                         </div>
                                                                         {
                                                                             validationErrors.followupDate &&
@@ -352,8 +373,8 @@ export default class Prescription extends React.Component {
                                                 })
                                             }
                                             <div className="form-group" key={0}>
-                                                <RadioButton inputId={`followup${0}`} name="followup" value={0} checked={followup === 0} onChange={this.handleChange} />
-                                                <label htmlFor={`followup${0}`} className="p-radiobutton-label">None</label>
+                                                <RadioButton inputId={`followup${ 0 }`} name="followup" value={0} checked={followup === 0} onChange={this.handleChange} />
+                                                <label htmlFor={`followup${ 0 }`} className="p-radiobutton-label">None</label>
                                             </div>
                                         </div>
 
@@ -375,10 +396,10 @@ export default class Prescription extends React.Component {
                                 </div>
                                 <div className="row">
                                     <div className="col-md">
-                                        <label>Patient Id : </label> {patient.value}
+                                        <label>Patient Id : </label> {patient && patient.value}
                                     </div>
                                     <div className="col-md-4">
-                                        <label>Age : </label> {patient.age}
+                                        <label>Age : </label> {patient && patient.age}
                                     </div>
                                 </div>
                                 <hr />
@@ -403,7 +424,8 @@ export default class Prescription extends React.Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                medicineData && medicineData.map((item, i) => {
+                                                medicineData && medicineData.map((item, i) =>
+                                                {
                                                     return (
                                                         <tr key={i}>
                                                             <td className="align-top">{item.medicineType.label}</td>
@@ -428,7 +450,8 @@ export default class Prescription extends React.Component {
                                                 <td>
                                                     <ul style={{ paddingLeft: '20px' }}>
                                                         {
-                                                            advices.map((item, i) => {
+                                                            advices.map((item, i) =>
+                                                            {
                                                                 return (
                                                                     <li key={i + 1}>{item}</li>
                                                                 )
@@ -483,11 +506,12 @@ export default class Prescription extends React.Component {
                                     </div>
                                     <div className="row gujarati-text">
                                         {
-                                            medicineInstructionOptions.map((item, i) => {
+                                            medicineInstructionOptions.map((item, i) =>
+                                            {
                                                 return (
-                                                    <div className={`instruction-check col-md-${item.label.length < 15 ? "3" : item.label.length <= 35 ? "6" : "12"}`} key={i + 1}>
-                                                        <Checkbox inputId={`instruction${i}`} name="medicineInstructions" value={item.label} checked={medicineInstructions.includes(item.label)} onChange={(e) => this.handleMedicineValidation() && this.handleMedicineChange(e, item.value)} />
-                                                        <label htmlFor={`instruction${i}`} className="p-radiobutton-label">{item.label}</label>
+                                                    <div className={`instruction-check col-md-${ item.label.length < 15 ? "3" : item.label.length <= 35 ? "6" : "12" }`} key={i + 1}>
+                                                        <Checkbox inputId={`instruction${ i }`} name="medicineInstructions" value={item.label} checked={medicineInstructions.includes(item.label)} onChange={(e) => this.handleMedicineValidation() && this.handleMedicineChange(e, item.value)} />
+                                                        <label htmlFor={`instruction${ i }`} className="p-radiobutton-label">{item.label}</label>
                                                     </div>
                                                 )
                                             })
@@ -506,7 +530,8 @@ export default class Prescription extends React.Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                medicineData && medicineData.map((item, i) => {
+                                                medicineData && medicineData.map((item, i) =>
+                                                {
                                                     return (
                                                         <tr key={i}>
                                                             <td className="align-top">{item.medicineType.label}</td>
