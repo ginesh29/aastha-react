@@ -9,10 +9,8 @@ import PatientForm from "../patient/patient-form";
 import $ from "jquery";
 
 const controller = "opds";
-export default class OpdForm extends React.Component
-{
-  constructor(props)
-  {
+export default class OpdForm extends React.Component {
+  constructor(props) {
     super(props);
     this.state = this.getInitialState();
     this.repository = new repository();
@@ -37,8 +35,7 @@ export default class OpdForm extends React.Component
     validationErrors: {}
   });
 
-  handleChange = (e, action) =>
-  {
+  handleChange = (e, action) => {
     const { isValidationFired, formFields } = this.state;
     $("#errors").remove();
     let fields = formFields;
@@ -59,8 +56,7 @@ export default class OpdForm extends React.Component
     });
     if (isValidationFired) this.handleValidation();
   };
-  handleSubmit = e =>
-  {
+  handleSubmit = e => {
     const { id, opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge } = this.state.formFields
     const { hideEditDialog, saveOpd, includeProperties } = this.props;
     e.preventDefault();
@@ -76,9 +72,8 @@ export default class OpdForm extends React.Component
         injectionCharge: injectionCharge,
         otherCharge: otherCharge
       };
-      this.repository.post(`${ controller }?includeProperties=${ includeProperties }`, opd)
-        .then(res =>
-        {
+      this.repository.post(`${controller}?includeProperties=${includeProperties}`, opd)
+        .then(res => {
           if (res && !res.errors) {
             hideEditDialog && hideEditDialog();
             saveOpd && saveOpd(res, opd.id);
@@ -87,8 +82,7 @@ export default class OpdForm extends React.Component
         })
     }
   };
-  handleValidation = e =>
-  {
+  handleValidation = e => {
     const { opdDate, caseType, patient } = this.state.formFields
     let errors = {};
     let isValid = true;
@@ -112,12 +106,10 @@ export default class OpdForm extends React.Component
     return isValid;
   };
 
-  handleReset = e =>
-  {
+  handleReset = e => {
     this.setState(this.getInitialState());
   };
-  componentDidMount = () =>
-  {
+  componentDidMount = () => {
     $("#errors").remove();
     const { selectedOpd } = this.props;
     if (selectedOpd) {
@@ -128,10 +120,9 @@ export default class OpdForm extends React.Component
         })
     }
   }
-  render()
-  {
+  render() {
     const { id, opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields
-    const { patientDialogVisible, editDialogVisible } = this.state;
+    const { patientDialog, editDialog } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
@@ -146,7 +137,7 @@ export default class OpdForm extends React.Component
             </div>
             <div className="col-md-8">
               <InputField name="patient" value={patient || ""} title="Patient" onChange={this.handleChange} {...this.state}
-                onCreateOption={() => this.setState({ patientDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
+                onCreateOption={() => this.setState({ patientDialog: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
                 controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
             </div>
           </div>
@@ -180,10 +171,10 @@ export default class OpdForm extends React.Component
             <button type="submit" className="btn btn-info">Save changes</button>
           </div>
         </form>
-        <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialogVisible} onHide={() => this.setState({ patientDialogVisible: false })} baseZIndex={500}>
+        <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialog} onHide={() => this.setState({ patientDialog: false })} baseZIndex={500}>
           {
-            editDialogVisible &&
-            <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} {...this.state} />
+            editDialog &&
+            <PatientForm onHidePatientDialog={() => this.setState({ patientDialog: false })} {...this.state} />
           }
         </Dialog>
       </>

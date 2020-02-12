@@ -222,7 +222,7 @@ export default class AppointmentCalendar extends Component {
                         <form onSubmit={this.handleSubmit}>
                             <InputField name="date" title="Appointment Date" value={date} onChange={this.handleChange} {...this.state} controlType="datepicker" groupIcon="fa-calendar" />
                             <InputField name="patientId" value={patientId} title="Patient" onChange={this.handleChange} {...this.state}
-                                onCreateOption={() => this.setState({ patienteditDialogVisible: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
+                                onCreateOption={() => this.setState({ patienteditDialog: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
                                 controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
                             <InputField name="type" value={type} title="Appointment Type" onChange={this.handleChange} {...this.state} controlType="dropdown" options={appointmentTypeOptions} />
                             <div className="modal-footer">

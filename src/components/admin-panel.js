@@ -92,13 +92,13 @@ export default class AdminPanel extends Component {
 
     onRowDelete = (row) => {
         this.setState({
-            deleteDialogVisible: true,
+            deleteDialog: true,
             selectedPatient: Object.assign({}, row)
         });
     }
     onRowEdit = (row) => {
         this.setState({
-            editDialogVisible: true,
+            editDialog: true,
             selectedPatient: Object.assign({}, row),
         });
     }
@@ -111,12 +111,12 @@ export default class AdminPanel extends Component {
                 this.setState({
                     patients: patients.filter(patient => patient.id !== selectedPatient.id),
                     selectedPatient: null,
-                    deleteDialogVisible: false
+                    deleteDialog: false
                 });
             })
     }
     onHide = () => {
-        this.setState({ deleteDialogVisible: false });
+        this.setState({ deleteDialog: false });
     }
     onChangeLookup = (e) => {
         this.setState({ lookupType: e.target.value }, () => {
@@ -125,7 +125,7 @@ export default class AdminPanel extends Component {
     }
     render() {
         const lookupTypesOptions = this.helper.enumToObject(lookupTypeEnum)
-        const { patients, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialogVisible, editDialogVisible, isArchive, lookupType } = this.state;
+        const { patients, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, editDialog, isArchive, lookupType } = this.state;
         let linkUrl = isArchive ? "/patients" : "/archive-patients";
         let panelTitle = isArchive ? "Archived Patients" : "Current Patients";
         let action = isArchive ? "restore" : "delete";
@@ -151,11 +151,11 @@ export default class AdminPanel extends Component {
                         <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
                     </div>
                 </div>
-                <Dialog header="Confirmation" visible={deleteDialogVisible} footer={deleteDialogFooter} onHide={this.onHide}>
+                <Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={this.onHide}>
                     Are you sure you want to {action} this item?
                 </Dialog>
 
-                <Dialog header="Edit Patient" visible={editDialogVisible} footer={deleteDialogFooter} onHide={this.onHide}>
+                <Dialog header="Edit Patient" visible={editDialog} footer={deleteDialogFooter} onHide={this.onHide}>
                 </Dialog>
             </Panel>
         );

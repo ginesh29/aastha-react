@@ -133,7 +133,7 @@ export default class PatientForm extends Component {
       };
       this.repository.post("lookups", lookup)
         .then(res => {
-          res && this.setState({ addressText: "", addressDialogVisible: false });
+          res && this.setState({ addressText: "", addressDialog: false });
         })
     }
   }
@@ -147,9 +147,9 @@ export default class PatientForm extends Component {
   }
   render() {
     const { id, firstname, middlename, fathername, lastname, age, address, mobile } = this.state.formFields;
-    const { addressDialogVisible, addressText, addressError, isExist } = this.state;
+    const { addressDialog, addressText, addressError, isExist } = this.state;
     let addressDialogFooter = <div className="ui-dialog-buttonpane p-clearfix">
-      <Button label="Close" icon="pi pi-times" className="p-button-secondary" onClick={(e) => this.setState({ addressDialogVisible: false })} />
+      <Button label="Close" icon="pi pi-times" className="p-button-secondary" onClick={(e) => this.setState({ addressDialog: false })} />
       <Button label="Save" icon="pi pi-check" onClick={this.saveAddress} />
     </div>;
     return (
@@ -184,7 +184,7 @@ export default class PatientForm extends Component {
           <div className="row">
             <div className="col-md-12">
               <InputField name="address" title="Address" value={address || ""} onChange={this.handleChange}
-                onCreateOption={() => this.setState({ addressDialogVisible: true, addressText: addressText, addressError: "" })} {...this.state}
+                onCreateOption={() => this.setState({ addressDialog: true, addressText: addressText, addressError: "" })} {...this.state}
                 controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback)} onInputChange={(e) => { e && this.setState({ addressText: e }) }} />
             </div>
           </div>
@@ -196,7 +196,7 @@ export default class PatientForm extends Component {
             <button type="submit" className="btn btn-info">Save changes</button>
           </div>
         </form>
-        <Dialog header={Constants.ADD_ADDRESS_TITLE} footer={addressDialogFooter} visible={addressDialogVisible} onHide={() => this.setState({ addressDialogVisible: false })} baseZIndex={0}>
+        <Dialog header={Constants.ADD_ADDRESS_TITLE} footer={addressDialogFooter} visible={addressDialog} onHide={() => this.setState({ addressDialog: false })} baseZIndex={0}>
           {
             addressText &&
             <div className="form-group">

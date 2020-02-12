@@ -91,18 +91,24 @@ export default class Ipds extends Component {
 
     actionTemplate(rowData, column) {
         return <div>
-            <button type="button" className="btn btn-labeled btn-secondary icon-btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
-                <span className="btn-label"><i className="fa fa-pencil"></i></span>Edit
-        </button>
-            <button type="button" className="btn btn-labeled btn-danger icon-btn-grid" onClick={() => this.onRowDelete(rowData)}>
-                <span className="btn-label"><i className="fa fa-times"></i></span>Delete
-        </button>
+            <button type="button" className="btn btn-secondary btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
+                <i className="fa fa-pencil"></i>
+            </button>
+            <button type="button" className="btn btn-info btn-grid mr-2" onClick={() => this.onShowInvoice(rowData)}>
+                <i className="fa fa-file-text-o"></i>
+            </button>
+            <button type="button" className="btn btn-info btn-grid mr-2" onClick={() => this.onShowInvoice(rowData)}>
+                <i className="fa fa-file-text-o"></i>
+            </button>
+            <button type="button" className="btn btn-danger btn-grid" onClick={() => this.onRowDelete(rowData)}>
+                <i className="fa fa-times"></i>
+            </button>
         </div>;
     }
 
     onRowDelete = (row) => {
         this.setState({
-            deleteDialogVisible: true,
+            deleteDialog: true,
             selectedPatient: Object.assign({}, row)
         });
     }
@@ -110,7 +116,7 @@ export default class Ipds extends Component {
         row.addressId = { value: row.address.id, label: row.address.name }
         delete row.address;
         this.setState({
-            editDialogVisible: true,
+            editDialog: true,
             selectedPatient: Object.assign({}, row),
         });
     }
@@ -123,12 +129,12 @@ export default class Ipds extends Component {
                 this.setState({
                     patients: patients.filter(patient => patient.id !== selectedPatient.id),
                     selectedPatient: null,
-                    deleteDialogVisible: false
+                    deleteDialog: false
                 });
             })
     }
     render() {
-        const { ipds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialogVisible, isArchive } = this.state;
+        const { ipds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, isArchive } = this.state;
         let linkUrl = isArchive ? "/patients" : "/archive-patients";
         let panelTitle = isArchive ? "Archived Patients" : "Current Patients";
         let action = isArchive ? "restore" : "delete";
@@ -137,30 +143,30 @@ export default class Ipds extends Component {
         const deleteDialogFooter = (
             <div>
                 <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
-                <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialogVisible: false })} className="p-button-secondary" />
+                <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialog: false })} className="p-button-secondary" />
             </div>
         );
 
         return (
             <>
                 <DataTable value={ipds} loading={loading} responsive={true} emptyMessage="No records found" header={header} onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter} selectionMode="single">
-                    <Column field="uniqueId" header="Ipd Id" style={{ "width": "120px" }} sortable={true} filter={true} filterMatchMode="equals" />
+                    <Column field="uniqueId" header="Ipd Id" style={{ "width": "90px" }} sortable={true} filter={true} filterMatchMode="equals" />
                     <Column field="patient.label" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
-                    <Column field="ipdType" style={{ "width": "150px" }} header="Type" />
-                    <Column field="formatedAddmissionDate" style={{ "width": "150px" }} header="Add. Date" filter={true} filterMatchMode="contains" />
-                    <Column field="formatedDischargeDate" style={{ "width": "150px" }} header="Dis. Date" sortable={true} filter={true} filterMatchMode="contains" />
-                    <Column field="bill" style={{ "width": "100px" }} header="Bill" sortable={true} filter={true} filterMatchMode="contains" />
-                    <Column field="discount" style={{ "width": "100px" }} header="Conc." sortable={true} filter={true} filterMatchMode="contains" />
-                    <Column field="amount" style={{ "width": "120px" }} header="Amount" sortable={true} filter={true} filterMatchMode="contains" />
-                    <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '190px' }} />
+                    <Column field="ipdType" style={{ "width": "50px" }} header="Type" />
+                    <Column field="formatedAddmissionDate" style={{ "width": "100px" }} header="Add. Date" filter={true} filterMatchMode="contains" />
+                    <Column field="formatedDischargeDate" style={{ "width": "100px" }} header="Dis. Date" sortable={true} filter={true} filterMatchMode="contains" />
+                    <Column className="text-right" field="bill" style={{ "width": "80px" }} header="Bill" />
+                    <Column className="text-right" field="discount" style={{ "width": "80px" }} header="Conc." />
+                    <Column className="text-right" field="amount" style={{ "width": "80px" }} header="Amount" />
+                    <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '140px' }} />
                 </DataTable>
                 <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
 
-                <Dialog header="Confirmation" visible={deleteDialogVisible} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialogVisible: false })}>
+                <Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })}>
                     Are you sure you want to {action} this item?
         </Dialog>
 
-                {/* <Dialog header="Edit Patient" visible={editDialogVisible} onHide={() => this.setState({ editDialogVisible: false })}>
+                {/* <Dialog header="Edit Patient" visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
                     <PatientForm {...this.state} />
                 </Dialog> */}
             </>

@@ -11,11 +11,10 @@ import OpdForm from "./opd-form";
 import { caseTypeOptions, TEN_YEAR_RANGE } from "../../common/constants";
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
+// import invoice_header from "../../assets/images/invoice_header.jpg"
 
-export default class Opds extends Component
-{
-    constructor(props)
-    {
+export default class Opds extends Component {
+    constructor(props) {
         super(props);
         this.state = {
             opds: [],
@@ -34,14 +33,11 @@ export default class Opds extends Component
         this.repository = new repository();
         this.helper = new helper();
     }
-    getOpds = () =>
-    {
+    getOpds = () => {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-        this.repository.get(controller, `take=${ rows }&skip=${ first }&filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`)
-            .then(res =>
-            {
-                res && res.data.map(item =>
-                {
+        this.repository.get(controller, `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`)
+            .then(res => {
+                res && res.data.map(item => {
                     item.consultCharge = item.consultCharge ? item.consultCharge : "";
                     item.usgCharge = item.usgCharge ? item.usgCharge : "";
                     item.uptCharge = item.uptCharge ? item.uptCharge : "";
@@ -62,78 +58,66 @@ export default class Opds extends Component
                 });
             })
     }
-    componentDidMount = (e) =>
-    {
+    componentDidMount = (e) => {
         const { isArchive } = this.state;
         //typeOptions.splice(0, 0, { value: null, label: "[All]" });
-        const filter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
-        this.setState({ typeOptions: caseTypeOptions, filterString: filter }, () =>
-        {
+        const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        this.setState({ typeOptions: caseTypeOptions, filterString: filter }, () => {
             this.getOpds();
         });
     }
-    onPageChange = (e) =>
-    {
+    onPageChange = (e) => {
         this.setState({
             rows: e.rows,
             first: e.first,
             loading: true
-        }, () =>
-        {
+        }, () => {
             this.getOpds();
         })
     }
-    onSort = (e) =>
-    {
+    onSort = (e) => {
         const { multiSortMeta } = this.state;
         let SortMetaOld = multiSortMeta ? multiSortMeta.filter(item => item.field !== e.multiSortMeta[0].field) : [];
         this.setState({
             multiSortMeta: [e.multiSortMeta[0], ...SortMetaOld],
             loading: true
-        }, () =>
-        {
+        }, () => {
             const { multiSortMeta } = this.state;
             let sortString = this.helper.generateSortString(multiSortMeta);
-            this.setState({ sortString: sortString }, () =>
-            {
-                setTimeout(() =>
-                {
+            this.setState({ sortString: sortString }, () => {
+                setTimeout(() => {
                     this.getOpds();
                 }, 10);
             });
         });
     }
-    onFilter = (e) =>
-    {
+    onFilter = (e) => {
         this.setState({ filters: e.filters, loading: true });
         const { isArchive } = this.state;
-        const deleteFilter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
+        const deleteFilter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
         const filter = this.helper.generateFilterString(e.filters);
         const operator = filter ? "and" : "";
-        let filterString = `${ deleteFilter } ${ operator } ${ filter }`;
-        this.setState({ first: 0, filterString: filterString }, () =>
-        {
+        let filterString = `${deleteFilter} ${operator} ${filter}`;
+        this.setState({ first: 0, filterString: filterString }, () => {
             this.getOpds();
         });
     }
 
-    actionTemplate(rowData, column)
-    {
+    actionTemplate(rowData, column) {
         return <div>
             <button type="button" className="btn btn-secondary btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
                 <i className="fa fa-pencil"></i>
             </button>
-            <button type="button" className="btn btn-info btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
-                <i className="fa fa-file"></i>
+            <button type="button" className="btn btn-info btn-grid mr-2" onClick={() => this.onShowInvoice(rowData)}>
+                <i className="fa fa-file-text-o"></i>
             </button>
             <button type="button" className="btn btn-danger btn-grid" onClick={() => this.onRowDelete(rowData)}>
                 <i className="fa fa-times"></i>
             </button>
         </div>;
     }
-    saveOpd = (updatedOpd, id) =>
-    {
-        const { opds } = this.state;
+    saveOpd = (updatedOpd, id) => {
+        const { opds, totalRecords } = this.state;
         const isAdd = !id ? true : false;
         let opdData = [...opds];
         updatedOpd.patient = { label: updatedOpd.patient.fullname, value: updatedOpd.patientId, fullname: updatedOpd.patient.fullname }
@@ -147,47 +131,50 @@ export default class Opds extends Component
         }
         this.setState({
             opds: opdData,
-            editDialogVisible: false
+            editDialog: false,
+            totalRecords: isAdd && totalRecords + 1
         });
     }
 
-    onRowDelete = (row) =>
-    {
+    onRowDelete = (row) => {
         this.setState({
-            deleteDialogVisible: true,
+            deleteDialog: true,
             selectedOpd: Object.assign({}, row)
         });
     }
-    onRowEdit = (row) =>
-    {
+    onRowEdit = (row) => {
         this.setState({
-            editDialogVisible: true,
+            editDialog: true,
             selectedOpd: Object.assign({}, row),
         });
     }
 
-    deleteRow = () =>
-    {
-        const { opds, selectedOpd, isArchive, controller } = this.state;
+    onShowInvoice = (row) => {
+        this.setState({
+            invoiceDialog: true,
+            selectedOpd: Object.assign({}, row),
+        });
+
+    }
+    deleteRow = () => {
+        const { opds, selectedOpd, isArchive, controller, totalRecords } = this.state;
         let flag = isArchive ? false : true;
-        this.repository.delete(controller, `${ selectedOpd.id }?isDeleted=${ flag }`)
-            .then(res =>
-            {
+        this.repository.delete(controller, `${selectedOpd.id}?isDeleted=${flag}`)
+            .then(res => {
                 this.setState({
                     opds: opds.filter(patient => patient.id !== selectedOpd.id),
                     selectedOpd: null,
-                    deleteDialogVisible: false
+                    deleteDialog: false,
+                    totalRecords: totalRecords - 1
                 });
             })
     }
-    onFilterChange = (event) =>
-    {
+    onFilterChange = (event) => {
         this.dt.filter(event.value, event.target.name, 'eq');
         this.setState({ [event.target.id]: event.value });
     }
-    render()
-    {
-        const { opds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialogVisible, isArchive, selectedOpd, editDialogVisible, includeProperties, selectedCaseType, selectedDate, typeOptions } = this.state;
+    render() {
+        const { opds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, isArchive, selectedOpd, editDialog, includeProperties, selectedCaseType, selectedDate, typeOptions, invoiceDialog } = this.state;
         let linkUrl = isArchive ? "/opds" : "/archive-opds";
         let panelTitle = isArchive ? "Archived Opds" : "Opds";
         let buttonText = !isArchive ? "Archived Opds" : "Opds";
@@ -199,7 +186,7 @@ export default class Opds extends Component
         const deleteDialogFooter = (
             <div>
                 <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
-                <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialogVisible: false })} className="p-button-secondary" />
+                <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialog: false })} className="p-button-secondary" />
             </div>
         );
         let paginatorRight = totalRecords && <div className="m-1">Showing {this.helper.formatAmount(startNo)} to {this.helper.formatAmount(endNo)} of {this.helper.formatAmount(totalRecords)} records</div>;
@@ -216,7 +203,7 @@ export default class Opds extends Component
                             </div>
                             <div className="report-header">{panelTitle}</div>
                             <div>
-                                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${ !isArchive ? "archive" : "file-text-o" }`} tooltip={`Show ${ buttonText }`} /></NavLink>
+                                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`} tooltip={`Show ${buttonText}`} /></NavLink>
                             </div>
                         </div>
                         <DataTable value={opds} loading={loading} responsive={true} emptyMessage="No records found"
@@ -228,26 +215,97 @@ export default class Opds extends Component
                             <Column style={{ "width": "90px" }} field="id" header="Invoice Id" sortable={true} filter={true} filterMatchMode="eq" />
                             <Column style={{ "width": "110px" }} field="invoiceNo" header="Outdoor No." sortable={true} filter={true} filterMatchMode="eq" />
                             <Column field="patient.fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
-                            <Column style={{ "width": "90px" }} field="formatedDate" header="Opd Date" sortable={true} filter={true} filterMatchMode="eq" filterElement={dateFilter} />
-                            <Column className="text-center" style={{ "width": "70px" }} field="caseTypeName" header="Type" filter={true} filterMatchMode="eq" filterElement={typeFilter} />
-                            <Column className="text-right" style={{ "width": "70px" }} field="consultCharge" header="Cons" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="usgCharge" header="USG" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="uptCharge" header="UPT" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="injectionCharge" header="Inj" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="otherCharge" header="Other" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="totalCharge" header="Total" />
-                            <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '110px' }} />
+                            <Column style={{ "width": "100px" }} field="formatedDate" header="Opd Date" sortable={true} filter={true} filterMatchMode="eq" filterElement={dateFilter} />
+                            <Column className="text-center" style={{ "width": "50px" }} field="caseTypeName" header="Type" filter={true} filterMatchMode="eq" filterElement={typeFilter} />
+                            <Column className="text-right" style={{ "width": "60px" }} field="consultCharge" header="Cons" />
+                            <Column className="text-right" style={{ "width": "60px" }} field="usgCharge" header="USG" />
+                            <Column className="text-right" style={{ "width": "60px" }} field="uptCharge" header="UPT" />
+                            <Column className="text-right" style={{ "width": "60px" }} field="injectionCharge" header="Inj" />
+                            <Column className="text-right" style={{ "width": "60px" }} field="otherCharge" header="Other" />
+                            <Column className="text-right" style={{ "width": "60px" }} field="totalCharge" header="Total" />
+                            <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '120px' }} />
                         </DataTable>
                     </div>
                 </div>
-                <Dialog header="Confirmation" visible={deleteDialogVisible} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialogVisible: false })}>
+                <Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })}>
                     Are you sure you want to {action} this item?
                 </Dialog>
 
-                <Dialog header="Edit Opd" visible={editDialogVisible} onHide={() => this.setState({ editDialogVisible: false })}>
+                <Dialog header="Edit Opd" visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
                     {
-                        editDialogVisible &&
-                        <OpdForm selectedOpd={selectedOpd} hideEditDialog={() => this.setState({ editDialogVisible: false })} saveOpd={this.saveOpd} includeProperties={includeProperties} />
+                        editDialog &&
+                        <OpdForm selectedOpd={selectedOpd} hideEditDialog={() => this.setState({ editDialog: false })} saveOpd={this.saveOpd} includeProperties={includeProperties} />
+                    }
+                </Dialog>
+                <Dialog header="Opd Invoice" visible={invoiceDialog} onHide={() => this.setState({ invoiceDialog: false })} style={{ width: "600px" }}>
+                    {
+                        <>
+                            {/* <img src={invoice_header} className="img-fluid" alt="Invoice Header" /> */}
+                            <h3 className="invoice-title">Outdoor Invoice</h3>
+                            <table className="table table-borderless invoice-detail">
+                                <tr>
+                                    <td><b> Patient Name :</b> {selectedOpd && selectedOpd.patient.fullname}</td>
+                                    <td width="200px"><b>Date :</b> {selectedOpd && this.helper.formatDate(selectedOpd.date)}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Invoice No. :</b> {selectedOpd && selectedOpd.id}</td>
+                                    <td><b>Address :</b> {selectedOpd && console.log(selectedOpd)}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Outdoor No. :</b> {selectedOpd && selectedOpd.invoiceNo}</td>
+                                </tr>
+                            </table>
+                            <table className="table table-bordered invoice-table">
+                                <thead>
+                                    <tr>
+                                        <th width="10px">No.</th>
+                                        <th>Description</th>
+                                        <th width="20%" className="text-right">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1.</td>
+                                        <td>Consulting Charge</td>
+                                        <td className="text-right"><span id="Cons">150</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Ultrasonography Charge</td>
+                                        <td className="text-right"><span id="USG">0</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3.</td>
+                                        <td>Urine Test Charge</td>
+                                        <td className="text-right"><span id="UPT">0</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>4.</td>
+                                        <td>Injection Charge</td>
+                                        <td className="text-right"><span id="Inj">0</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>5.</td>
+                                        <td>Other Charge</td>
+                                        <td className="text-right"><span id="Other">0</span></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2">Grand Total &nbsp;| <span id="amtinword">one hundred fifty Rupees Only</span></td>
+                                        <td className="text-right"><strong id="Total">150</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <div className="row" style={{ marginTop: "15px" }}>
+                                <div className="col-md-9">
+                                    <span>Rececived By</span>
+                                </div>
+                                <div className="col-md-3">
+                                    <label>Dr. Bhaumik Tandel</label>
+                                </div>
+                            </div>
+                        </>
                     }
                 </Dialog>
             </>

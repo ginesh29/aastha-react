@@ -271,7 +271,7 @@ export default class IpdForm extends React.Component {
     render() {
         const departmentTypeOptions = this.helper.enumToObject(departmentTypeEnum)
         const { uniqueId, patient, roomType, departmentType, addmissionDate, dischargeDate, deliveryDate, deliveryTime, typesOfDelivery, deliveryDiagnosis, babyGender, babyWeight, operationDate, operationDiagnosis, typesOfOperation, generalDiagnosis, discountAmount } = this.state.formFields
-        const { typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields, patientInput, patientDialogVisible, patientName } = this.state;
+        const { typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields, patientInput, patientDialog, patientName } = this.state;
         return (
             <>
                 <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
@@ -281,7 +281,7 @@ export default class IpdForm extends React.Component {
                         </div>
                         <div className="col-md-4">
                             <InputField name="patient" value={patient} title="Patient" onChange={this.handleChange} {...this.state}
-                                onCreateOption={() => this.setState({ patientDialogVisible: true, patientName: patientInput })} onInputChange={(e) => { this.setState({ patientInput: e }) }}
+                                onCreateOption={() => this.setState({ patientDialog: true, patientName: patientInput })} onInputChange={(e) => { this.setState({ patientInput: e }) }}
                                 controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
                         </div>
                         <div className="col-md-4">
@@ -408,10 +408,10 @@ export default class IpdForm extends React.Component {
                 </button>
                     </div>
                 </form>
-                <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialogVisible} onHide={() => this.setState({ patientDialogVisible: false })} baseZIndex={50}>
+                <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialog} onHide={() => this.setState({ patientDialog: false })} baseZIndex={50}>
                     {
-                        patientDialogVisible &&
-                        <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} patientName={patientName} />
+                        patientDialog &&
+                        <PatientForm onHidePatientDialog={() => this.setState({ patientDialog: false })} patientName={patientName} />
                     }
                 </Dialog>
             </>
