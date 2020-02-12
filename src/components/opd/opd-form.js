@@ -9,8 +9,10 @@ import PatientForm from "../patient/patient-form";
 import $ from "jquery";
 
 const controller = "opds";
-export default class OpdForm extends React.Component {
-  constructor(props) {
+export default class OpdForm extends React.Component
+{
+  constructor(props)
+  {
     super(props);
     this.state = this.getInitialState();
     this.repository = new repository();
@@ -35,7 +37,8 @@ export default class OpdForm extends React.Component {
     validationErrors: {}
   });
 
-  handleChange = (e, action) => {
+  handleChange = (e, action) =>
+  {
     const { isValidationFired, formFields } = this.state;
     $("#errors").remove();
     let fields = formFields;
@@ -56,7 +59,8 @@ export default class OpdForm extends React.Component {
     });
     if (isValidationFired) this.handleValidation();
   };
-  handleSubmit = e => {
+  handleSubmit = e =>
+  {
     const { id, opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge } = this.state.formFields
     const { hideEditDialog, saveOpd, includeProperties } = this.props;
     e.preventDefault();
@@ -72,8 +76,9 @@ export default class OpdForm extends React.Component {
         injectionCharge: injectionCharge,
         otherCharge: otherCharge
       };
-      this.repository.post(`${controller}?includeProperties=${includeProperties}`, opd)
-        .then(res => {
+      this.repository.post(`${ controller }?includeProperties=${ includeProperties }`, opd)
+        .then(res =>
+        {
           if (res && !res.errors) {
             hideEditDialog && hideEditDialog();
             saveOpd && saveOpd(res, opd.id);
@@ -82,7 +87,8 @@ export default class OpdForm extends React.Component {
         })
     }
   };
-  handleValidation = e => {
+  handleValidation = e =>
+  {
     const { opdDate, caseType, patient } = this.state.formFields
     let errors = {};
     let isValid = true;
@@ -106,10 +112,12 @@ export default class OpdForm extends React.Component {
     return isValid;
   };
 
-  handleReset = e => {
+  handleReset = e =>
+  {
     this.setState(this.getInitialState());
   };
-  componentDidMount = () => {
+  componentDidMount = () =>
+  {
     $("#errors").remove();
     const { selectedOpd } = this.props;
     if (selectedOpd) {
@@ -120,8 +128,9 @@ export default class OpdForm extends React.Component {
         })
     }
   }
-  render() {
-    const { opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields
+  render()
+  {
+    const { id, opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields
     const { patientDialogVisible, editDialogVisible } = this.state;
     return (
       <>
@@ -164,7 +173,10 @@ export default class OpdForm extends React.Component {
             </div>
           </div>
           <div className="modal-footer">
-            <button type="reset" className="btn btn-secondary">Reset</button>
+            {
+              !id &&
+              <button type="reset" className="btn btn-secondary">Reset</button>
+            }
             <button type="submit" className="btn btn-info">Save changes</button>
           </div>
         </form>

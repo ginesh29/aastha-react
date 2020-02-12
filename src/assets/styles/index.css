@@ -63,10 +63,21 @@ form .p-multiselect,
   line-height: 1.5;
   border-radius: 2px;
 }
-.btn-label {position: relative;left: -12px;display: inline-block;padding: 5px 8px;background: rgba(0,0,0,0.15);border-radius: 3px 0 0 3px;}
-.btn-labeled {padding-top: 0;padding-bottom: 0;}
+.btn-label {
+  position: relative;
+  left: -12px;
+  display: inline-block;
+  padding: 5px 8px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px 0 0 3px;
+}
+.btn-labeled {
+  padding-top: 0;
+  padding-bottom: 0;
+}
 .modal-footer {
   padding: 10px 0 10px 0 !important;
+  margin-top: 1rem !important;
 }
 .instruction-check label,
 .followup-check label {
@@ -95,7 +106,7 @@ hr {
   padding: 8px;
 } */
 .charge-table th,
-.charge-table td{
+.charge-table td {
   padding: 5px;
 }
 .statistics-table th,

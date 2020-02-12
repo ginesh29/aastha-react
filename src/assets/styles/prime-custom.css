@@ -5,8 +5,11 @@ form .p-autocomplete,
 form .p-calendar,
 form .p-dropdown-filter-container,
 form .p-multiselect,
-.p-panel {
+.p-panel,
+.p-datatable-thead th .p-inputtext,
+.p-datatable-thead th .p-dropdown {
   width: 100%;
+  min-width: 100px;
 }
 .p-readonly {
   background-color: #eee !important;
@@ -16,6 +19,7 @@ form .p-multiselect,
 .p-dropdown-label,
 .p-radiobutton-label {
   font-weight: 500 !important;
+  text-align: left !important;
 }
 .p-component {
   font-family: "Titillium Web", sans-serif !important;
@@ -45,21 +49,30 @@ form .p-multiselect,
   font-size: 18px !important;
   font-weight: 600;
 }
-.p-datatable{
-  font-size: .8em !important;
+.p-datatable {
+  font-size: 0.8em !important;
+}
+.p-datatable table {
+  table-layout: inherit !important;
 }
 .p-sortable-column-icon {
   float: right;
+  font-size: 0.9em !important;
 }
 .p-datatable-thead th {
   vertical-align: top;
   padding: 5px !important;
   font-weight: 600 !important;
+  font-size: 1.2em;
 }
+
 .p-datatable tr:not(.p-highlight) {
   background-color: #ffffff !important;
 }
-
+.p-datepicker table {
+  font-size: 12px !important;
+  font-weight: 100;
+}
 .p-datatable tr.p-highlight {
   background-color: #bdedbc !important;
   color: black !important;

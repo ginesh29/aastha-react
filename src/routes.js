@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Redirect } from "react-router-dom";
 //import LoginLayoutRoute from "./components/shared/layouts/LoginLayout";
 import MainLayout from "./components/shared/layouts/MainLayout";
 
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/dashboard";
 import Patients from "./components/patient/patients";
 import AddPatient from "./components/patient/add-patient";
 import Prescription from "./components/prescription";

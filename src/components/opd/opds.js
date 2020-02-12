@@ -8,9 +8,14 @@ import { helper } from "../../common/helpers";
 import { ROWS } from "../../common/constants";
 import { Dialog } from 'primereact/dialog';
 import OpdForm from "./opd-form";
+import { caseTypeOptions, TEN_YEAR_RANGE } from "../../common/constants";
+import { Dropdown } from 'primereact/dropdown';
+import { Calendar } from 'primereact/calendar';
 
-export default class Opds extends Component {
-    constructor(props) {
+export default class Opds extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
             opds: [],
@@ -23,15 +28,20 @@ export default class Opds extends Component {
             includeProperties: "Patient",
             selectedOpd: null,
             isArchive: props.location.pathname.includes("archive"),
+            selectedCaseType: null,
+            selectedDate: "",
         };
         this.repository = new repository();
         this.helper = new helper();
     }
-    getOpds = () => {
+    getOpds = () =>
+    {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-        this.repository.get(controller, `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`)
-            .then(res => {
-                res && res.data.map(item => {
+        this.repository.get(controller, `take=${ rows }&skip=${ first }&filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`)
+            .then(res =>
+            {
+                res && res.data.map(item =>
+                {
                     item.consultCharge = item.consultCharge ? item.consultCharge : "";
                     item.usgCharge = item.usgCharge ? item.usgCharge : "";
                     item.uptCharge = item.uptCharge ? item.uptCharge : "";
@@ -52,51 +62,63 @@ export default class Opds extends Component {
                 });
             })
     }
-    componentDidMount = (e) => {
+    componentDidMount = (e) =>
+    {
         const { isArchive } = this.state;
-        const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
-        this.setState({ filterString: filter }, () => {
+        //typeOptions.splice(0, 0, { value: null, label: "[All]" });
+        const filter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
+        this.setState({ typeOptions: caseTypeOptions, filterString: filter }, () =>
+        {
             this.getOpds();
         });
     }
-    onPageChange = (e) => {
+    onPageChange = (e) =>
+    {
         this.setState({
             rows: e.rows,
             first: e.first,
             loading: true
-        }, () => {
+        }, () =>
+        {
             this.getOpds();
         })
     }
-    onSort = (e) => {
+    onSort = (e) =>
+    {
         const { multiSortMeta } = this.state;
         let SortMetaOld = multiSortMeta ? multiSortMeta.filter(item => item.field !== e.multiSortMeta[0].field) : [];
         this.setState({
             multiSortMeta: [e.multiSortMeta[0], ...SortMetaOld],
             loading: true
-        }, () => {
+        }, () =>
+        {
             const { multiSortMeta } = this.state;
             let sortString = this.helper.generateSortString(multiSortMeta);
-            this.setState({ sortString: sortString }, () => {
-                setTimeout(() => {
+            this.setState({ sortString: sortString }, () =>
+            {
+                setTimeout(() =>
+                {
                     this.getOpds();
                 }, 10);
             });
         });
     }
-    onFilter = (e) => {
+    onFilter = (e) =>
+    {
         this.setState({ filters: e.filters, loading: true });
         const { isArchive } = this.state;
-        const deleteFilter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        const deleteFilter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
         const filter = this.helper.generateFilterString(e.filters);
         const operator = filter ? "and" : "";
-        let filterString = `${deleteFilter} ${operator} ${filter}`;
-        this.setState({ first: 0, filterString: filterString }, () => {
+        let filterString = `${ deleteFilter } ${ operator } ${ filter }`;
+        this.setState({ first: 0, filterString: filterString }, () =>
+        {
             this.getOpds();
         });
     }
 
-    actionTemplate(rowData, column) {
+    actionTemplate(rowData, column)
+    {
         return <div>
             <button type="button" className="btn btn-secondary btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
                 <i className="fa fa-pencil"></i>
@@ -109,7 +131,8 @@ export default class Opds extends Component {
             </button>
         </div>;
     }
-    saveOpd = (updatedOpd, id) => {
+    saveOpd = (updatedOpd, id) =>
+    {
         const { opds } = this.state;
         const isAdd = !id ? true : false;
         let opdData = [...opds];
@@ -128,24 +151,28 @@ export default class Opds extends Component {
         });
     }
 
-    onRowDelete = (row) => {
+    onRowDelete = (row) =>
+    {
         this.setState({
             deleteDialogVisible: true,
             selectedOpd: Object.assign({}, row)
         });
     }
-    onRowEdit = (row) => {
+    onRowEdit = (row) =>
+    {
         this.setState({
             editDialogVisible: true,
             selectedOpd: Object.assign({}, row),
         });
     }
 
-    deleteRow = () => {
+    deleteRow = () =>
+    {
         const { opds, selectedOpd, isArchive, controller } = this.state;
         let flag = isArchive ? false : true;
-        this.repository.delete(controller, `id=${selectedOpd.id}&isDeleted=${flag}`)
-            .then(res => {
+        this.repository.delete(controller, `${ selectedOpd.id }?isDeleted=${ flag }`)
+            .then(res =>
+            {
                 this.setState({
                     opds: opds.filter(patient => patient.id !== selectedOpd.id),
                     selectedOpd: null,
@@ -153,14 +180,22 @@ export default class Opds extends Component {
                 });
             })
     }
-    render() {
-        const { opds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialogVisible, isArchive, selectedOpd, editDialogVisible, includeProperties } = this.state;
+    onFilterChange = (event) =>
+    {
+        this.dt.filter(event.value, event.target.name, 'eq');
+        this.setState({ [event.target.id]: event.value });
+    }
+    render()
+    {
+        const { opds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialogVisible, isArchive, selectedOpd, editDialogVisible, includeProperties, selectedCaseType, selectedDate, typeOptions } = this.state;
         let linkUrl = isArchive ? "/opds" : "/archive-opds";
         let panelTitle = isArchive ? "Archived Opds" : "Opds";
         let buttonText = !isArchive ? "Archived Opds" : "Opds";
         let action = isArchive ? "restore" : "delete";
+        let dateFilter = <Calendar id="selectedDate" name="date" value={selectedDate} onChange={this.onFilterChange} dateFormat="dd/mm/yy" readOnlyInput={true} monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} />
+        let typeFilter = <Dropdown id="selectedCaseType" name="caseType" value={selectedCaseType} options={typeOptions} onChange={this.onFilterChange} showClear={true} autoWidth={true} />
         const startNo = first + 1;
-        const endNo = first + rows;
+        const endNo = totalRecords > rows ? first + rows : totalRecords;
         const deleteDialogFooter = (
             <div>
                 <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
@@ -181,20 +216,20 @@ export default class Opds extends Component {
                             </div>
                             <div className="report-header">{panelTitle}</div>
                             <div>
-                                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`} tooltip={`Show ${buttonText}`} /></NavLink>
+                                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${ !isArchive ? "archive" : "file-text-o" }`} tooltip={`Show ${ buttonText }`} /></NavLink>
                             </div>
                         </div>
                         <DataTable value={opds} loading={loading} responsive={true} emptyMessage="No records found"
                             onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta}
-                            filters={filters} onFilter={this.onFilter}
+                            filters={filters} onFilter={this.onFilter} ref={(el) => this.dt = el}
                             paginator={totalRecords ? true : false} rowsPerPageOptions={[10, 30, 45]} rows={rows} lazy={true} totalRecords={totalRecords} first={first} onPage={this.onPageChange} paginatorRight={paginatorRight}
                             selectionMode="single" selection={selectedOpd} onSelectionChange={e => this.setState({ selectedOpd: e.value })}>
 
-                            <Column style={{ "width": "80px" }} field="id" header="Invoice Id" sortable={true} filter={true} filterMatchMode="eq" />
-                            <Column style={{ "width": "100px" }} field="invoiceNo" header="Outdoor No." sortable={true} filter={true} filterMatchMode="eq" />
+                            <Column style={{ "width": "90px" }} field="id" header="Invoice Id" sortable={true} filter={true} filterMatchMode="eq" />
+                            <Column style={{ "width": "110px" }} field="invoiceNo" header="Outdoor No." sortable={true} filter={true} filterMatchMode="eq" />
                             <Column field="patient.fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
-                            <Column style={{ "width": "90px" }} field="formatedDate" header="Opd Date" sortable={true} filter={true} filterMatchMode="contains" />
-                            <Column className="text-center" style={{ "width": "70px" }} field="caseTypeName" header="Type" filter={true} filterMatchMode="contains" />
+                            <Column style={{ "width": "90px" }} field="formatedDate" header="Opd Date" sortable={true} filter={true} filterMatchMode="eq" filterElement={dateFilter} />
+                            <Column className="text-center" style={{ "width": "70px" }} field="caseTypeName" header="Type" filter={true} filterMatchMode="eq" filterElement={typeFilter} />
                             <Column className="text-right" style={{ "width": "70px" }} field="consultCharge" header="Cons" />
                             <Column className="text-right" style={{ "width": "70px" }} field="usgCharge" header="USG" />
                             <Column className="text-right" style={{ "width": "70px" }} field="uptCharge" header="UPT" />
