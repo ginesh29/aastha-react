@@ -19,6 +19,7 @@ export default class OpdForm extends React.Component {
 
   getInitialState = () => ({
     formFields: {
+      id: null,
       opdDate: "",
       caseType: null,
       patient: null,
@@ -56,23 +57,29 @@ export default class OpdForm extends React.Component {
     if (isValidationFired) this.handleValidation();
   };
   handleSubmit = e => {
-    const { opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge } = this.state.formFields
+    const { id, opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge } = this.state.formFields
+    const { hideEditDialog, saveOpd, includeProperties } = this.props;
     e.preventDefault();
     if (this.handleValidation()) {
       const opd = {
+        id: id,
         date: this.helper.formatDate(opdDate, "en-US"),
         caseType: caseType,
-        patient: patient.value,
+        patientId: patient.value,
         consultCharge: consultCharge,
         usgCharge: usgCharge,
         uptCharge: uptCharge,
         injectionCharge: injectionCharge,
         otherCharge: otherCharge
       };
-      this.repository.post(controller, opd).then(res => {
-        if (res)
-          this.handleReset();
-      })
+      this.repository.post(`${controller}?includeProperties=${includeProperties}`, opd)
+        .then(res => {
+          if (res && !res.errors) {
+            hideEditDialog && hideEditDialog();
+            saveOpd && saveOpd(res, opd.id);
+            !hideEditDialog && this.handleReset();
+          }
+        })
     }
   };
   handleValidation = e => {
@@ -105,11 +112,13 @@ export default class OpdForm extends React.Component {
   componentDidMount = () => {
     $("#errors").remove();
     const { selectedOpd } = this.props;
-    selectedOpd.opdDate = selectedOpd.date && new Date(selectedOpd.date);
-    if (selectedOpd)
-      this.setState({
-        formFields: selectedOpd
-      })
+    if (selectedOpd) {
+      selectedOpd.opdDate = selectedOpd.date && new Date(selectedOpd.date);
+      if (selectedOpd)
+        this.setState({
+          formFields: selectedOpd
+        })
+    }
   }
   render() {
     const { opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields
@@ -124,7 +133,7 @@ export default class OpdForm extends React.Component {
           </div>
           <div className="row">
             <div className="col-md-4">
-              <InputField name="caseType" title="Case Type" value={caseType || ""} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
+              <InputField name="caseType" title="Case Type" value={caseType || null} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
             </div>
             <div className="col-md-8">
               <InputField name="patient" value={patient || ""} title="Patient" onChange={this.handleChange} {...this.state}
@@ -159,12 +168,12 @@ export default class OpdForm extends React.Component {
             <button type="submit" className="btn btn-info">Save changes</button>
           </div>
         </form>
-        {/* <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialogVisible} onHide={() => this.setState({ patientDialogVisible: false })} baseZIndex={50}>
+        <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialogVisible} onHide={() => this.setState({ patientDialogVisible: false })} baseZIndex={500}>
           {
             editDialogVisible &&
             <PatientForm onHidePatientDialog={() => this.setState({ patientDialogVisible: false })} {...this.state} />
           }
-        </Dialog> */}
+        </Dialog>
       </>
     );
   }

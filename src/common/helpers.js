@@ -83,6 +83,9 @@ export class helper {
         if (field === "fullname") {
           operatorCondition.push(`(firstname.${filterMatchMode}({${filterValue}}) or middlename.${filterMatchMode}({${filterValue}}) or lastname.${filterMatchMode}({${filterValue}}))`);
         }
+        else if (field === "invoiceNo") {
+          operatorCondition.push(`id-${filterMatchMode}-{${filterValue}}`);
+        }
         else
           operatorCondition.push(`${field}.${filterMatchMode}({${filterValue}})`);
       }
@@ -102,6 +105,15 @@ export class helper {
       sortOrder = item.order === 1 ? "asc" : "desc"
       if (sortField === "fullname") {
         operatorCondition.push(`firstname ${sortOrder},middlename ${sortOrder},fathername ${sortOrder},lastname ${sortOrder}`)
+      }
+      else if (sortField === "patient.fullname") {
+        operatorCondition.push(`patient.firstname ${sortOrder},patient.middlename ${sortOrder},patient.fathername ${sortOrder},patient.lastname ${sortOrder}`)
+      }
+      else if (sortField === "invoiceNo") {
+        operatorCondition.push(`id ${sortOrder}`)
+      }
+      else if (sortField === "formatedDate") {
+        operatorCondition.push(`date ${sortOrder}`)
       }
       else
         operatorCondition.push(`${sortField} ${sortOrder}`)

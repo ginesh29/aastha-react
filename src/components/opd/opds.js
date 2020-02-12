@@ -38,7 +38,7 @@ export default class Opds extends Component {
                     item.injectionCharge = item.injectionCharge ? item.injectionCharge : "";
                     item.otherCharge = item.otherCharge ? item.otherCharge : "";
                     item.formatedDate = this.helper.formatDate(item.date);
-                    item.patient = { value: item.patient.id, label: item.patient.fullname }
+                    item.patient = { value: item.patient.id, label: item.patient.fullname, fullname: item.patient.fullname }
                     let totalCharge = Number(item.consultCharge) + Number(item.usgCharge) + Number(item.uptCharge) + Number(item.injectionCharge) + Number(item.otherCharge);
                     item.totalCharge = totalCharge > 0 && totalCharge;
                     return item;
@@ -86,9 +86,12 @@ export default class Opds extends Component {
     }
     onFilter = (e) => {
         this.setState({ filters: e.filters, loading: true });
-        const { filters } = this.state;
-        let filterString = this.helper.generateFilterString(filters);
-        this.setState({ filterString: filterString }, () => {
+        const { isArchive } = this.state;
+        const deleteFilter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        const filter = this.helper.generateFilterString(e.filters);
+        const operator = filter ? "and" : "";
+        let filterString = `${deleteFilter} ${operator} ${filter}`;
+        this.setState({ first: 0, filterString: filterString }, () => {
             this.getOpds();
         });
     }
@@ -105,6 +108,24 @@ export default class Opds extends Component {
                 <i className="fa fa-times"></i>
             </button>
         </div>;
+    }
+    saveOpd = (updatedOpd, id) => {
+        const { opds } = this.state;
+        const isAdd = !id ? true : false;
+        let opdData = [...opds];
+        updatedOpd.patient = { label: updatedOpd.patient.fullname, value: updatedOpd.patientId, fullname: updatedOpd.patient.fullname }
+        updatedOpd.formatedDate = this.helper.formatDate(updatedOpd.date)
+        if (isAdd) {
+            opdData.splice(0, 0, updatedOpd);
+        }
+        else {
+            let index = opdData.findIndex(m => m.id === updatedOpd.id);
+            opdData[index] = updatedOpd;
+        }
+        this.setState({
+            opds: opdData,
+            editDialogVisible: false
+        });
     }
 
     onRowDelete = (row) => {
@@ -169,17 +190,17 @@ export default class Opds extends Component {
                             paginator={totalRecords ? true : false} rowsPerPageOptions={[10, 30, 45]} rows={rows} lazy={true} totalRecords={totalRecords} first={first} onPage={this.onPageChange} paginatorRight={paginatorRight}
                             selectionMode="single" selection={selectedOpd} onSelectionChange={e => this.setState({ selectedOpd: e.value })}>
 
-                            <Column style={{ "width": "80px" }} field="id" header="Invoice Id" sortable={true} filter={true} filterMatchMode="equals" />
-                            <Column style={{ "width": "100px" }} field="invoiceNo" header="Outdoor No." sortable={true} filter={true} filterMatchMode="equals" />
-                            <Column field="patient.label" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
+                            <Column style={{ "width": "80px" }} field="id" header="Invoice Id" sortable={true} filter={true} filterMatchMode="eq" />
+                            <Column style={{ "width": "100px" }} field="invoiceNo" header="Outdoor No." sortable={true} filter={true} filterMatchMode="eq" />
+                            <Column field="patient.fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
                             <Column style={{ "width": "90px" }} field="formatedDate" header="Opd Date" sortable={true} filter={true} filterMatchMode="contains" />
                             <Column className="text-center" style={{ "width": "70px" }} field="caseTypeName" header="Type" filter={true} filterMatchMode="contains" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="consultCharge" header="Cons" sortable={true} filter={true} filterMatchMode="contains" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="usgCharge" header="USG" sortable={true} filter={true} filterMatchMode="contains" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="uptCharge" header="UPT" sortable={true} filter={true} filterMatchMode="contains" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="injectionCharge" header="Inj" sortable={true} filter={true} filterMatchMode="contains" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="otherCharge" header="Other" sortable={true} filter={true} filterMatchMode="contains" />
-                            <Column className="text-right" style={{ "width": "70px" }} field="totalCharge" header="Total" sortable={true} filter={true} filterMatchMode="contains" />
+                            <Column className="text-right" style={{ "width": "70px" }} field="consultCharge" header="Cons" />
+                            <Column className="text-right" style={{ "width": "70px" }} field="usgCharge" header="USG" />
+                            <Column className="text-right" style={{ "width": "70px" }} field="uptCharge" header="UPT" />
+                            <Column className="text-right" style={{ "width": "70px" }} field="injectionCharge" header="Inj" />
+                            <Column className="text-right" style={{ "width": "70px" }} field="otherCharge" header="Other" />
+                            <Column className="text-right" style={{ "width": "70px" }} field="totalCharge" header="Total" />
                             <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '110px' }} />
                         </DataTable>
                     </div>
