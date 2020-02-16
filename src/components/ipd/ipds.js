@@ -5,10 +5,13 @@ import { Button } from 'primereact/button';
 import { repository } from "../../common/repository";
 import { Paginator } from 'primereact/paginator';
 import { helper } from "../../common/helpers";
-import { ROWS } from "../../common/constants";
+import { ROWS, TEN_YEAR_RANGE } from "../../common/constants";
 import { Dialog } from 'primereact/dialog';
-
 import { NavLink } from 'react-router-dom';
+import { Dropdown } from 'primereact/dropdown';
+import { Calendar } from 'primereact/calendar';
+import { departmentTypeEnum } from "../../common/enums";
+import IpdForm from "./ipd-form";
 
 export default class Ipds extends Component {
     constructor(props) {
@@ -18,16 +21,15 @@ export default class Ipds extends Component {
             first: 0,
             rows: ROWS,
             loading: true,
-            filterString: "",
-            sortString: "",
             controller: "ipds",
             includeProperties: "Patient,Charges",
-            selectedOpd: null,
+            selectedIpd: null,
             isArchive: props.location.pathname.includes("archive"),
+            selectedIpdType: null,
+            selectedAddmissionDate: "",
         };
         this.repository = new repository();
         this.helper = new helper();
-        this.onRowEdit = this.onRowEdit.bind(this);
     }
     getIpds = () => {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
@@ -36,7 +38,7 @@ export default class Ipds extends Component {
                 res && res.data.map(item => {
                     item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
                     item.formatedDischargeDate = this.helper.formatDate(item.dischargeDate);
-                    item.patient = { value: item.patient.id, label: item.patient.fullname };
+                    item.patient = { value: item.patient.id, label: item.patient.fullname, fullname: item.patient.fullname }
                     item.bill = item.charges.reduce((total, item) => total + (item.amount ? Number(item.amount) : 0), 0);
                     item.discount = item.discount ? item.discount : "";
                     item.amount = item.bill - item.discount;
@@ -52,7 +54,14 @@ export default class Ipds extends Component {
             })
     }
     componentDidMount = (e) => {
-        this.getIpds();
+        const { isArchive } = this.state;
+        let multiSortMeta = [];
+        multiSortMeta.push({ field: 'uniqueId', order: -1 });
+        let sortString = this.helper.generateSortString(multiSortMeta);
+        const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () => {
+            this.getIpds();
+        });
     }
 
     onPageChange = (e) => {
@@ -82,9 +91,12 @@ export default class Ipds extends Component {
     }
     onFilter = (e) => {
         this.setState({ filters: e.filters, loading: true });
-        const { filters } = this.state;
-        let filterString = this.helper.generateFilterString(filters);
-        this.setState({ filterString: filterString }, () => {
+        const { isArchive } = this.state;
+        const deleteFilter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        const filter = this.helper.generateFilterString(e.filters);
+        const operator = filter ? "and" : "";
+        let filterString = `${deleteFilter} ${operator} ${filter}`;
+        this.setState({ first: 0, filterString: filterString }, () => {
             this.getIpds();
         });
     }
@@ -109,62 +121,93 @@ export default class Ipds extends Component {
     onRowDelete = (row) => {
         this.setState({
             deleteDialog: true,
-            selectedPatient: Object.assign({}, row)
+            selectedIpd: Object.assign({}, row)
         });
     }
     onRowEdit = (row) => {
-        row.addressId = { value: row.address.id, label: row.address.name }
-        delete row.address;
+        console.log(row)
         this.setState({
             editDialog: true,
-            selectedPatient: Object.assign({}, row),
+            selectedIpd: Object.assign({}, row),
         });
     }
 
     deleteRow = () => {
-        const { patients, selectedPatient, isArchive, controller } = this.state;
+        const { ipds, selectedIpd, isArchive, controller } = this.state;
         let flag = isArchive ? false : true;
-        this.repository.delete(controller, `id=${selectedPatient.id}&isDeleted=${flag}`)
+        this.repository.delete(controller, `${selectedIpd.id}?isDeleted=${flag}`)
             .then(res => {
                 this.setState({
-                    patients: patients.filter(patient => patient.id !== selectedPatient.id),
-                    selectedPatient: null,
+                    ipds: ipds.filter(patient => patient.id !== selectedIpd.id),
+                    selectedIpd: null,
                     deleteDialog: false
                 });
             })
     }
+    onFilterChange = (event) => {
+        this.dt.filter(event.value, event.target.name, 'eq');
+        this.setState({ [event.target.id]: event.value });
+    }
     render() {
-        const { ipds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, isArchive } = this.state;
-        let linkUrl = isArchive ? "/patients" : "/archive-patients";
-        let panelTitle = isArchive ? "Archived Patients" : "Current Patients";
+        const { ipds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, selectedIpd,
+            isArchive, selectedAddmissionDate, selectedDischargeDate, selectedIpdType, editDialog, includeProperties } = this.state;
+        const departmentTypeOptions = [{ value: null, label: "[All]" }, ...this.helper.enumToObject(departmentTypeEnum),]
+        let linkUrl = isArchive ? "/ipds" : "/archive-ipds";
+        let panelTitle = isArchive ? "Archived Ipds" : "Ipds";
+        let buttonText = !isArchive ? "Archived Ipds" : "Ipds";
         let action = isArchive ? "restore" : "delete";
-        var header = <div className="p-clearfix" style={{ 'lineHeight': '1.87em' }}>{panelTitle}<NavLink to={linkUrl}><Button icon="pi pi-replay" style={{ 'float': 'right' }} /></NavLink> </div>;
-        //var footer = "There are " + carCount + ' cars';
         const deleteDialogFooter = (
             <div>
                 <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
                 <Button label="No" icon="pi pi-times" onClick={() => this.setState({ deleteDialog: false })} className="p-button-secondary" />
             </div>
         );
-
+        let addmissionDateFilter = <Calendar id="selectedAddmissionDate" name="addmissionDate" value={selectedAddmissionDate} onChange={this.onFilterChange} dateFormat="dd/mm/yy" readOnlyInput={true} monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} />
+        let dischargeDateFilter = <Calendar id="selectedDischargeDate" name="dischargeDate" value={selectedDischargeDate} onChange={this.onFilterChange} dateFormat="dd/mm/yy" readOnlyInput={true} monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} />
+        let depatmentFilter = <Dropdown id="selectedIpdType" name="type" value={selectedIpdType} options={departmentTypeOptions} onChange={this.onFilterChange} showClear={true} autoWidth={true} />
         return (
             <>
-                <DataTable value={ipds} loading={loading} responsive={true} emptyMessage="No records found" header={header} onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter} selectionMode="single">
-                    <Column field="uniqueId" header="Ipd Id" style={{ "width": "90px" }} sortable={true} filter={true} filterMatchMode="equals" />
-                    <Column field="patient.label" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
-                    <Column field="ipdType" style={{ "width": "50px" }} header="Type" />
-                    <Column field="formatedAddmissionDate" style={{ "width": "100px" }} header="Add. Date" filter={true} filterMatchMode="contains" />
-                    <Column field="formatedDischargeDate" style={{ "width": "100px" }} header="Dis. Date" sortable={true} filter={true} filterMatchMode="contains" />
-                    <Column className="text-right" field="bill" style={{ "width": "80px" }} header="Bill" />
-                    <Column className="text-right" field="discount" style={{ "width": "80px" }} header="Conc." />
-                    <Column className="text-right" field="amount" style={{ "width": "80px" }} header="Amount" />
-                    <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '140px' }} />
-                </DataTable>
-                <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
+                <div className="card">
+                    <div className="card-body">
+                        <div className="d-flex justify-content-between">
+                            <div>
+                                {
+                                    !isArchive &&
+                                    <button type="button" className="btn btn-labeled btn-secondary btn-sm mb-2" onClick={() => this.onRowEdit()}><span className="btn-label"><i className="fa fa-plus"></i></span>Add</button>
+                                }
+                            </div>
+                            <div className="report-header">{panelTitle}</div>
+                            <div>
+                                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`} tooltip={`Show ${buttonText}`} /></NavLink>
+                            </div>
+                        </div>
 
+                        <DataTable value={ipds} loading={loading} responsive={true} emptyMessage="No records found" onSort={this.onSort}
+                            sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter}
+                            ref={(el) => this.dt = el}
+                            selectionMode="single" selection={selectedIpd} onSelectionChange={e => this.setState({ selectedIpd: e.value })}>
+                            <Column field="uniqueId" header="Ipd Id" style={{ "width": "90px" }} sortable={true} filter={true} filterMatchMode="eq" />
+                            <Column field="patient.fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
+                            <Column field="ipdType" style={{ "width": "120px" }} header="Type" filter={true} filterMatchMode="eq" filterElement={depatmentFilter} />
+                            <Column field="formatedAddmissionDate" style={{ "width": "100px" }} header="Add. Date" sortable={true} filter={true} filterMatchMode="eq" filterElement={addmissionDateFilter} />
+                            <Column field="formatedDischargeDate" style={{ "width": "100px" }} header="Dis. Date" sortable={true} filter={true} filterMatchMode="eq" filterElement={dischargeDateFilter} />
+                            <Column className="text-right" field="bill" style={{ "width": "80px" }} header="Bill" />
+                            <Column className="text-right" field="discount" style={{ "width": "80px" }} header="Conc." />
+                            <Column className="text-right" field="amount" style={{ "width": "80px" }} header="Amount" />
+                            <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '140px' }} />
+                        </DataTable>
+                        <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
+                    </div>
+                </div>
                 <Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })}>
                     Are you sure you want to {action} this item?
-        </Dialog>
+                </Dialog>
+                <Dialog header="Edit Opd" visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
+                    {
+                        editDialog &&
+                        <IpdForm selectedIpd={selectedIpd} hideEditDialog={() => this.setState({ editDialog: false })} saveOpd={this.saveOpd} includeProperties={includeProperties} />
+                    }
+                </Dialog>
 
                 {/* <Dialog header="Edit Patient" visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
                     <PatientForm {...this.state} />

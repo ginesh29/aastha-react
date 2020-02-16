@@ -19,8 +19,6 @@ export default class Patients extends Component {
       first: 0,
       rows: ROWS,
       loading: true,
-      filterString: "",
-      sortString: "id desc",
       includeProperties: "Address",
       selectedPatient: null,
       controller: "patients",
@@ -50,17 +48,20 @@ export default class Patients extends Component {
         let addresses = res && res.data.map(function (item) {
           return { value: item.id, label: item.name };
         });
-        addresses && addresses.splice(0, 0, { value: null, label: "[All]" })
+        // addresses && addresses.splice(0, 0, )
         this.setState({
-          addressOptions: res && addresses,
+          addressOptions: res && [{ value: null, label: "[All]" }, ...addresses],
         });
       })
   }
   componentDidMount = (e) => {
     const { isArchive } = this.state;
+    let multiSortMeta = [];
+    multiSortMeta.push({ field: 'id', order: -1 });
+    let sortString = this.helper.generateSortString(multiSortMeta);
     const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
     this.getAddresses();
-    this.setState({ filterString: filter }, () => {
+    this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () => {
       this.getPatients();
     });
   }

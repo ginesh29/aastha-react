@@ -10,9 +10,10 @@ export const lookupTypeEnum = {
     GENERALDIAGNOSIS: { value: 4, label: "General Diagnosis" },
     MEDICINETYPE: { value: 5, label: "Medicine Type" },
     MEDICINENAME: { value: 6, label: "Medicine Name" },
-    CHARGENAME: { value: 7, label: "ChargeName" },
-    DELIVERYDIAGNOSIS: { value: 8, label: "DeliveryDiagnosis" },
-    ADDRESS: { value: 9, label: "Address" }
+    CHARGENAME: { value: 7, label: "Charge Name" },
+    DELIVERYDIAGNOSIS: { value: 8, label: "Delivery Diagnosis" },
+    ADDRESS: { value: 9, label: "Address" },
+    ADVICE: { value: 10, label: "Advice" }
 };
 
 export const reportTypeEnum = {

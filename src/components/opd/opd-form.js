@@ -136,7 +136,7 @@ export default class OpdForm extends React.Component {
               <InputField name="caseType" title="Case Type" value={caseType || null} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
             </div>
             <div className="col-md-8">
-              <InputField name="patient" value={patient || ""} title="Patient" onChange={this.handleChange} {...this.state}
+              <InputField name="patient" value={patient || ""} title="Patient" onChange={this.handleChange} {...this.state} className="p-select2"
                 onCreateOption={() => this.setState({ patientDialog: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
                 controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
             </div>
@@ -168,7 +168,7 @@ export default class OpdForm extends React.Component {
               !id &&
               <button type="reset" className="btn btn-secondary">Reset</button>
             }
-            <button type="submit" className="btn btn-info">Save changes</button>
+            <button type="submit" className="btn btn-info">Save</button>
           </div>
         </form>
         <Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialog} onHide={() => this.setState({ patientDialog: false })} baseZIndex={500}>

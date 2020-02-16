@@ -157,20 +157,20 @@ export default class PatientForm extends Component {
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col">
-              <InputField name="firstname" title="Firstname" value={this.helper.toSentenceCase(firstname) || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              <InputField name="firstname" title="Firstname" value={firstname || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
             </div>
             <div className="col">
-              <InputField name="middlename" title="Middlename" value={this.helper.toSentenceCase(middlename) || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              <InputField name="middlename" title="Middlename" value={middlename || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
             </div>
             {
               (isExist || id) &&
               <div className="col">
-                <InputField name="fathername" title="Fathername" value={this.helper.toSentenceCase(fathername) || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+                <InputField name="fathername" title="Fathername" value={fathername || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
               </div>
             }
 
             <div className="col">
-              <InputField name="lastname" title="Lastname" value={this.helper.toSentenceCase(lastname) || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              <InputField name="lastname" title="Lastname" value={lastname || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
             </div>
           </div>
           <div className="row">
@@ -183,9 +183,9 @@ export default class PatientForm extends Component {
           </div>
           <div className="row">
             <div className="col-md-12">
-              <InputField name="address" title="Address" value={address || ""} onChange={this.handleChange}
+              <InputField name="address" title="Address" value={address || ""} onChange={this.handleChange} className="p-select2"
                 onCreateOption={() => this.setState({ addressDialog: true, addressText: addressText, addressError: "" })} {...this.state}
-                controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback)} onInputChange={(e) => { e && this.setState({ addressText: e }) }} />
+                controlType="select2" loadOptions={(e, callback) => this.helper.AddressOptions(e, callback)} onInputChange={(e) => { e && this.setState({ addressText: this.helper.toSentenceCase(e) }) }} />
             </div>
           </div>
           <div className="modal-footer">
@@ -193,7 +193,7 @@ export default class PatientForm extends Component {
               !id &&
               <button type="reset" className="btn btn-secondary">Reset</button>
             }
-            <button type="submit" className="btn btn-info">Save changes</button>
+            <button type="submit" className="btn btn-info">Save</button>
           </div>
         </form>
         <Dialog header={Constants.ADD_ADDRESS_TITLE} footer={addressDialogFooter} visible={addressDialog} onHide={() => this.setState({ addressDialog: false })} baseZIndex={0}>
@@ -202,7 +202,7 @@ export default class PatientForm extends Component {
             <div className="form-group">
               <div className="row">
                 <div className="col-md-12">
-                  <InputText name="addressText" value={this.helper.toSentenceCase(addressText)} placeholder="Enter Address" onChange={(e) => addressText && this.setState({ addressText: e.target.value, addressError: "" })} className={addressError ? "error" : ""} style={{ width: '100%' }} />
+                  <InputText name="addressText" value={addressText} placeholder="Enter Address" onChange={(e) => addressText && this.setState({ addressText: e.target.value, addressError: "" })} className={addressError ? "error" : ""} style={{ width: '100%' }} />
                   <span className="error">{addressError}</span>
                 </div>
               </div>

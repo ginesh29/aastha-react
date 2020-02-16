@@ -3,10 +3,8 @@ import { repository } from "../common/repository";
 import { helper } from "../common/helpers";
 import { TODAY_DATE } from "../common/constants";
 
-export default class Dashboard extends React.Component
-{
-    constructor(props)
-    {
+export default class Dashboard extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {
             controller: "statistics",
@@ -14,12 +12,10 @@ export default class Dashboard extends React.Component
         this.repository = new repository();
         this.helper = new helper();
     }
-    getStatistics = (year) =>
-    {
+    getStatistics = (year) => {
         const { controller } = this.state;
-        this.repository.get(`${ controller }/GetPatientStatistics`, `year=${ year }`)
-            .then(res =>
-            {
+        this.repository.get(`${controller}/GetPatientStatistics`, `year=${year}`)
+            .then(res => {
                 this.setState({
                     patientStatistics: res && res.patients,
                     opdStatistics: res && res.opds,
@@ -27,16 +23,13 @@ export default class Dashboard extends React.Component
                 })
             })
     }
-    componentDidMount = () =>
-    {
+    componentDidMount = () => {
         const year = this.helper.getYearFromDate(TODAY_DATE);
-        this.setState({ year: year }, () =>
-        {
+        this.setState({ year: year }, () => {
             this.getStatistics(year);
         })
     }
-    render()
-    {
+    render() {
         const month = Number(this.helper.getMonthFromDate(TODAY_DATE));
         const { patientStatistics, opdStatistics, ipdStatistics } = this.state;
         const totalPatients = patientStatistics && patientStatistics.reduce((total, item) => total + item.totalPatient, 0)

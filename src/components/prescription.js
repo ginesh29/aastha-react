@@ -10,6 +10,7 @@ import { medicineInstructionOptions, SELECT2_ACTION_CLEAR_TEXT, adviceOptions } 
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
+import { Dialog } from 'primereact/dialog';
 import _ from 'lodash';
 import jquery from 'jquery';
 window.jQuery = jquery;
@@ -262,8 +263,8 @@ export default class Prescription extends React.Component {
     }
     render() {
         const { patient, date, clinicDetail, followup, advices, followupInstruction, followupDate } = this.state.formFields
-        const { id, medicineType, days, medicineName, medicineInstructions } = this.state.medicineFormFields;
-        const { Dialog, medicineTypeOptions, medicineNameOptions, medicineData, validationErrors } = this.state;
+        const { medicineType, days, medicineName, medicineInstructions } = this.state.medicineFormFields;
+        const { medicineTypeOptions, medicineNameOptions, medicineData, validationErrors, editDialog } = this.state;
         const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
         const header =
             <>
@@ -272,7 +273,6 @@ export default class Prescription extends React.Component {
                     <Button icon="pi pi-print" tooltip="Save & Print" tooltipOptions={{ position: 'bottom' }} onClick={this.saveAppointment} />
                 </div>
             </>
-        console.log(id)
         return (
             <>
                 <div className="row">
@@ -297,7 +297,7 @@ export default class Prescription extends React.Component {
                                 <div className="row">
                                     <div className="col-md-3">
                                         <div className="form-group">
-                                            <button className="btn btn-sm btn-secondary" type="button" onClick={(e) => this.handleValidation() && this.setState({ Dialog: true })}> <i className="fa fa-plus"></i> Add Medicine</button>
+                                            <button className="btn btn-sm btn-secondary" type="button" onClick={(e) => this.handleValidation() && this.setState({ editDialog: true })}> <i className="fa fa-plus"></i> Add Medicine</button>
                                         </div>
                                     </div>
                                 </div>
@@ -456,9 +456,9 @@ export default class Prescription extends React.Component {
                         </Panel>
                     </div>
                 </div>
-                <Dialog header="Add Medicine" visible={Dialog} onHide={() => this.setState({ Dialog: false })} style={{ width: '1200px' }} responsive="true">
+                <Dialog header="Add Medicine" visible={editDialog} onHide={() => this.setState({ editDialog: false })} style={{ width: '80vw' }} >
                     {
-                        Dialog &&
+                        editDialog &&
                         <form>
                             <div className="row">
                                 <div className="col-md-6">

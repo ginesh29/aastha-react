@@ -1,50 +1,3 @@
-form .p-dropdown,
-form .p-dropdown-filter,
-form .p-inputtext,
-form .p-autocomplete,
-form .p-calendar,
-form .p-dropdown-filter-container,
-form .p-multiselect,
-.p-panel {
-  width: 100%;
-}
-.p-readonly {
-  background-color: #eee !important;
-  pointer-events: none;
-}
-
-.p-dropdown-label,
-.p-radiobutton-label {
-  font-weight: 500 !important;
-}
-.p-component {
-  font-family: "Titillium Web", sans-serif !important;
-}
-.p-inputtext.error,
-.p-autocomplete.error input,
-.p-multiselect.error,
-.p-dropdown.error,
-.eroor .css-yk16xz-control {
-  border: 1px solid #ff0000 !important;
-  background-color: #ffeeee !important;
-}
-.p-dropdown.error .p-inputtext {
-  background-color: #ffeeee !important;
-}
-.p-multiselect .p-multiselect-trigger {
-  background-color: transparent !important;
-}
-.p-growl {
-  z-index: 9999 !important;
-}
-.p-panel-titlebar {
-  background: #fafafa !important;
-  padding: 12px !important;
-}
-.p-panel-title {
-  font-size: 18px !important;
-  font-weight: 600;
-}
 .prescription-preview .p-panel-content {
   background: #fffcab !important;
 }
@@ -88,9 +41,7 @@ form .p-multiselect,
 .gujarati-text {
   font-size: 12px !important;
 }
-.p-paginator .p-highlight {
-  pointer-events: none !important;
-}
+
 .report-header {
   font-size: 21px;
   text-align: center;
@@ -102,9 +53,7 @@ form .p-multiselect,
 hr {
   margin-top: 1px !important;
 }
-/* .table {
-  padding: 8px;
-} */
+
 .charge-table th,
 .charge-table td {
   padding: 5px;
@@ -144,12 +93,7 @@ hr {
   font-weight: 600;
   text-decoration: underline;
 }
-.invoice-detail {
-  margin-bottom: 0px !important;
-}
-.invoice-detail td {
-  padding: 4px !important;
-}
+
 .vertical-devider {
   border-right: 1px dashed #333;
 }
@@ -202,10 +146,7 @@ hr {
   strong {
     font-size: 14px;
   }
-  /* .invoice {
-    font-size: 11pt !important;
-    line-height: 1 !important;
-  } */
+
   .invoice-detail td {
     border-style: hidden !important;
     padding: 1px !important;
@@ -217,7 +158,6 @@ hr {
   .report-table td,
   .invoice-table th,
   .invoice-table td {
-    /* font-family: Monospace !important; */
     padding: 1px !important;
     line-height: 1.2 !important;
     vertical-align: top !important;

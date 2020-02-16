@@ -1,3 +1,7 @@
+.p-component {
+  font-family: "Titillium Web", sans-serif !important;
+}
+
 form .p-dropdown,
 form .p-dropdown-filter,
 form .p-inputtext,
@@ -5,39 +9,22 @@ form .p-autocomplete,
 form .p-calendar,
 form .p-dropdown-filter-container,
 form .p-multiselect,
-.p-panel,
 .p-datatable-thead th .p-inputtext,
-.p-datatable-thead th .p-dropdown {
+.p-datatable-thead th .p-dropdown,
+.p-panel {
   width: 100%;
 }
-.p-dropdown{
-  min-width: 80px!important;
-}
-.p-button-icon-only{
-  background-color: #6c757d!important;
-  border-color: #6c757d!important;
-}
-.p-readonly {
-  background-color: #eee !important;
-  pointer-events: none;
-}
 
-.p-dropdown-label,
-.p-radiobutton-label {
-  font-weight: 500 !important;
-  text-align: left !important;
-}
-.p-component {
-  font-family: "Titillium Web", sans-serif !important;
-}
 .p-inputtext.error,
 .p-autocomplete.error input,
 .p-multiselect.error,
 .p-dropdown.error,
-.eroor .css-yk16xz-control {
+.p-select2.error .css-yk16xz-control{
   border: 1px solid #ff0000 !important;
   background-color: #ffeeee !important;
+  border-radius: 4px;
 }
+
 .p-dropdown.error .p-inputtext {
   background-color: #ffeeee !important;
 }
@@ -55,8 +42,50 @@ form .p-multiselect,
   font-size: 18px !important;
   font-weight: 600;
 }
+.p-dropdown{
+  min-width: 20px!important;
+}
+.p-button-icon-only{
+  background-color: #6c757d!important;
+  border-color: #6c757d!important;
+}
+.p-readonly{
+  background-color: #eee !important;
+  pointer-events: none;
+}
+.p-dropdown-label,
+.p-radiobutton-label {
+  font-weight: 500 !important;
+  text-align: left !important;
+}
+.p-dialog {
+  top: 400px;
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+}
+.p-select2 .css-yk16xz-control{
+  border: 1px solid #a6a6a6 !important;
+}
+.p-select2 .css-yk16xz-control:hover{
+  border: 1px solid #000 !important;
+}
+
+.p-multiselect .p-multiselect-trigger {
+  background-color: transparent !important;
+}
+.p-growl {
+  z-index: 9999 !important;
+}
+.p-panel-titlebar {
+  background: #fafafa !important;
+  padding: 12px !important;
+}
+.p-panel-title {
+  font-size: 18px !important;
+  font-weight: 600;
+}
 .p-datatable {
-  font-size: 0.8em !important;
+  font-size: 0.9em !important;
 }
 .p-datatable table {
   table-layout: inherit !important;
@@ -72,9 +101,14 @@ form .p-multiselect,
   font-weight: 600 !important;
   font-size: 1.1em;
 }
-
+.p-datatable-thead th .p-inputtext{
+  padding: 4px !important;
+}
 .p-datatable tr:not(.p-highlight) {
   background-color: #ffffff !important;
+}
+.p-datatable .p-datatable-tbody > tr > td{
+padding: 4px !important;
 }
 .p-datepicker table {
   font-size: 12px !important;
@@ -94,10 +128,9 @@ form .p-multiselect,
 .p-datatable-wrapper .p-sortable-column.p-highlight .p-sortable-column-icon {
   color: #000 !important;
 }
-.p-btn-sm {
-  background-color: #6c757d !important;
-  border: none !important;
-}
 .p-dialog-content .p-messages {
   margin: 0 !important;
+}
+.p-paginator .p-highlight {
+  pointer-events: none !important;
 }

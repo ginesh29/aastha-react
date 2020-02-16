@@ -11,7 +11,8 @@ import OpdForm from "./opd-form";
 import { caseTypeOptions, TEN_YEAR_RANGE } from "../../common/constants";
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
-// import invoice_header from "../../assets/images/invoice_header.jpg"
+import invoice_header from "../../assets/images/invoice_header.jpg"
+import numberToWords from 'number-to-words';
 
 export default class Opds extends Component {
     constructor(props) {
@@ -21,10 +22,8 @@ export default class Opds extends Component {
             first: 0,
             rows: ROWS,
             loading: true,
-            filterString: "",
-            sortString: "id desc",
             controller: "opds",
-            includeProperties: "Patient",
+            includeProperties: "Patient.Address",
             selectedOpd: null,
             isArchive: props.location.pathname.includes("archive"),
             selectedCaseType: null,
@@ -44,6 +43,7 @@ export default class Opds extends Component {
                     item.injectionCharge = item.injectionCharge ? item.injectionCharge : "";
                     item.otherCharge = item.otherCharge ? item.otherCharge : "";
                     item.formatedDate = this.helper.formatDate(item.date);
+                    item.address = item.patient.address.name;
                     item.patient = { value: item.patient.id, label: item.patient.fullname, fullname: item.patient.fullname }
                     let totalCharge = Number(item.consultCharge) + Number(item.usgCharge) + Number(item.uptCharge) + Number(item.injectionCharge) + Number(item.otherCharge);
                     item.totalCharge = totalCharge > 0 && totalCharge;
@@ -60,9 +60,11 @@ export default class Opds extends Component {
     }
     componentDidMount = (e) => {
         const { isArchive } = this.state;
-        //typeOptions.splice(0, 0, { value: null, label: "[All]" });
+        let multiSortMeta = [];
+        multiSortMeta.push({ field: 'id', order: -1 });
+        let sortString = this.helper.generateSortString(multiSortMeta);
         const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
-        this.setState({ typeOptions: caseTypeOptions, filterString: filter }, () => {
+        this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () => {
             this.getOpds();
         });
     }
@@ -174,11 +176,13 @@ export default class Opds extends Component {
         this.setState({ [event.target.id]: event.value });
     }
     render() {
-        const { opds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, isArchive, selectedOpd, editDialog, includeProperties, selectedCaseType, selectedDate, typeOptions, invoiceDialog } = this.state;
+        const { opds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, isArchive, selectedOpd, editDialog, includeProperties, selectedCaseType, selectedDate, invoiceDialog } = this.state;
+
         let linkUrl = isArchive ? "/opds" : "/archive-opds";
         let panelTitle = isArchive ? "Archived Opds" : "Opds";
         let buttonText = !isArchive ? "Archived Opds" : "Opds";
         let action = isArchive ? "restore" : "delete";
+        const typeOptions = caseTypeOptions && [{ value: null, label: "[All]" }, ...caseTypeOptions]
         let dateFilter = <Calendar id="selectedDate" name="date" value={selectedDate} onChange={this.onFilterChange} dateFormat="dd/mm/yy" readOnlyInput={true} monthNavigator={true} yearNavigator={true} yearRange={TEN_YEAR_RANGE} />
         let typeFilter = <Dropdown id="selectedCaseType" name="caseType" value={selectedCaseType} options={typeOptions} onChange={this.onFilterChange} showClear={true} autoWidth={true} />
         const startNo = first + 1;
@@ -216,7 +220,7 @@ export default class Opds extends Component {
                             <Column style={{ "width": "110px" }} field="invoiceNo" header="Outdoor No." sortable={true} filter={true} filterMatchMode="eq" />
                             <Column field="patient.fullname" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
                             <Column style={{ "width": "100px" }} field="formatedDate" header="Opd Date" sortable={true} filter={true} filterMatchMode="eq" filterElement={dateFilter} />
-                            <Column className="text-center" style={{ "width": "50px" }} field="caseTypeName" header="Type" filter={true} filterMatchMode="eq" filterElement={typeFilter} />
+                            <Column className="text-center" style={{ "width": "90px" }} field="caseTypeName" header="Type" filter={true} filterMatchMode="eq" filterElement={typeFilter} />
                             <Column className="text-right" style={{ "width": "60px" }} field="consultCharge" header="Cons" />
                             <Column className="text-right" style={{ "width": "60px" }} field="usgCharge" header="USG" />
                             <Column className="text-right" style={{ "width": "60px" }} field="uptCharge" header="UPT" />
@@ -237,22 +241,24 @@ export default class Opds extends Component {
                         <OpdForm selectedOpd={selectedOpd} hideEditDialog={() => this.setState({ editDialog: false })} saveOpd={this.saveOpd} includeProperties={includeProperties} />
                     }
                 </Dialog>
-                <Dialog header="Opd Invoice" visible={invoiceDialog} onHide={() => this.setState({ invoiceDialog: false })} style={{ width: "600px" }}>
-                    {
+                <Dialog header="Opd Invoice" visible={invoiceDialog} onHide={() => this.setState({ invoiceDialog: false })} style={{ width: '500px' }}>
+                    {invoiceDialog &&
                         <>
-                            {/* <img src={invoice_header} className="img-fluid" alt="Invoice Header" /> */}
+                            <div>
+                                <img src={invoice_header} className="img-fluid" alt="Invoice Header" />
+                            </div>
                             <h3 className="invoice-title">Outdoor Invoice</h3>
                             <table className="table table-borderless invoice-detail">
                                 <tr>
-                                    <td><b> Patient Name :</b> {selectedOpd && selectedOpd.patient.fullname}</td>
-                                    <td width="200px"><b>Date :</b> {selectedOpd && this.helper.formatDate(selectedOpd.date)}</td>
+                                    <td><label>Patient Name :</label> {selectedOpd.patient && selectedOpd.patient.fullname}</td>
+                                    <td width="200px"><label>Date :</label> {this.helper.formatDate(selectedOpd.date)}</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Invoice No. :</b> {selectedOpd && selectedOpd.id}</td>
-                                    <td><b>Address :</b> {selectedOpd && console.log(selectedOpd)}</td>
+                                    <td><label>Invoice No. :</label> {selectedOpd.id}</td>
+                                    <td><label>Address :</label> {selectedOpd.address}</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Outdoor No. :</b> {selectedOpd && selectedOpd.invoiceNo}</td>
+                                    <td><label>Outdoor No. :</label> {selectedOpd && selectedOpd.invoiceNo}</td>
                                 </tr>
                             </table>
                             <table className="table table-bordered invoice-table">
@@ -267,43 +273,39 @@ export default class Opds extends Component {
                                     <tr>
                                         <td>1.</td>
                                         <td>Consulting Charge</td>
-                                        <td className="text-right"><span id="Cons">150</span></td>
+                                        <td className="text-right">{selectedOpd.consultCharge}</td>
                                     </tr>
                                     <tr>
                                         <td>2</td>
                                         <td>Ultrasonography Charge</td>
-                                        <td className="text-right"><span id="USG">0</span></td>
+                                        <td className="text-right">{selectedOpd.usgCharge}</td>
                                     </tr>
                                     <tr>
                                         <td>3.</td>
                                         <td>Urine Test Charge</td>
-                                        <td className="text-right"><span id="UPT">0</span></td>
+                                        <td className="text-right">{selectedOpd.uptCharge}</td>
                                     </tr>
                                     <tr>
                                         <td>4.</td>
                                         <td>Injection Charge</td>
-                                        <td className="text-right"><span id="Inj">0</span></td>
+                                        <td className="text-right">{selectedOpd.injectionCharge}</td>
                                     </tr>
                                     <tr>
                                         <td>5.</td>
                                         <td>Other Charge</td>
-                                        <td className="text-right"><span id="Other">0</span></td>
+                                        <td className="text-right">{selectedOpd.otherCharge}</td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="2">Grand Total &nbsp;| <span id="amtinword">one hundred fifty Rupees Only</span></td>
-                                        <td className="text-right"><strong id="Total">150</strong></td>
+                                        <td colSpan="2" className="text-capitalize">Grand Total &nbsp;| {`${numberToWords.toWords(selectedOpd.totalCharge)} Only`}</td>
+                                        <td className="text-right">{selectedOpd.totalCharge}</td>
                                     </tr>
                                 </tfoot>
                             </table>
-                            <div className="row" style={{ marginTop: "15px" }}>
-                                <div className="col-md-9">
-                                    <span>Rececived By</span>
-                                </div>
-                                <div className="col-md-3">
-                                    <label>Dr. Bhaumik Tandel</label>
-                                </div>
+                            <div className="d-flex">
+                                <div className="flex-grow-1">Rececived By</div>
+                                <div className=""><label>Dr. Bhaumik Tandel</label></div>
                             </div>
                         </>
                     }

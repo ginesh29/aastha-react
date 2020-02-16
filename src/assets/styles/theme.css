@@ -38,8 +38,8 @@ a,a:hover,a:focus {
     position: relative;
     display: block;
     background: #303641;
-    padding: 20px;
-    margin-bottom: 10px;
+    padding: 15px;
+    /* margin-bottom: 10px; */
     overflow: hidden;
     -webkit-border-radius: 5px;
     -webkit-background-clip: padding-box;
@@ -69,45 +69,11 @@ a,a:hover,a:focus {
 .tile-stats.tile-green {
     background: #1FB5AD;
 }
-.tile-stats {
-    position: relative;
-    display: block;
-    background: #303641;
-    padding: 20px;
-    margin-bottom: 10px;
-    overflow: hidden;
-    -webkit-border-radius: 5px;
-    -webkit-background-clip: padding-box;
-    -moz-border-radius: 5px;
-    -moz-background-clip: padding;
-    border-radius: 5px;
-    background-clip: padding-box;
-    -moz-transition: all 300ms ease-in-out;
-    -o-transition: all 300ms ease-in-out;
-    -webkit-transition: all 300ms ease-in-out;
-    transition: all 300ms ease-in-out;
-}
+
 .tile-stats.tile-aqua {
     background: #FCB322;
 }
-.tile-stats {
-    position: relative;
-    display: block;
-    background: #303641;
-    padding: 20px;
-    margin-bottom: 10px;
-    overflow: hidden;
-    -webkit-border-radius: 5px;
-    -webkit-background-clip: padding-box;
-    -moz-border-radius: 5px;
-    -moz-background-clip: padding;
-    border-radius: 5px;
-    background-clip: padding-box;
-    -moz-transition: all 300ms ease-in-out;
-    -o-transition: all 300ms ease-in-out;
-    -webkit-transition: all 300ms ease-in-out;
-    transition: all 300ms ease-in-out;
-}
+
 .tile-stats .icon i {
     font-size: 90px;
     line-height: 0;

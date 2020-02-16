@@ -40,8 +40,11 @@ const routes = (
 
       <Route path="/add-ipd" component={AddIpd} />
       <Route path="/ipds" component={Ipds} />
+      <Route path="/archive-ipds" component={Ipds} />
+
 
       <Route path="/admin-panel" component={AdminPanel} />
+      <Route path="/archive-admin-panel" component={AdminPanel} />
 
       <Route path="/prescription" component={Prescription} />
       <Route path="/appointment-calendar" component={AppointmentCalendar} />

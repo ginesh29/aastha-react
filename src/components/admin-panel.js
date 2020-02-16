@@ -3,16 +3,14 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { repository } from "../common/repository";
-import { Paginator } from 'primereact/paginator';
 import { helper } from "../common/helpers";
 import { ROWS } from "../common/constants";
 import { lookupTypeEnum } from "../common/enums";
 import { Dialog } from 'primereact/dialog';
-import { Panel } from 'primereact/panel';
 import { NavLink } from 'react-router-dom';
-import { Dropdown } from "primereact/dropdown";
-// import PatientForm from "./patient-form";
-//const title = "Patients";
+import { Dropdown } from 'primereact/dropdown';
+import InputField from "./shared/InputField";
+import $ from "jquery";
 export default class AdminPanel extends Component {
     constructor(props) {
         super(props);
@@ -22,33 +20,62 @@ export default class AdminPanel extends Component {
             rows: ROWS,
             loading: true,
             filterString: "",
-            sortString: "",
-            lookupType: "",
-            selectedLookup: null,
+            sortString: "name asc",
+            includeProperties: "Parent",
             isArchive: props.location.pathname.includes("archive"),
+            lookupType: lookupTypeEnum.DELIVERYTYPE,
+            selectedLookup: {
+                id: null,
+                name: "",
+                parentType: null,
+            },
+            selectedType: null,
+            medicineTypeOptions: [],
+            validationErrors: {}
         };
         this.repository = new repository();
         this.helper = new helper();
     }
+    getMedicineTypes = () => {
+        const { sortString } = this.state;
+        let lookupFilter = `type-eq-{${lookupTypeEnum.MEDICINETYPE.value}}`
+        this.repository.get("lookups", `filter=${lookupFilter}&sort=${sortString}&isDeleted=${true}`)
+            .then(res => {
+                let medicineTypes = res && res.data.map(function (item) {
+                    return { value: item.id, label: item.name };
+                });
+                this.setState({
+                    medicineTypeOptions: [{ value: null, label: "[All]" }, ...medicineTypes],
+                });
+            })
+    }
     getLookups = () => {
-        const { first, rows, filterString, sortString, isArchive, lookupType } = this.state;
-        let lookupFilter = `type-eq-{${lookupType || lookupTypeEnum.DELIVERYTYPE.value}}`
+        const { first, rows, filterString, sortString, lookupType, includeProperties } = this.state;
+        let lookupFilter = `type-eq-{${lookupType.value}}`
         let filter = filterString ? `${lookupFilter} and ${filterString}` : `${lookupFilter}`;
-        this.repository.get("lookups", `take=${rows}&skip=${first}&filter=${filter}&sort=${sortString}&isDeleted=${isArchive}`)
+        this.repository.get("lookups", `take=${rows}&skip=${first}&filter=${filter}&sort=${sortString}&includeProperties=${includeProperties}`)
             .then(res => {
                 this.setState({
                     first: first,
                     rows: rows,
                     totalRecords: res && res.totalCount,
-                    patients: res && res.data,
+                    lookups: res && res.data,
                     loading: false
+                }, () => {
+                    this.getMedicineTypes();
                 });
             })
     }
     componentDidMount = (e) => {
-        this.getLookups();
+        const { isArchive } = this.state;
+        let multiSortMeta = [];
+        multiSortMeta.push({ field: 'name', order: 1 });
+        let sortString = this.helper.generateSortString(multiSortMeta);
+        const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () => {
+            this.getLookups();
+        });
     }
-
     onPageChange = (e) => {
         this.setState({
             rows: e.rows,
@@ -76,88 +103,219 @@ export default class AdminPanel extends Component {
     }
     onFilter = (e) => {
         this.setState({ filters: e.filters, loading: true });
-        const { filters } = this.state;
-        let filterString = this.helper.generateFilterString(filters);
-        this.setState({ filterString: filterString }, () => {
+        const { isArchive } = this.state;
+        const deleteFilter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        const filter = this.helper.generateFilterString(e.filters);
+        const operator = filter ? "and" : "";
+        let filterString = `${deleteFilter} ${operator} ${filter}`;
+        this.setState({ first: 0, filterString: filterString }, () => {
             this.getLookups();
         });
     }
 
     actionTemplate(rowData, column) {
-        return <>
-            <button type="button" className="btn btn-warning grid-action-btn" style={{ marginRight: '.5em' }} onClick={() => this.onRowEdit(rowData)}><i className="fa fa-pencil"></i></button>
-            <button type="button" className="btn btn-danger grid-action-btn" onClick={() => this.onRowDelete(rowData)}><i className="fa fa-times"></i></button>
-        </>;
+        return (
+            <div>
+                <button type="button" className="btn btn-labeled btn-secondary icon-btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
+                    <span className="btn-label"><i className="fa fa-pencil"></i></span>Edit
+            </button>
+                <button type="button" className="btn btn-labeled btn-danger icon-btn-grid" onClick={() => this.onRowDelete(rowData)}>
+                    <span className="btn-label"><i className="fa fa-times"></i></span>Delete
+            </button>
+            </div>
+        )
     }
 
     onRowDelete = (row) => {
         this.setState({
             deleteDialog: true,
-            selectedPatient: Object.assign({}, row)
+            selectedLookup: Object.assign({}, row)
         });
     }
     onRowEdit = (row) => {
         this.setState({
             editDialog: true,
-            selectedPatient: Object.assign({}, row),
+            selectedLookup: Object.assign({}, row),
+            validationErrors: {}
         });
     }
-
+    handleReset = e => {
+        this.setState({ selectedLookup: {}, validationErrors: {} });
+    };
     deleteRow = () => {
-        const { patients, selectedPatient, isArchive } = this.state;
+        const { lookups, selectedLookup, isArchive, totalRecords } = this.state;
         let flag = isArchive ? false : true;
-        this.repository.delete("patients", `id=${selectedPatient.id}&isDeleted=${flag}`)
+        this.repository.delete("lookups", `${selectedLookup.id}?isDeleted=${flag}`)
             .then(res => {
                 this.setState({
-                    patients: patients.filter(patient => patient.id !== selectedPatient.id),
-                    selectedPatient: null,
-                    deleteDialog: false
+                    lookups: lookups.filter(lookup => lookup.id !== selectedLookup.id),
+                    selectedLookup: null,
+                    deleteDialog: false,
+                    totalRecords: totalRecords - 1
                 });
             })
     }
+
     onHide = () => {
         this.setState({ deleteDialog: false });
     }
     onChangeLookup = (e) => {
-        this.setState({ lookupType: e.target.value }, () => {
+        this.setState({ first: 0, lookupType: e.target.value, loading: true }, () => {
             this.getLookups();
         })
     }
+    onFilterChange = (event) => {
+        this.dt.filter(event.value, event.target.name, 'eq');
+        this.setState({ [event.target.id]: event.value, loading: true });
+    }
+    handleChange = (e, action) => {
+        const { isValidationFired, selectedLookup } = this.state;
+        $("#errors").remove();
+        let fields = selectedLookup;
+
+        fields[e.target.name] = e.target.value;
+        this.setState({
+            selectedLookup: fields
+        });
+        if (isValidationFired) this.handleValidation();
+    };
+    handleValidation = e => {
+        const { lookupType } = this.state;
+        const { name, parentId } = this.state.selectedLookup
+        let errors = {};
+        let isValid = true;
+
+        if (!name) {
+            isValid = false;
+            errors.name = `Enter ${lookupType.label}`;
+        }
+        if (lookupType.value === lookupTypeEnum.MEDICINENAME.value && !parentId) {
+            isValid = false;
+            errors.parentId = "Select Perent Type";
+        }
+        this.setState({
+            validationErrors: errors,
+            isValidationFired: true
+        });
+        return isValid;
+    };
+    handleSubmit = e => {
+        e.preventDefault();
+        const { lookupType, includeProperties } = this.state;
+        const { id, name, parentId } = this.state.selectedLookup
+        if (this.handleValidation()) {
+            const lookup = {
+                id: id && id,
+                name: name,
+                type: lookupType.value,
+                parentId: parentId
+            };
+            this.repository.post(`${"lookups"}?includeProperties=${includeProperties} `, lookup)
+                .then(res => {
+                    if (res && !res.errors) {
+                        this.setState({ editDialog: false })
+                        this.savelookup(res, lookup.id)
+                    }
+                })
+        }
+    };
+    savelookup = (updatedLookup, id) => {
+        const { lookups, totalRecords } = this.state;
+        const isAdd = !id ? true : false;
+        let lookupData = [...lookups];
+        updatedLookup.parent = updatedLookup.parent && { name: updatedLookup.parent.name }
+        if (isAdd) {
+            lookupData.splice(0, 0, updatedLookup);
+        }
+        else {
+            let index = lookupData.findIndex(m => m.id === updatedLookup.id);
+            lookupData[index] = updatedLookup;
+        }
+        this.setState({
+            lookups: lookupData,
+            editDialog: false,
+            totalRecords: isAdd && totalRecords + 1
+        });
+    }
     render() {
         const lookupTypesOptions = this.helper.enumToObject(lookupTypeEnum)
-        const { patients, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, editDialog, isArchive, lookupType } = this.state;
-        let linkUrl = isArchive ? "/patients" : "/archive-patients";
-        let panelTitle = isArchive ? "Archived Patients" : "Current Patients";
+        const { lookups, totalRecords, rows, first, loading, multiSortMeta,
+            filters, deleteDialog, editDialog, isArchive, lookupType, selectedType, medicineTypeOptions, selectedLookup } = this.state;
+        let linkUrl = isArchive ? "/admin-panel" : "/archive-admin-panel";
+        let buttonText = !isArchive ? "Archived Lookups" : "Lookups";
         let action = isArchive ? "restore" : "delete";
-        var header = <div className="p-clearfix" style={{ 'lineHeight': '1.87em' }}>{panelTitle}
-            <Dropdown options={lookupTypesOptions} value={lookupType || lookupTypeEnum.DELIVERYTYPE.value} onChange={this.onChangeLookup} />
-            <NavLink to={linkUrl}><Button icon="pi pi-replay" style={{ 'float': 'right' }} /></NavLink> </div>;
+        let typeFilter = <Dropdown id="selectedType" name="parentId" value={selectedType} options={medicineTypeOptions} onChange={this.onFilterChange} showClear={true} />
+        let texboxLength = selectedLookup && selectedLookup.name && (selectedLookup.name.length + 1) * 8
         const deleteDialogFooter = (
             <div>
                 <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
                 <Button label="No" icon="pi pi-times" onClick={this.onHide} className="p-button-secondary" />
             </div>
         );
-
+        const startNo = first + 1;
+        const endNo = totalRecords > rows ? first + rows : totalRecords;
+        let paginatorRight = totalRecords && <div className="m-1">Showing {this.helper.formatAmount(startNo)} to {this.helper.formatAmount(endNo)} of {this.helper.formatAmount(totalRecords)} records</div>;
         return (
-            <Panel header={header} toggleable={true} >
-                <div className="col-md-6">
-                    <div className="row">
-                        <DataTable value={patients} loading={loading} responsive={true} emptyMessage="No records found" onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} filters={filters} onFilter={this.onFilter} selectionMode="single">
-                            <Column field="name" header="Patient's Name" sortable={true} filter={true} filterMatchMode="contains" />
-                            <Column field="type" header="Age" />
-                            <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '8em' }} />
-                        </DataTable>
-                        <Paginator paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPageChange={this.onPageChange}></Paginator>
+            <>
+                <div className="row">
+                    <div className="col-md-8">
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="d-flex justify-content-between">
+                                    {!isArchive &&
+                                        <div>
+                                            <button type="button" className="btn btn-labeled btn-secondary btn-sm mb-2" onClick={() => this.onRowEdit()}><span className="btn-label"><i className="fa fa-plus"></i></span>Add</button>
+                                        </div>
+                                    }
+                                    <div>
+                                        Filter By :&nbsp;
+                                        <Dropdown name="lookupType" options={lookupTypesOptions} value={lookupType} onChange={this.onChangeLookup} style={{ width: '200px' }} className=" ml-2 mb-2" optionLabel="label" />
+                                    </div>
+
+                                    <div>
+                                        <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${!isArchive ? "archive" : "file-text-o"} `} tooltip={`Show ${buttonText} `} /></NavLink>
+                                    </div>
+                                </div>
+                                <DataTable value={lookups} loading={loading} responsive={true} emptyMessage="No records found" ref={(el) => this.dt = el}
+                                    onSort={this.onSort} sortMode="multiple" multiSortMeta={multiSortMeta} selection={selectedLookup} onSelectionChange={e => this.setState({ selectedLookup: e.value })}
+                                    filters={filters} onFilter={this.onFilter} selectionMode="single" lazy={true} paginatorRight={paginatorRight}
+                                    paginator={true} rowsPerPageOptions={[10, 30, 45]} rows={rows} totalRecords={totalRecords} first={first} onPage={this.onPageChange}>
+                                    <Column field="name" header={lookupType.label} sortable={true} filter={true} filterMatchMode="contains" />
+                                    {
+                                        lookupType.value === lookupTypeEnum.MEDICINENAME.value &&
+                                        <Column field="parent.name" header="Type" filter={true} filterElement={typeFilter} filterMatchMode="eq" style={{ width: '130px' }} />
+                                    }
+                                    <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '190px' }} />
+                                </DataTable>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={this.onHide}>
+                <Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })}>
                     Are you sure you want to {action} this item?
                 </Dialog>
 
-                <Dialog header="Edit Patient" visible={editDialog} footer={deleteDialogFooter} onHide={this.onHide}>
+                <Dialog header={`Edit ${lookupType.label}`} visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
+                    {editDialog &&
+                        <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
+                            <div style={{ minWidth: `${texboxLength} px` }}>
+                                <InputField name="name" title={lookupType.label} value={selectedLookup.name || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} style={{ width: `${texboxLength} px` }} />
+                                {
+                                    lookupType.value === lookupTypeEnum.MEDICINENAME.value &&
+                                    <InputField name="parentId" title="Parent Type" options={medicineTypeOptions} value={selectedLookup.parentId || null} onChange={this.handleChange} {...this.state} controlType="dropdown" />
+                                }
+                            </div>
+                            < div className="modal-footer">
+                                {
+                                    !selectedLookup.id &&
+                                    <button type="reset" className="btn btn-secondary">Reset</button>
+                                }
+                                <button type="submit" className="btn btn-info">Save</button>
+                            </div>
+                        </form>
+                    }
                 </Dialog>
-            </Panel>
+            </>
         );
     }
 }

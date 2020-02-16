@@ -20,6 +20,7 @@ export default class IpdForm extends React.Component {
     }
     getInitialState = () => ({
         formFields: {
+            id: "",
             uniqueId: "",
             patient: null,
             roomType: null,
@@ -280,7 +281,7 @@ export default class IpdForm extends React.Component {
                             <InputField name="uniqueId" title="Invoice No." value={uniqueId} onChange={this.handleChange} {...this.state} keyfilter="pint" />
                         </div>
                         <div className="col-md-4">
-                            <InputField name="patient" value={patient} title="Patient" onChange={this.handleChange} {...this.state}
+                            <InputField name="patient" value={patient} title="Patient" onChange={this.handleChange} {...this.state} className="p-select2"
                                 onCreateOption={() => this.setState({ patientDialog: true, patientName: patientInput })} onInputChange={(e) => { this.setState({ patientInput: e }) }}
                                 controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
                         </div>
@@ -378,16 +379,10 @@ export default class IpdForm extends React.Component {
                             <tr>
                                 <td colSpan="2">Grand Total</td>
                                 <td colSpan="3">
-                                    <div className="row">
-                                        <div className="col-md-5">
-                                            <InputText type="text" className="input-sm" keyfilter="pint" value={grandTotal} readOnly />
-                                        </div>
-                                        <div className="col-md-2">
-                                            <i className="fa fa-minus"></i>
-                                        </div>
-                                        <div className="col-md-5">
-                                            <InputText name="discountAmount" className="input-sm" type="text" keyfilter="pint" value={discountAmount} onChange={this.handleChargeChange} />
-                                        </div>
+                                    <div className="d-flex flex-row bd-highlight mb-3">
+                                        <div className="mr-2"><InputText type="text" className="input-sm" keyfilter="pint" value={grandTotal} readOnly /></div>
+                                        <div className="mr-2 mt-1"><i className="fa fa-minus"></i></div>
+                                        <div><InputText name="discountAmount" className="input-sm" type="text" keyfilter="pint" value={discountAmount} onChange={this.handleChargeChange} /></div>
                                     </div>
                                 </td>
                             </tr>
@@ -404,7 +399,7 @@ export default class IpdForm extends React.Component {
                             Reset
                 </button>
                         <button type="submit" className="btn btn-info">
-                            Save changes
+                            Save
                 </button>
                     </div>
                 </form>
