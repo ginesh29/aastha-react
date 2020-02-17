@@ -72,7 +72,7 @@ export default class OpdForm extends React.Component {
         injectionCharge: injectionCharge,
         otherCharge: otherCharge
       };
-      this.repository.post(`${controller}?includeProperties=${includeProperties}`, opd)
+      this.repository.post(`${controller}?includeProperties=${includeProperties ? includeProperties : ""}`, opd)
         .then(res => {
           if (res && !res.errors) {
             hideEditDialog && hideEditDialog();

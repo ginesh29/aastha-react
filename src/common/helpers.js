@@ -135,7 +135,7 @@ export class helper {
     let d = date ? new Date(date) : new Date();
     var hour = d.getHours();
     var minute = d.getMinutes();
-    return `${hour}: ${minute}`;
+    return `${hour}:${minute}`;
   }
   getMonthFromDate = (date) => {
     let d = date ? new Date(date) : new Date();

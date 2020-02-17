@@ -13,10 +13,8 @@ import { Calendar } from 'primereact/calendar';
 import { departmentTypeEnum } from "../../common/enums";
 import IpdForm from "./ipd-form";
 
-export default class Ipds extends Component
-{
-    constructor(props)
-    {
+export default class Ipds extends Component {
+    constructor(props) {
         super(props);
         this.state = {
             ipds: [],
@@ -33,14 +31,11 @@ export default class Ipds extends Component
         this.repository = new repository();
         this.helper = new helper();
     }
-    getIpds = () =>
-    {
+    getIpds = () => {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-        this.repository.get(controller, `take=${ rows }&skip=${ first }&filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`)
-            .then(res =>
-            {
-                res && res.data.map(item =>
-                {
+        this.repository.get(controller, `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`)
+            .then(res => {
+                res && res.data.map(item => {
                     item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
                     item.formatedDischargeDate = this.helper.formatDate(item.dischargeDate);
                     item.patient = { value: item.patient.id, label: item.patient.fullname, fullname: item.patient.fullname }
@@ -58,66 +53,55 @@ export default class Ipds extends Component
                 });
             })
     }
-    componentDidMount = (e) =>
-    {
+    componentDidMount = (e) => {
         const { isArchive } = this.state;
         let multiSortMeta = [];
         multiSortMeta.push({ field: 'uniqueId', order: -1 });
         let sortString = this.helper.generateSortString(multiSortMeta);
-        const filter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
-        this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () =>
-        {
+        const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () => {
             this.getIpds();
         });
     }
 
-    onPageChange = (e) =>
-    {
+    onPageChange = (e) => {
         this.setState({
             rows: e.rows,
             first: e.first,
             loading: true
-        }, () =>
-        {
+        }, () => {
             this.getIpds();
         })
     }
-    onSort = (e) =>
-    {
+    onSort = (e) => {
         const { multiSortMeta } = this.state;
         let SortMetaOld = multiSortMeta ? multiSortMeta.filter(item => item.field !== e.multiSortMeta[0].field) : [];
         this.setState({
             multiSortMeta: [e.multiSortMeta[0], ...SortMetaOld],
             loading: true
-        }, () =>
-        {
+        }, () => {
             const { multiSortMeta } = this.state;
             let sortString = this.helper.generateSortString(multiSortMeta);
-            this.setState({ sortString: sortString }, () =>
-            {
-                setTimeout(() =>
-                {
+            this.setState({ sortString: sortString }, () => {
+                setTimeout(() => {
                     this.getIpds();
                 }, 10);
             });
         });
     }
-    onFilter = (e) =>
-    {
+    onFilter = (e) => {
         this.setState({ filters: e.filters, loading: true });
         const { isArchive } = this.state;
-        const deleteFilter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
+        const deleteFilter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
         const filter = this.helper.generateFilterString(e.filters);
         const operator = filter ? "and" : "";
-        let filterString = `${ deleteFilter } ${ operator } ${ filter }`;
-        this.setState({ first: 0, filterString: filterString }, () =>
-        {
+        let filterString = `${deleteFilter} ${operator} ${filter}`;
+        this.setState({ first: 0, filterString: filterString }, () => {
             this.getIpds();
         });
     }
 
-    actionTemplate(rowData, column)
-    {
+    actionTemplate(rowData, column) {
         return <div>
             <button type="button" className="btn btn-secondary btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
                 <i className="fa fa-pencil"></i>
@@ -134,28 +118,24 @@ export default class Ipds extends Component
         </div>;
     }
 
-    onRowDelete = (row) =>
-    {
+    onRowDelete = (row) => {
         this.setState({
             deleteDialog: true,
             selectedIpd: Object.assign({}, row)
         });
     }
-    onRowEdit = (row) =>
-    {
+    onRowEdit = (row) => {
         this.setState({
             editDialog: true,
             selectedIpd: Object.assign({}, row),
         });
     }
 
-    deleteRow = () =>
-    {
+    deleteRow = () => {
         const { ipds, selectedIpd, isArchive, controller } = this.state;
         let flag = isArchive ? false : true;
-        this.repository.delete(controller, `${ selectedIpd.id }?isDeleted=${ flag }`)
-            .then(res =>
-            {
+        this.repository.delete(controller, `${selectedIpd.id}?isDeleted=${flag}`)
+            .then(res => {
                 this.setState({
                     ipds: ipds.filter(patient => patient.id !== selectedIpd.id),
                     selectedIpd: null,
@@ -163,13 +143,11 @@ export default class Ipds extends Component
                 });
             })
     }
-    onFilterChange = (event) =>
-    {
+    onFilterChange = (event) => {
         this.dt.filter(event.value, event.target.name, 'eq');
         this.setState({ [event.target.id]: event.value });
     }
-    render()
-    {
+    render() {
         const { ipds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, selectedIpd,
             isArchive, selectedAddmissionDate, selectedDischargeDate, selectedIpdType, editDialog, includeProperties } = this.state;
         const departmentTypeOptions = [{ value: null, label: "[All]" }, ...this.helper.enumToObject(departmentTypeEnum),]
@@ -199,7 +177,7 @@ export default class Ipds extends Component
                             </div>
                             <div className="report-header">{panelTitle}</div>
                             <div>
-                                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${ !isArchive ? "archive" : "file-text-o" }`} tooltip={`Show ${ buttonText }`} /></NavLink>
+                                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`} tooltip={`Show ${buttonText}`} /></NavLink>
                             </div>
                         </div>
 
@@ -223,10 +201,10 @@ export default class Ipds extends Component
                 <Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })}>
                     Are you sure you want to {action} this item?
                 </Dialog>
-                <Dialog header="Edit Opd" visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
+                <Dialog header="Edit pd" visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
                     {
                         editDialog &&
-                        <IpdForm selectedIpd={selectedIpd} hideEditDialog={() => this.setState({ editDialog: false })} saveOpd={this.saveOpd} includeProperties={includeProperties} />
+                        <IpdForm selectedIpd={selectedIpd} hideEditDialog={() => this.setState({ editDialog: false })} includeProperties={includeProperties} />
                     }
                 </Dialog>
 

@@ -64,7 +64,7 @@ export default class PatientForm extends Component {
         mobile: mobile,
         addressId: address.value
       };
-      this.repository.post(`${controller}?includeProperties=${includeProperties}`, patient)
+      this.repository.post(`${controller}?includeProperties=${includeProperties ? includeProperties : ""}`, patient)
         .then(res => {
           if (res && !res.errors) {
             hideEditDialog && hideEditDialog();

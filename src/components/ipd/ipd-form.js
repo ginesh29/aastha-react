@@ -11,10 +11,8 @@ import PatientForm from "../patient/patient-form";
 import $ from "jquery";
 
 const controller = "ipds";
-export default class IpdForm extends React.Component
-{
-    constructor(props)
-    {
+export default class IpdForm extends React.Component {
+    constructor(props) {
         super(props);
         this.state = this.getInitialState();
         this.repository = new repository();
@@ -22,7 +20,7 @@ export default class IpdForm extends React.Component
     }
     getInitialState = () => ({
         formFields: {
-            id: "",
+            id: null,
             uniqueId: "",
             patient: null,
             roomType: null,
@@ -49,8 +47,7 @@ export default class IpdForm extends React.Component
         chargeFormFields: [],
         validationErrors: {}
     });
-    handleChange = (e, action) =>
-    {
+    handleChange = (e, action) => {
         const { isValidationFired, formFields } = this.state;
         $("#errors").remove();
         let fields = formFields;
@@ -58,7 +55,8 @@ export default class IpdForm extends React.Component
             fields[action.name] = action !== Constants.SELECT2_ACTION_CLEAR_TEXT ? e && { value: e.value, label: e.label } : null;
         else
             fields[e.target.name] = e.target.value;
-        if (e.target && e.target.name === "departmentType") {
+
+        if (e && e.target && e.target.name === "departmentType") {
             formFields.deliveryDate = "";
             formFields.deliveryTime = "";
             formFields.typesOfDelivery = [];
@@ -75,8 +73,7 @@ export default class IpdForm extends React.Component
             this.handleValidation();
     };
 
-    handleChargeChange = e =>
-    {
+    handleChargeChange = e => {
         const { chargeFormFields, formFields } = this.state;
         const name = e.target.name;
         const lookupId = Number(e.target.name.replace("rate-", "").replace("days-", ""));
@@ -92,8 +89,7 @@ export default class IpdForm extends React.Component
 
         let chargeObj = chargeFormFields.filter(m => m.lookupId === lookupId);
         if (chargeObj.length) {
-            chargeFormFields.filter(m => m.lookupId === lookupId).map(item =>
-            {
+            chargeFormFields.filter(m => m.lookupId === lookupId).map(item => {
                 item.rate = rate ? rate : item.rate;
                 item.days = days ? days : item.days;
                 item.amount = item.rate && item.days ? item.rate * item.days : "";
@@ -112,19 +108,26 @@ export default class IpdForm extends React.Component
         });
     }
 
-    handleSubmit = e =>
-    {
-        const { uniqueId, departmentType, roomType, patient, addmissionDate, dischargeDate,
+    handleSubmit = e => {
+        const { id, uniqueId, departmentType, roomType, patient, addmissionDate, dischargeDate,
             deliveryDate, deliveryTime, babyGender, babyWeight, typesOfDelivery, operationDiagnosis,
             typesOfOperation, generalDiagnosis, operationDate, deliveryDiagnosis, discount } = this.state.formFields
         const { chargeFormFields } = this.state;
+        const { hideEditDialog, includeProperties } = this.props;
         e.preventDefault();
         if (this.handleValidation()) {
-            let lookupArray = [...typesOfDelivery, ...operationDiagnosis, ...typesOfOperation, ...generalDiagnosis];
+            let lookupArray = null;
+            if (departmentType.value === departmentTypeEnum.DELIVERY.value) {
+                lookupArray = [...typesOfDelivery, deliveryDiagnosis];
+            }
+            else if (departmentType.value === departmentTypeEnum.OPERATION.value) {
+                lookupArray = [...operationDiagnosis, ...typesOfOperation];
+            }
+            else {
+                lookupArray = [...generalDiagnosis];
+            }
 
-            lookupArray = departmentType === departmentTypeEnum.DELIVERY.value ? lookupArray.concat(deliveryDiagnosis) : lookupArray;
-            const ipdLookups = lookupArray.map(item =>
-            {
+            const ipdLookups = lookupArray.map(item => {
                 return { lookupId: item };
             });
             const deliveryDetail = {
@@ -133,33 +136,37 @@ export default class IpdForm extends React.Component
                 gender: babyGender,
                 babyWeight: babyWeight
             }
+
             const operationDetail = {
                 date: this.helper.formatDate(operationDate, "en-US")
             }
             const charges = chargeFormFields.filter(item => item.rate !== "" && item.day !== "")
             const ipd = {
+                id: id,
                 uniqueId: uniqueId,
                 type: departmentType.value,
                 roomType: roomType,
-                patient: patient.value,
+                patientId: patient.value,
                 addmissionDate: this.helper.formatDate(addmissionDate, "en-US"),
                 dischargeDate: this.helper.formatDate(dischargeDate, "en-US"),
-                deliveryDetail: departmentType === departmentTypeEnum.DELIVERY ? deliveryDetail : null,
-                operationDetail: departmentType === departmentTypeEnum.OPERATION ? operationDetail : null,
+                deliveryDetail: departmentType.value === departmentTypeEnum.DELIVERY.value ? deliveryDetail : null,
+                operationDetail: departmentType.value === departmentTypeEnum.OPERATION.value ? operationDetail : null,
                 ipdLookups: ipdLookups,
                 charges: charges,
                 discount: discount
             };
 
-            this.repository.post(controller, ipd).then(res =>
-            {
-                if (res)
-                    this.handleReset();
-            })
+            this.repository.post(`${controller}?includeProperties=${includeProperties ? includeProperties : ""}`, ipd)
+                .then(res => {
+                    if (res && !res.errors) {
+                        hideEditDialog && hideEditDialog();
+                        //saveOpd && saveOpd(res, opd.id);
+                        !hideEditDialog && this.handleReset();
+                    }
+                })
         }
     };
-    handleValidation = e =>
-    {
+    handleValidation = e => {
         const { uniqueId, patient, roomType, departmentType, addmissionDate, dischargeDate, deliveryDate, deliveryTime, typesOfDelivery, deliveryDiagnosis, babyGender, babyWeight, operationDate, operationDiagnosis, typesOfOperation, generalDiagnosis } = this.state.formFields
 
         let errors = {};
@@ -197,7 +204,7 @@ export default class IpdForm extends React.Component
                     isValid = false;
                     errors.deliveryTime = "Delivery Time is required";
                 }
-                if (!typesOfDelivery.length) {
+                if (!typesOfDelivery) {
                     isValid = false;
                     errors.typesOfDelivery = "Types of Delivery is required";
                 }
@@ -219,17 +226,17 @@ export default class IpdForm extends React.Component
                     isValid = false;
                     errors.operationDate = "Operation Date is required";
                 }
-                if (!operationDiagnosis.length) {
+                if (!operationDiagnosis) {
                     isValid = false;
                     errors.operationDiagnosis = "Operation Diagnosis is required";
                 }
-                if (!typesOfOperation.length) {
+                if (!typesOfOperation) {
                     isValid = false;
                     errors.typesOfOperation = "Types of Operation is required";
                 }
             }
             if (departmentType && departmentType.label === departmentTypeEnum.GENERAL.label) {
-                if (!generalDiagnosis.length) {
+                if (!generalDiagnosis) {
                     isValid = false;
                     errors.generalDiagnosis = "General Diagnosis is required";
                 }
@@ -242,12 +249,9 @@ export default class IpdForm extends React.Component
         return isValid;
     };
 
-    bindLookups = e =>
-    {
-        this.repository.get("lookups", `filter=type-neq-{0} and isDeleted-neq-${ true }`).then(res =>
-        {
-            let lookups = res && res.data.map(function (item)
-            {
+    bindLookups = e => {
+        this.repository.get("lookups", `filter=type-neq-{0} and isDeleted-neq-${true}`).then(res => {
+            let lookups = res && res.data.map(function (item) {
                 return { value: item.id, label: item.name, type: item.type };
             });
             if (res) {
@@ -267,17 +271,14 @@ export default class IpdForm extends React.Component
         })
     };
 
-    handleReset = e =>
-    {
+    handleReset = e => {
         this.setState(this.getInitialState());
         this.setState({ chargeFormFields: [] });
     };
-    componentDidMount = () =>
-    {
+    componentDidMount = () => {
         $("#errors").remove();
         const { selectedIpd } = this.props;
-
-        if (selectedIpd.id) {
+        if (selectedIpd && selectedIpd.id) {
             selectedIpd.addmissionDate = selectedIpd.addmissionDate && new Date(selectedIpd.addmissionDate);
             selectedIpd.dischargeDate = selectedIpd.dischargeDate && new Date(selectedIpd.dischargeDate);
             selectedIpd.departmentType = { label: selectedIpd.ipdType, value: selectedIpd.type };
@@ -294,15 +295,14 @@ export default class IpdForm extends React.Component
                 let deliveryTypes = [];
                 let deliveryDiagnosis = null;
                 // eslint-disable-next-line 
-                selectedIpd.ipdLookups.map(item =>
-                {
+                selectedIpd.ipdLookups.map(item => {
                     if (item.lookup.type === lookupTypeEnum.DELIVERYTYPE.value)
                         deliveryTypes = [...deliveryTypes, item.lookupId]
                     else if (item.lookup.type === lookupTypeEnum.DELIVERYDIAGNOSIS.value)
                         deliveryDiagnosis = item.lookupId
                 });
                 selectedIpd.deliveryDiagnosis = deliveryDiagnosis;
-                //selectedIpd.typesOfDelivery = deliveryTypes;
+                selectedIpd.typesOfDelivery = [];
             }
             this.setState({
                 formFields: selectedIpd,
@@ -314,8 +314,7 @@ export default class IpdForm extends React.Component
         this.bindLookups();
     }
 
-    render()
-    {
+    render() {
         const departmentTypeOptions = this.helper.enumToObject(departmentTypeEnum)
         const { id, uniqueId, patient, roomType, departmentType, addmissionDate, dischargeDate, deliveryDate, deliveryTime, typesOfDelivery, deliveryDiagnosis, babyGender, babyWeight, operationDate, operationDiagnosis, typesOfOperation, generalDiagnosis, discount } = this.state.formFields
         const { typesofDeliveryOptions, operationDiagnosisOptions, typesofOprationOptions, generalDiagnosisOptions, deliveryDiganosisOptions, chargeNames, grandTotal, amountPaid, chargeFormFields, patientInput, patientDialog, patientName } = this.state;
@@ -408,8 +407,7 @@ export default class IpdForm extends React.Component
                             </tr>
                         </thead>
                         <tbody>
-                            {chargeNames && chargeNames.map((item, index) =>
-                            {
+                            {chargeNames && chargeNames.map((item, index) => {
                                 let rate = "";
                                 let days = "";
                                 let amount = "";
@@ -423,8 +421,8 @@ export default class IpdForm extends React.Component
                                     <tr key={index}>
                                         <th>{index + 1}</th>
                                         <td>{item.label}</td>
-                                        <td><InputText type="text" value={rate} className="input-sm" keyfilter="pint" name={`rate-${ item.value }`} onChange={this.handleChargeChange} /></td>
-                                        <td><InputText type="text" value={days} className="input-sm" keyfilter="pint" name={`days-${ item.value }`} onChange={this.handleChargeChange} /></td>
+                                        <td><InputText type="text" value={rate} className="input-sm" keyfilter="pint" name={`rate-${item.value}`} onChange={this.handleChargeChange} /></td>
+                                        <td><InputText type="text" value={days} className="input-sm" keyfilter="pint" name={`days-${item.value}`} onChange={this.handleChargeChange} /></td>
                                         <td>{amount}</td>
                                     </tr>)
                             })}
@@ -433,7 +431,7 @@ export default class IpdForm extends React.Component
                             <tr>
                                 <td colSpan="2">Grand Total</td>
                                 <td colSpan="3">
-                                    <div className="d-flex flex-row bd-highlight mb-3">
+                                    <div className="d-flex flex-row bd-highlight">
                                         <div className="mr-2"><InputText type="text" className="input-sm" keyfilter="pint" value={grandTotal} readOnly /></div>
                                         <div className="mr-2 mt-1"><i className="fa fa-minus"></i></div>
                                         <div><InputText name="discount" className="input-sm" type="text" keyfilter="pint" value={discount} onChange={this.handleChargeChange} /></div>
