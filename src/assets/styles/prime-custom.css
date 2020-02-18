@@ -58,10 +58,27 @@ form .p-multiselect,
   font-weight: 500 !important;
   text-align: left !important;
 }
-.p-dialog {
-  top: 450px;
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
+.p-modal{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1005;
+}
+.p-component-overlay{
+  z-index: 1004 !important;
+}
+.p-dialog{
+  /* position: relative; */
+    margin: 1.75rem auto;
+}
+.p-dialog-content{
+  position: relative;
+}
+.p-overflow-hidden .p-modal {
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .p-select2 .css-yk16xz-control {
   border: 1px solid #a6a6a6 !important;
