@@ -14,8 +14,10 @@ import { Calendar } from 'primereact/calendar';
 import invoice_header from "../../assets/images/invoice_header.jpg"
 import numberToWords from 'number-to-words';
 
-export default class Opds extends Component {
-    constructor(props) {
+export default class Opds extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
             opds: [],
@@ -32,11 +34,14 @@ export default class Opds extends Component {
         this.repository = new repository();
         this.helper = new helper();
     }
-    getOpds = () => {
+    getOpds = () =>
+    {
         const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-        this.repository.get(controller, `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`)
-            .then(res => {
-                res && res.data.map(item => {
+        this.repository.get(controller, `take=${ rows }&skip=${ first }&filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`)
+            .then(res =>
+            {
+                res && res.data.map(item =>
+                {
                     item.consultCharge = item.consultCharge ? item.consultCharge : "";
                     item.usgCharge = item.usgCharge ? item.usgCharge : "";
                     item.uptCharge = item.uptCharge ? item.uptCharge : "";
@@ -58,54 +63,64 @@ export default class Opds extends Component {
                 });
             })
     }
-    componentDidMount = (e) => {
+    componentDidMount = (e) =>
+    {
         const { isArchive } = this.state;
         let multiSortMeta = [];
         multiSortMeta.push({ field: 'id', order: -1 });
         let sortString = this.helper.generateSortString(multiSortMeta);
-        const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
-        this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () => {
+        const filter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
+        this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () =>
+        {
             this.getOpds();
         });
     }
-    onPageChange = (e) => {
+    onPageChange = (e) =>
+    {
         this.setState({
             rows: e.rows,
             first: e.first,
             loading: true
-        }, () => {
+        }, () =>
+        {
             this.getOpds();
         })
     }
-    onSort = (e) => {
+    onSort = (e) =>
+    {
         const { multiSortMeta } = this.state;
         let SortMetaOld = multiSortMeta ? multiSortMeta.filter(item => item.field !== e.multiSortMeta[0].field) : [];
         this.setState({
             multiSortMeta: [e.multiSortMeta[0], ...SortMetaOld],
             loading: true
-        }, () => {
+        }, () =>
+        {
             const { multiSortMeta } = this.state;
             let sortString = this.helper.generateSortString(multiSortMeta);
-            this.setState({ sortString: sortString }, () => {
-                setTimeout(() => {
+            this.setState({ sortString: sortString }, () =>
+            {
+                setTimeout(() =>
+                {
                     this.getOpds();
                 }, 10);
             });
         });
     }
-    onFilter = (e) => {
-        this.setState({ filters: e.filters, loading: true });
+    onFilter = (e) =>
+    {
         const { isArchive } = this.state;
-        const deleteFilter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        const deleteFilter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
         const filter = this.helper.generateFilterString(e.filters);
         const operator = filter ? "and" : "";
-        let filterString = `${deleteFilter} ${operator} ${filter}`;
-        this.setState({ first: 0, filterString: filterString }, () => {
+        let filterString = `${ deleteFilter } ${ operator } ${ filter }`;
+        this.setState({ first: 0, filterString: filterString, loading: true }, () =>
+        {
             this.getOpds();
         });
     }
 
-    actionTemplate(rowData, column) {
+    actionTemplate(rowData, column)
+    {
         return <div>
             <button type="button" className="btn btn-secondary btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
                 <i className="fa fa-pencil"></i>
@@ -118,7 +133,8 @@ export default class Opds extends Component {
             </button>
         </div>;
     }
-    saveOpd = (updatedOpd, id) => {
+    saveOpd = (updatedOpd, id) =>
+    {
         const { opds, totalRecords } = this.state;
         const isAdd = !id ? true : false;
         let opdData = [...opds];
@@ -138,31 +154,36 @@ export default class Opds extends Component {
         });
     }
 
-    onRowDelete = (row) => {
+    onRowDelete = (row) =>
+    {
         this.setState({
             deleteDialog: true,
             selectedOpd: Object.assign({}, row)
         });
     }
-    onRowEdit = (row) => {
+    onRowEdit = (row) =>
+    {
         this.setState({
             editDialog: true,
             selectedOpd: Object.assign({}, row),
         });
     }
 
-    onShowInvoice = (row) => {
+    onShowInvoice = (row) =>
+    {
         this.setState({
             invoiceDialog: true,
             selectedOpd: Object.assign({}, row),
         });
 
     }
-    deleteRow = () => {
+    deleteRow = () =>
+    {
         const { opds, selectedOpd, isArchive, controller, totalRecords } = this.state;
         let flag = isArchive ? false : true;
-        this.repository.delete(controller, `${selectedOpd.id}?isDeleted=${flag}`)
-            .then(res => {
+        this.repository.delete(controller, `${ selectedOpd.id }?isDeleted=${ flag }`)
+            .then(res =>
+            {
                 this.setState({
                     opds: opds.filter(patient => patient.id !== selectedOpd.id),
                     selectedOpd: null,
@@ -171,11 +192,13 @@ export default class Opds extends Component {
                 });
             })
     }
-    onFilterChange = (event) => {
+    onFilterChange = (event) =>
+    {
         this.dt.filter(event.value, event.target.name, 'eq');
         this.setState({ [event.target.id]: event.value });
     }
-    render() {
+    render()
+    {
         const { opds, totalRecords, rows, first, loading, multiSortMeta, filters, deleteDialog, isArchive, selectedOpd, editDialog, includeProperties, selectedCaseType, selectedDate, invoiceDialog } = this.state;
 
         let linkUrl = isArchive ? "/opds" : "/archive-opds";
@@ -207,7 +230,7 @@ export default class Opds extends Component {
                             </div>
                             <div className="report-header">{panelTitle}</div>
                             <div>
-                                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`} tooltip={`Show ${buttonText}`} /></NavLink>
+                                <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${ !isArchive ? "archive" : "file-text-o" }`} tooltip={`Show ${ buttonText }`} /></NavLink>
                             </div>
                         </div>
                         <DataTable value={opds} loading={loading} responsive={true} emptyMessage="No records found"
@@ -298,7 +321,7 @@ export default class Opds extends Component {
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colSpan="2" className="text-capitalize">Grand Total &nbsp;| {`${numberToWords.toWords(selectedOpd.totalCharge)} Only`}</td>
+                                        <td colSpan="2" className="text-capitalize">Grand Total &nbsp;| {`${ numberToWords.toWords(selectedOpd.totalCharge) } Only`}</td>
                                         <td className="text-right">{selectedOpd.totalCharge}</td>
                                     </tr>
                                 </tfoot>
