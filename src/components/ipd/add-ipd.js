@@ -8,12 +8,10 @@ export default class AddIpd extends React.Component
     render()
     {
         return (
-            <div className="col-md-12">
-                <div className="row">
-                    <Panel header={Constants.ADD_IPD_TITLE} toggleable={true}>
-                        <IpdForm />
-                    </Panel>
-                </div>
+            <div className="w-75">
+                <Panel header={Constants.ADD_IPD_TITLE} toggleable={true}>
+                    <IpdForm />
+                </Panel>
             </div>
         );
     }

@@ -8,12 +8,10 @@ export default class AddOpd extends React.Component
   render()
   {
     return (
-      <div className="col-md-10">
-        <div className="row">
-          <Panel header={Constants.ADD_OPD_TITLE} toggleable={true}>
-            <OpdForm />
-          </Panel>
-        </div>
+      <div className="w-75">
+        <Panel header={Constants.ADD_OPD_TITLE} toggleable={true}>
+          <OpdForm />
+        </Panel>
       </div>
     );
   }

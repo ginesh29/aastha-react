@@ -244,7 +244,6 @@ export default class Patients extends Component
         <Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })}>
           Are you sure you want to {action} this item ?
         </Dialog>
-
         <Dialog header="Edit Patient" visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
           {
             editDialog &&

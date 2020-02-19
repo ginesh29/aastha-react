@@ -7,12 +7,14 @@ import { MultiSelect } from 'primereact/multiselect';
 import { InputTextarea } from 'primereact/inputtextarea';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 
-export default class InputField extends Component {
-  render() {
+export default class InputField extends Component
+{
+  render()
+  {
     const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref, loadOptions, onCreateOption, onInputChange } = this.props;
     let errorClass = validationErrors[name] ? "error" : "";
     let propClassName = className ? className : "";
-    let finalClassName = `${propClassName} ${errorClass}`;
+    let finalClassName = `${ propClassName } ${ errorClass }`;
     return (
       <div>
         <label>{title}</label>
@@ -60,7 +62,7 @@ export default class InputField extends Component {
         }
         {
           validationErrors[name] &&
-          <span className="error"><i className="fa fa-info-circle" aria-hidden="true" tooltip="Click to proceed"></i> {validationErrors[name]}</span>
+          <span className="error"><i className="fa fa-info-circle"></i> {validationErrors[name]}</span>
         }
       </div>
     )

@@ -7,12 +7,10 @@ export default class AddPatient extends Component
     render()
     {
         return (
-            <div className="col-md-8">
-                <div className="row">
-                    <Panel header={Constants.PATIENT_REGISTRATION_TITLE} toggleable={true}>
-                        <PatientForm />
-                    </Panel>
-                </div>
+            <div className="w-50">
+                <Panel header={Constants.PATIENT_REGISTRATION_TITLE} toggleable={true}>
+                    <PatientForm />
+                </Panel>
             </div>
         )
     }

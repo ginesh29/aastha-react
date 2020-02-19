@@ -9,8 +9,10 @@ import PatientForm from "../patient/patient-form";
 import $ from "jquery";
 
 const controller = "opds";
-export default class OpdForm extends React.Component {
-  constructor(props) {
+export default class OpdForm extends React.Component
+{
+  constructor(props)
+  {
     super(props);
     this.state = this.getInitialState();
     this.repository = new repository();
@@ -35,7 +37,8 @@ export default class OpdForm extends React.Component {
     validationErrors: {}
   });
 
-  handleChange = (e, action) => {
+  handleChange = (e, action) =>
+  {
     const { isValidationFired, formFields } = this.state;
     $("#errors").remove();
     let fields = formFields;
@@ -56,7 +59,8 @@ export default class OpdForm extends React.Component {
     });
     if (isValidationFired) this.handleValidation();
   };
-  handleSubmit = e => {
+  handleSubmit = e =>
+  {
     const { id, opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge } = this.state.formFields
     const { hideEditDialog, saveOpd, includeProperties } = this.props;
     e.preventDefault();
@@ -72,8 +76,9 @@ export default class OpdForm extends React.Component {
         injectionCharge: injectionCharge,
         otherCharge: otherCharge
       };
-      this.repository.post(`${controller}?includeProperties=${includeProperties ? includeProperties : ""}`, opd)
-        .then(res => {
+      this.repository.post(`${ controller }?includeProperties=${ includeProperties ? includeProperties : "" }`, opd)
+        .then(res =>
+        {
           if (res && !res.errors) {
             hideEditDialog && hideEditDialog();
             saveOpd && saveOpd(res, opd.id);
@@ -82,7 +87,8 @@ export default class OpdForm extends React.Component {
         })
     }
   };
-  handleValidation = e => {
+  handleValidation = e =>
+  {
     const { opdDate, caseType, patient } = this.state.formFields
     let errors = {};
     let isValid = true;
@@ -106,10 +112,12 @@ export default class OpdForm extends React.Component {
     return isValid;
   };
 
-  handleReset = e => {
+  handleReset = e =>
+  {
     this.setState(this.getInitialState());
   };
-  componentDidMount = () => {
+  componentDidMount = () =>
+  {
     $("#errors").remove();
     const { selectedOpd } = this.props;
     if (selectedOpd) {
@@ -120,7 +128,8 @@ export default class OpdForm extends React.Component {
         })
     }
   }
-  render() {
+  render()
+  {
     const { id, opdDate, caseType, patient, consultCharge, usgCharge, uptCharge, injectionCharge, otherCharge, totalCharge } = this.state.formFields
     const { patientDialog, editDialog } = this.state;
     return (
@@ -142,24 +151,24 @@ export default class OpdForm extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-4">
+            <div className="col">
               <InputField name="consultCharge" title="Consulting Charges" value={consultCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
-            <div className="col-md-4">
+            <div className="col">
               <InputField name="usgCharge" title="USG Charges" value={usgCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
-            <div className="col-md-4">
+            <div className="col">
               <InputField name="uptCharge" title="UPT Charges" value={uptCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
           </div>
           <div className="row">
-            <div className="col-md-4">
+            <div className="col">
               <InputField name="injectionCharge" title="Injection Charges" value={injectionCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
-            <div className="col-md-4">
+            <div className="col">
               <InputField name="otherCharge" title="Other Charges" value={otherCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" keyfilter="pint" />
             </div>
-            <div className="col-md-4">
+            <div className="col">
               <InputField name="totalCharge" title="Total Charges" value={totalCharge || ""} onChange={this.handleChange} {...this.state} controlType="input-group-addon" groupIcon="fa-inr" readOnly="readOnly" className="p-readonly" />
             </div>
           </div>

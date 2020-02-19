@@ -264,7 +264,7 @@ export default class Opds extends Component
                         <OpdForm selectedOpd={selectedOpd} hideEditDialog={() => this.setState({ editDialog: false })} saveOpd={this.saveOpd} includeProperties={includeProperties} />
                     }
                 </Dialog>
-                <Dialog header="Opd Invoice" visible={invoiceDialog} onHide={() => this.setState({ invoiceDialog: false })} style={{ width: '500px' }}>
+                <Dialog header="Opd Invoice" visible={invoiceDialog} onHide={() => this.setState({ invoiceDialog: false })}>
                     {invoiceDialog &&
                         <>
                             <div>

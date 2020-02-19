@@ -49,36 +49,31 @@ form .p-multiselect,
   background-color: #6c757d !important;
   border-color: #6c757d !important;
 }
-.p-readonly {
+.p-readonly,
+.p-readonly .p-inputtext,
+.p-readonly .p-dropdown-trigger {
   background-color: #eee !important;
   pointer-events: none;
+}
+.p-readonly .p-dropdown-clear-icon {
+  display: none;
 }
 .p-dropdown-label,
 .p-radiobutton-label {
   font-weight: 500 !important;
   text-align: left !important;
 }
-.p-modal{
-  position: fixed;
-  top: 0;
-  right: 0;
+.p-dialog {
+  width: 50%;
+}
+.p-scroll-dialog {
+  position: absolute;
+  top: 20px;
   bottom: 0;
-  left: 0;
-  z-index: 1005;
 }
-.p-component-overlay{
+.p-component-overlay {
   z-index: 1004 !important;
-}
-.p-dialog{
-  /* position: relative; */
-    margin: 1.75rem auto;
-}
-.p-dialog-content{
-  position: relative;
-}
-.p-overflow-hidden .p-modal {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: auto;
 }
 .p-select2 .css-yk16xz-control {
   border: 1px solid #a6a6a6 !important;
