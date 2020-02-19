@@ -69,8 +69,8 @@ form .p-multiselect,
 .p-scroll-dialog {
   position: absolute;
   top: 20px;
-  bottom: 0;
 }
+
 .p-component-overlay {
   z-index: 1004 !important;
   overflow: auto;
@@ -145,4 +145,11 @@ form .p-multiselect,
 }
 .p-paginator .p-highlight {
   pointer-events: none !important;
+}
+.invoice-detail td {
+  border-style: hidden !important;
+  padding: 1px !important;
+  line-height: 1.2 !important;
+  vertical-align: top !important;
+  font-size: 12pt !important;
 }

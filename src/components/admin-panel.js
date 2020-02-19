@@ -295,11 +295,11 @@ export default class AdminPanel extends Component {
                     Are you sure you want to {action} this item?
                 </Dialog>
 
-                <Dialog header={`Edit ${lookupType.label}`} visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
+                <Dialog header={`Edit ${lookupType.label}`} visible={editDialog} onHide={() => this.setState({ editDialog: false })} style={{ width: texboxLength > 500 ? `${texboxLength}px` : "50%" }}>
                     {editDialog &&
                         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
-                            <div style={{ minWidth: `${texboxLength} px` }}>
-                                <InputField name="name" title={lookupType.label} value={selectedLookup.name || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} style={{ width: `${texboxLength} px` }} />
+                            <div >
+                                <InputField name="name" title={lookupType.label} value={selectedLookup.name || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
                                 {
                                     lookupType.value === lookupTypeEnum.MEDICINENAME.value &&
                                     <InputField name="parentId" title="Parent Type" options={medicineTypeOptions} value={selectedLookup.parentId || null} onChange={this.handleChange} {...this.state} controlType="dropdown" />

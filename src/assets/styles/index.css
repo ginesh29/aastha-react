@@ -147,13 +147,6 @@ hr {
     font-size: 14px;
   }
 
-  .invoice-detail td {
-    border-style: hidden !important;
-    padding: 1px !important;
-    line-height: 1.2 !important;
-    vertical-align: top !important;
-    font-size: 12pt !important;
-  }
   .report-table th,
   .report-table td,
   .invoice-table th,
