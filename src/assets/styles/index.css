@@ -146,7 +146,9 @@ hr {
   strong {
     font-size: 14px;
   }
-
+  .fa {
+    display: block;
+  }
   .report-table th,
   .report-table td,
   .invoice-table th,

@@ -142,10 +142,9 @@ export default class Patients extends Component
   savePatient = (updatedPatient, id) =>
   {
     const { patients, totalRecords } = this.state;
-    const isAdd = !id ? true : false;
     let patientData = [...patients];
     updatedPatient.address = { label: updatedPatient.address.name, value: updatedPatient.addressId, name: updatedPatient.address.name }
-    if (isAdd) {
+    if (!id) {
       patientData.splice(0, 0, updatedPatient);
     }
     else {
@@ -155,7 +154,7 @@ export default class Patients extends Component
     this.setState({
       patients: patientData,
       editDialog: false,
-      totalRecords: isAdd && totalRecords - 1
+      totalRecords: !id ? totalRecords + 1 : totalRecords
     });
   }
 

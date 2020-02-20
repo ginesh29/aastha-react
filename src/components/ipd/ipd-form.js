@@ -82,7 +82,6 @@ export default class IpdForm extends React.Component
         const lookupId = Number(e.target.name.replace("rate-", "").replace("days-", ""));
         let rate = "";
         let days = "";
-
         if (name.includes("rate"))
             rate = e.target.value;
         else if (name.includes("days"))
@@ -91,19 +90,20 @@ export default class IpdForm extends React.Component
             formFields[e.target.name] = e.target.value;
         let chargeObj = chargeFormFields ? chargeFormFields.filter(m => m.lookupId === lookupId) : [];
         let charges = chargeFormFields ? chargeFormFields : [];
-        if (chargeObj.length) {
-            chargeObj.map(item =>
-            {
-                item.rate = rate ? rate : item.rate;
-                item.days = days ? days : item.days;
-                item.amount = item.rate && item.days ? item.rate * item.days : "";
-                return item;
-            });
+        if (lookupId) {
+            if (chargeObj.length) {
+                chargeObj.map(item =>
+                {
+                    item.rate = rate ? rate : item.rate;
+                    item.days = days ? days : item.days;
+                    item.amount = item.rate && item.days ? item.rate * item.days : "";
+                    return item;
+                });
+            }
+            else
+                charges.push({ lookupId: lookupId, rate: rate, days: days });
         }
-        else
-            charges.push({ lookupId: lookupId, rate: rate, days: days });
-
-        const grandTotal = chargeFormFields && chargeFormFields.reduce((total, item) => total + Number(item.amount), 0);
+        const grandTotal = chargeFormFields && chargeFormFields.reduce((total, item) => total + item.amount ? Number(item.amount) : 0, 0);
         const amountPaid = grandTotal - formFields.discount;
         this.setState({
             chargeFormFields: charges,
@@ -118,7 +118,7 @@ export default class IpdForm extends React.Component
             deliveryDate, deliveryTime, babyGender, babyWeight, typesOfDelivery, operationDiagnosis,
             typesOfOperation, generalDiagnosis, operationDate, deliveryDiagnosis, discount, deliveryId, operationId, ipdLookups } = this.state.formFields
         const { chargeFormFields } = this.state;
-        const { hideEditDialog, includeProperties } = this.props;
+        const { hideEditDialog, includeProperties, saveIpd } = this.props;
         e.preventDefault();
         if (this.handleValidation()) {
             let lookupArray = null;
@@ -175,7 +175,7 @@ export default class IpdForm extends React.Component
                 {
                     if (res && !res.errors) {
                         hideEditDialog && hideEditDialog();
-                        //saveOpd && saveOpd(res, opd.id);
+                        saveIpd && saveIpd(res, ipd.id);
                         !hideEditDialog && this.handleReset();
                     }
                 })

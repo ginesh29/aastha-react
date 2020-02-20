@@ -145,7 +145,7 @@ export default class OpdForm extends React.Component
               <InputField name="caseType" title="Case Type" value={caseType || null} onChange={this.handleChange} {...this.state} controlType="dropdown" options={caseTypeOptions} />
             </div>
             <div className="col-md-8">
-              <InputField name="patient" value={patient || ""} title="Patient" onChange={this.handleChange} {...this.state} className="p-select2"
+              <InputField name="patient" value={patient || ""} title="Patient" onChange={this.handleChange} {...this.state}
                 onCreateOption={() => this.setState({ patientDialog: true })} onInputChange={(e) => { e && this.setState({ patientName: e }) }}
                 controlType="select2" loadOptions={(e, callback) => this.helper.PatientOptions(e, callback)} />
             </div>

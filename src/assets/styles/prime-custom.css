@@ -63,9 +63,7 @@ form .p-multiselect,
   font-weight: 500 !important;
   text-align: left !important;
 }
-.p-dialog {
-  width: 50%;
-}
+
 .p-scroll-dialog {
   position: absolute;
   top: 20px;

@@ -11,8 +11,10 @@ import { NavLink } from 'react-router-dom';
 import { Dropdown } from 'primereact/dropdown';
 import InputField from "./shared/InputField";
 import $ from "jquery";
-export default class AdminPanel extends Component {
-    constructor(props) {
+export default class AdminPanel extends Component
+{
+    constructor(props)
+    {
         super(props);
         this.state = {
             lookups: [],
@@ -36,12 +38,15 @@ export default class AdminPanel extends Component {
         this.repository = new repository();
         this.helper = new helper();
     }
-    getMedicineTypes = () => {
+    getMedicineTypes = () =>
+    {
         const { sortString } = this.state;
-        let lookupFilter = `type-eq-{${lookupTypeEnum.MEDICINETYPE.value}}`
-        this.repository.get("lookups", `filter=${lookupFilter}&sort=${sortString}&isDeleted=${true}`)
-            .then(res => {
-                let medicineTypes = res && res.data.map(function (item) {
+        let lookupFilter = `type-eq-{${ lookupTypeEnum.MEDICINETYPE.value }}`
+        this.repository.get("lookups", `filter=${ lookupFilter }&sort=${ sortString }&isDeleted=${ true }`)
+            .then(res =>
+            {
+                let medicineTypes = res && res.data.map(function (item)
+                {
                     return { value: item.id, label: item.name };
                 });
                 this.setState({
@@ -49,71 +54,85 @@ export default class AdminPanel extends Component {
                 });
             })
     }
-    getLookups = () => {
+    getLookups = () =>
+    {
         const { first, rows, filterString, sortString, lookupType, includeProperties } = this.state;
-        let lookupFilter = `type-eq-{${lookupType.value}}`
-        let filter = filterString ? `${lookupFilter} and ${filterString}` : `${lookupFilter}`;
-        this.repository.get("lookups", `take=${rows}&skip=${first}&filter=${filter}&sort=${sortString}&includeProperties=${includeProperties}`)
-            .then(res => {
+        let lookupFilter = `type-eq-{${ lookupType.value }}`
+        let filter = filterString ? `${ lookupFilter } and ${ filterString }` : `${ lookupFilter }`;
+        this.repository.get("lookups", `take=${ rows }&skip=${ first }&filter=${ filter }&sort=${ sortString }&includeProperties=${ includeProperties }`)
+            .then(res =>
+            {
                 this.setState({
                     first: first,
                     rows: rows,
                     totalRecords: res && res.totalCount,
                     lookups: res && res.data,
                     loading: false
-                }, () => {
+                }, () =>
+                {
                     this.getMedicineTypes();
                 });
             })
     }
-    componentDidMount = (e) => {
+    componentDidMount = (e) =>
+    {
         const { isArchive } = this.state;
         let multiSortMeta = [];
         multiSortMeta.push({ field: 'name', order: 1 });
         let sortString = this.helper.generateSortString(multiSortMeta);
-        const filter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
-        this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () => {
+        const filter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
+        this.setState({ multiSortMeta: multiSortMeta, sortString: sortString, filterString: filter }, () =>
+        {
             this.getLookups();
         });
     }
-    onPageChange = (e) => {
+    onPageChange = (e) =>
+    {
         this.setState({
             rows: e.rows,
             first: e.first,
             loading: true
-        }, () => {
+        }, () =>
+        {
             this.getLookups();
         })
     }
-    onSort = (e) => {
+    onSort = (e) =>
+    {
         const { multiSortMeta } = this.state;
         let SortMetaOld = multiSortMeta ? multiSortMeta.filter(item => item.field !== e.multiSortMeta[0].field) : [];
         this.setState({
             multiSortMeta: [e.multiSortMeta[0], ...SortMetaOld],
             loading: true
-        }, () => {
+        }, () =>
+        {
             const { multiSortMeta } = this.state;
             let sortString = this.helper.generateSortString(multiSortMeta);
-            this.setState({ sortString: sortString }, () => {
-                setTimeout(() => {
+            this.setState({ sortString: sortString }, () =>
+            {
+                setTimeout(() =>
+                {
                     this.getLookups();
                 }, 10);
             });
         });
     }
-    onFilter = (e) => {
+    onFilter = (e) =>
+    {
         this.setState({ filters: e.filters, loading: true });
         const { isArchive } = this.state;
-        const deleteFilter = !isArchive ? `isDeleted-neq-{${!isArchive}}` : `isDeleted-eq-{${isArchive}}`;
+        const deleteFilter = !isArchive ? `isDeleted-neq-{${ !isArchive }}` : `isDeleted-eq-{${ isArchive }}`;
         const filter = this.helper.generateFilterString(e.filters);
         const operator = filter ? "and" : "";
-        let filterString = `${deleteFilter} ${operator} ${filter}`;
-        this.setState({ first: 0, filterString: filterString }, () => {
+        let filterString = `${ deleteFilter } ${ operator } ${ filter }`;
+        this.setState({ first: 0, filterString: filterString }, () =>
+        {
             this.getLookups();
         });
     }
 
-    actionTemplate(rowData, column) {
+    actionTemplate(rowData, column)
+    {
         return (
             <div>
                 <button type="button" className="btn btn-labeled btn-secondary icon-btn-grid mr-2" onClick={() => this.onRowEdit(rowData)}>
@@ -126,27 +145,32 @@ export default class AdminPanel extends Component {
         )
     }
 
-    onRowDelete = (row) => {
+    onRowDelete = (row) =>
+    {
         this.setState({
             deleteDialog: true,
             selectedLookup: Object.assign({}, row)
         });
     }
-    onRowEdit = (row) => {
+    onRowEdit = (row) =>
+    {
         this.setState({
             editDialog: true,
             selectedLookup: Object.assign({}, row),
             validationErrors: {}
         });
     }
-    handleReset = e => {
+    handleReset = e =>
+    {
         this.setState({ selectedLookup: {}, validationErrors: {} });
     };
-    deleteRow = () => {
+    deleteRow = () =>
+    {
         const { lookups, selectedLookup, isArchive, totalRecords } = this.state;
         let flag = isArchive ? false : true;
-        this.repository.delete("lookups", `${selectedLookup.id}?isDeleted=${flag}`)
-            .then(res => {
+        this.repository.delete("lookups", `${ selectedLookup.id }?isDeleted=${ flag }`)
+            .then(res =>
+            {
                 this.setState({
                     lookups: lookups.filter(lookup => lookup.id !== selectedLookup.id),
                     selectedLookup: null,
@@ -156,19 +180,24 @@ export default class AdminPanel extends Component {
             })
     }
 
-    onHide = () => {
+    onHide = () =>
+    {
         this.setState({ deleteDialog: false });
     }
-    onChangeLookup = (e) => {
-        this.setState({ first: 0, lookupType: e.target.value, loading: true }, () => {
+    onChangeLookup = (e) =>
+    {
+        this.setState({ first: 0, lookupType: e.target.value, loading: true }, () =>
+        {
             this.getLookups();
         })
     }
-    onFilterChange = (event) => {
+    onFilterChange = (event) =>
+    {
         this.dt.filter(event.value, event.target.name, 'eq');
         this.setState({ [event.target.id]: event.value, loading: true });
     }
-    handleChange = (e, action) => {
+    handleChange = (e, action) =>
+    {
         const { isValidationFired, selectedLookup } = this.state;
         $("#errors").remove();
         let fields = selectedLookup;
@@ -179,7 +208,8 @@ export default class AdminPanel extends Component {
         });
         if (isValidationFired) this.handleValidation();
     };
-    handleValidation = e => {
+    handleValidation = e =>
+    {
         const { lookupType } = this.state;
         const { name, parentId } = this.state.selectedLookup
         let errors = {};
@@ -187,7 +217,7 @@ export default class AdminPanel extends Component {
 
         if (!name) {
             isValid = false;
-            errors.name = `Enter ${lookupType.label}`;
+            errors.name = `Enter ${ lookupType.label }`;
         }
         if (lookupType.value === lookupTypeEnum.MEDICINENAME.value && !parentId) {
             isValid = false;
@@ -199,7 +229,8 @@ export default class AdminPanel extends Component {
         });
         return isValid;
     };
-    handleSubmit = e => {
+    handleSubmit = e =>
+    {
         e.preventDefault();
         const { lookupType, includeProperties } = this.state;
         const { id, name, parentId } = this.state.selectedLookup
@@ -210,8 +241,9 @@ export default class AdminPanel extends Component {
                 type: lookupType.value,
                 parentId: parentId
             };
-            this.repository.post(`${"lookups"}?includeProperties=${includeProperties} `, lookup)
-                .then(res => {
+            this.repository.post(`${ "lookups" }?includeProperties=${ includeProperties } `, lookup)
+                .then(res =>
+                {
                     if (res && !res.errors) {
                         this.setState({ editDialog: false })
                         this.savelookup(res, lookup.id)
@@ -219,12 +251,12 @@ export default class AdminPanel extends Component {
                 })
         }
     };
-    savelookup = (updatedLookup, id) => {
+    savelookup = (updatedLookup, id) =>
+    {
         const { lookups, totalRecords } = this.state;
-        const isAdd = !id ? true : false;
         let lookupData = [...lookups];
         updatedLookup.parent = updatedLookup.parent && { name: updatedLookup.parent.name }
-        if (isAdd) {
+        if (!id) {
             lookupData.splice(0, 0, updatedLookup);
         }
         else {
@@ -234,10 +266,11 @@ export default class AdminPanel extends Component {
         this.setState({
             lookups: lookupData,
             editDialog: false,
-            totalRecords: isAdd && totalRecords + 1
+            totalRecords: !id && totalRecords + 1
         });
     }
-    render() {
+    render()
+    {
         const lookupTypesOptions = this.helper.enumToObject(lookupTypeEnum)
         const { lookups, totalRecords, rows, first, loading, multiSortMeta,
             filters, deleteDialog, editDialog, isArchive, lookupType, selectedType, medicineTypeOptions, selectedLookup } = this.state;
@@ -273,7 +306,7 @@ export default class AdminPanel extends Component {
                                     </div>
 
                                     <div>
-                                        <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${!isArchive ? "archive" : "file-text-o"} `} tooltip={`Show ${buttonText} `} /></NavLink>
+                                        <NavLink to={linkUrl}><Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${ !isArchive ? "archive" : "file-text-o" } `} tooltip={`Show ${ buttonText } `} /></NavLink>
                                     </div>
                                 </div>
                                 <DataTable value={lookups} loading={loading} responsive={true} emptyMessage="No records found" ref={(el) => this.dt = el}
@@ -295,7 +328,7 @@ export default class AdminPanel extends Component {
                     Are you sure you want to {action} this item?
                 </Dialog>
 
-                <Dialog header={`Edit ${lookupType.label}`} visible={editDialog} onHide={() => this.setState({ editDialog: false })} style={{ width: texboxLength > 500 ? `${texboxLength}px` : "50%" }}>
+                <Dialog header={`Edit ${ lookupType.label }`} visible={editDialog} onHide={() => this.setState({ editDialog: false })} style={{ width: texboxLength > 500 ? `${ texboxLength }px` : "50%" }}>
                     {editDialog &&
                         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
                             <div >

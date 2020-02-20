@@ -33,7 +33,7 @@ export default class InputField extends Component
         }
         {
           controlType === "select2" &&
-          <AsyncCreatableSelect defaultOptions name={name} value={value} onCreateOption={onCreateOption} createOptionPosition="first" loadOptions={loadOptions} className={finalClassName} isClearable={true} isLoading={true} onChange={onChange} onInputChange={onInputChange} placeholder={"Select " + title} />
+          <AsyncCreatableSelect defaultOptions name={name} value={value} onCreateOption={onCreateOption} createOptionPosition="first" loadOptions={loadOptions} className={`${ finalClassName } p-select2`} isClearable={true} isLoading={true} onChange={onChange} onInputChange={onInputChange} placeholder={"Select " + title} />
         }
         {
           controlType === "datepicker" &&

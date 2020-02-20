@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
-import { lookupTypeEnum, reportTypeEnum } from "../../common/enums";
-import _ from 'lodash';
-import numberToWords from 'number-to-words';
-import invoice_header from "../../assets/images/invoice_header.jpg"
+import { reportTypeEnum } from "../../common/enums";
 import ReportFilter from './report-filter';
 import { TODAY_DATE } from "../../common/constants";
+import IpdInvoice from './../ipd/ipd-invoice';
 
 export default class MonthlyIpdReport extends Component
 {
@@ -34,7 +32,6 @@ export default class MonthlyIpdReport extends Component
         this.repository.get(controller, `filter=${ filterString }&sort=${ sortString }&includeProperties=${ includeProperties }`)
             .then(res =>
             {
-                this.getCharges();
                 res && res.data.map(item =>
                 {
                     item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
@@ -51,14 +48,6 @@ export default class MonthlyIpdReport extends Component
                     loading: false
                 });
             })
-    }
-    getCharges = () =>
-    {
-        this.repository.get("lookups", `filter=type-eq-{${ lookupTypeEnum.CHARGENAME.value }}`).then(res =>
-        {
-            let charges = res && res.data;
-            charges && this.setState({ chargeNames: charges, chargesLength: charges.length });
-        })
     }
     componentDidMount = (e) =>
     {
@@ -98,122 +87,22 @@ export default class MonthlyIpdReport extends Component
             this.getIpds();
         });
     }
-
     render()
     {
-        const { ipds, chargeNames } = this.state;
-        let ipdData;
-        let chargesColumns;
-        let amount = 0;
-        let days = 0;
-        let rate = 0;
-        if (chargeNames) {
-            let mapWithCharge = ipds.map((item) =>
-            {
-                let chargeName;
-                _.reduce(chargeNames, function (hash, key)
-                {
-                    chargeName = `dynamic-charge-${ key.id }`;
-                    let obj = item.charges && item.charges.filter(item => item.lookupId === key.id)[0];
-                    days = obj && obj.days ? Number(obj.days) : 0;
-                    rate = obj && obj.rate ? Number(obj.rate) : 0;
-                    amount = obj && obj.amount ? Number(obj.amount) : 0;
-                    hash[chargeName] = { chargeName: key.name, rate: rate, days: days, amount: amount };
-                    hash.amount = _.sumBy(item.charges, x => x.amount);
-                    hash.discount = hash.discount ? hash.discount : 0;
-                    hash.payableAmount = hash.amount - hash.discount;
-                    hash.amountInWord = numberToWords.toWords(hash.payableAmount);
-                    return hash;
-                }, item);
-                return item;
-            });
-            ipdData = mapWithCharge;
-            chargesColumns = ipdData[0] && Object.keys(ipdData[0]).filter(m => m.includes("dynamic-charge"));
-        }
-
+        const { ipds } = this.state;
         return (
             <>
                 <div className="card">
                     <div className="card-body">
-                        <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value })} data={ipdData} showSummary={false} />
+                        <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value })} data={ipds} showSummary={false} />
                         <hr />
                         <div className="row invoice" id="print-div">
                             {
-                                ipdData && ipdData.map((items, i) =>
+                                ipds && ipds.map((items, i) =>
                                 {
                                     return (
                                         <div className={`col-md-6 ${ i % 2 === 0 ? "vertical-devider" : "" }`} key={i}>
-                                            <div className="" style={{ paddingLeft: "50px" }}>
-                                                <img src={invoice_header} className="img-fluid" alt="Invoice Header" />
-                                                <h3 className="invoice-title">Indoor Invoice</h3>
-                                                <table className="table table-borderless invoice-detail">
-                                                    <tr>
-                                                        <td><b>Name :</b> {items.fullname}</td>
-                                                        <td width="200px"><b>Date :</b> {items.formatedDischargeDate}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><b>Invoice No. :</b> {items.uniqueId}</td>
-                                                        <td><b>Address :</b> {items.address}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><b>Indoor No. :</b> {items.invoiceNo}</td>
-                                                        <td><b>Room Type :</b> {items.roomTypeName}</td>
-                                                    </tr>
-                                                </table>
-                                                <div className="row">
-                                                    <div className="col-md-12">
-                                                        <table className="table table-bordered invoice-table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th width="10px">No.</th>
-                                                                    <th>Description</th>
-                                                                    <th width="50px">Rate</th>
-                                                                    <th width="50px">Days</th>
-                                                                    <th width="50px">Amount</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {
-                                                                    chargesColumns.map((key, i) =>
-                                                                    {
-                                                                        return (
-                                                                            <tr key={`chrge-${ i }`}>
-                                                                                <td>{i + 1}</td>
-                                                                                <td>{items[key].chargeName}</td>
-                                                                                <td className="text-right"> {items[key].rate}</td>
-                                                                                <td className="text-right"> {items[key].days}</td>
-                                                                                <td className="text-right"> {this.helper.formatCurrency(items[key].amount)}</td>
-                                                                            </tr>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </tbody>
-                                                            <tfoot className="invoice-footer">
-                                                                <tr>
-                                                                    <td colSpan="4">Grand Total <span></span></td>
-                                                                    <td className="text-right"><strong> {items.amount}</strong></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colSpan="4">Discount</td>
-                                                                    <td className="text-right"><strong> {this.helper.formatCurrency(items.discount)}</strong></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colSpan="4">Net Payable Amount :<span className="text-capitalize"> {`${ items.amountInWord } Only`}</span></td>
-                                                                    <td className="text-right"><strong> {this.helper.formatCurrency(items.payableAmount)}</strong></td>
-                                                                </tr>
-                                                            </tfoot>
-                                                        </table>
-                                                        <div className="row" style={{ marginTop: "15px" }}>
-                                                            <div className="col-md-9">
-                                                                <span>Rececived By</span>
-                                                            </div>
-                                                            <div className="col-md-3">
-                                                                <label>Dr. Bhaumik Tandel</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <IpdInvoice InvoiceData={items} />
                                         </div>
                                     )
                                 })
