@@ -6,11 +6,13 @@ import { repository } from "./../common/repository";
 import { RadioButton } from 'primereact/radiobutton';
 import { Checkbox } from 'primereact/checkbox';
 import { appointmentTypeEnum, lookupTypeEnum } from "./../common/enums";
-import { medicineInstructionOptions, SELECT2_ACTION_CLEAR_TEXT } from "./../common/constants";
-import { Calendar } from 'primereact/calendar';
+import { medicineInstructionOptions, SELECT2_ACTION_CLEAR_TEXT, FULLCALENDAR_OPTION } from "./../common/constants";
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
+import { FullCalendar } from 'primereact/fullcalendar';
+import '@fullcalendar/core/main.css';
+import AppointmentTypeIndicator from './shared/appointment-indicator';
 import _ from 'lodash';
 import jquery from 'jquery';
 window.jQuery = jquery;
@@ -26,6 +28,25 @@ export default class Prescription extends React.Component
         this.state = this.getInitialState();
         this.repository = new repository();
         this.helper = new helper();
+        this.options = FULLCALENDAR_OPTION;
+        this.options.datesRender = (info) =>
+        {
+            const startDate = this.helper.formatFullcalendarDate(info.view.currentStart);
+            const endDate = this.helper.formatFullcalendarDate(info.view.currentEnd);
+            const filter = `Date-gte-{${ startDate }} and Date-lte-{${ endDate }}`
+            this.setState({ filterString: filter }, () =>
+            {
+                this.getAppointments()
+            });
+        }
+        this.options.dateClick = (dateClickInfo) =>
+        {
+            const { formFields } = this.state;
+            this.setState({
+                appointmentCalendarDialog: false,
+                formFields: { ...formFields, followupDate: this.helper.formatDate(dateClickInfo.date) }
+            });
+        }
     }
     getInitialState = () => ({
         formFields: {
@@ -46,10 +67,32 @@ export default class Prescription extends React.Component
             medicineInstructions: [],
             medicineInstructionsValue: []
         },
+        controller: "appointments",
+        includeProperties: "Patient",
         medicineData: [],
         validationErrors: {},
         submitted: false
     })
+    getAppointments = () =>
+    {
+        const { controller, includeProperties, filterString } = this.state;
+        this.repository.get(controller, `filter=${ filterString } and isDeleted-neq-{${ true }}&includeProperties=${ includeProperties }`)
+            .then(res =>
+            {
+                res && res.data && res.data.map(item =>
+                {
+                    item.title = item.patient.fullname;
+                    item.start = this.helper.formatFullcalendarDate(item.date);
+                    item.color = appointmentTypeEnum[item.appointmentType.toUpperCase()].color;
+                    item.extendedProps = {
+                        patientId: item.patientId,
+                        type: item.type
+                    };
+                    return item;
+                });
+                this.setState({ appointments: res && res.data })
+            });
+    }
     handleChange = (e, action) =>
     {
         const { isValidationFired, formFields } = this.state;
@@ -291,8 +334,9 @@ export default class Prescription extends React.Component
     {
         const { patient, date, clinicDetail, followup, advices, followupInstruction, followupDate } = this.state.formFields
         const { medicineType, days, medicineName, medicineInstructions } = this.state.medicineFormFields;
-        const { medicineTypeOptions, medicineNameOptions, medicineData, validationErrors, editDialog, adviceOptions } = this.state;
+        const { medicineTypeOptions, medicineNameOptions, medicineData, validationErrors, editDialog, adviceOptions, appointmentCalendarDialog, appointments } = this.state;
         const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
+        const appointmentTypeOptions = this.helper.enumToObject(appointmentTypeEnum);
         const header =
             <>
                 <span className="p-panel-title">{`${ title } Preview`}</span>
@@ -358,12 +402,11 @@ export default class Prescription extends React.Component
                                                                 <RadioButton inputId={`followup${ i + 1 }`} name="followup" value={item.value} checked={followup === item.value} onChange={(e) => { this.handleChange(e); this.setState({ validationErrors: { ...validationErrors, followupDate: "" } }) }} />
                                                                 <label htmlFor={`followup${ i + 1 }`} className="p-radiobutton-label">{item.label}</label>
                                                             </div>
-
                                                             {
                                                                 item.value <= 4 && followup === item.value && (
                                                                     <>
                                                                         <div className="mr-2">
-                                                                            <Calendar inputClassName={`input-sm ${ validationErrors.followupDate ? "error" : "" }`} value={followupDate && followupDate} onChange={this.handleChange} name="followupDate" />
+                                                                            <InputText className={`input-sm ${ validationErrors.followupDate ? "error" : "" }`} value={followupDate && followupDate} onChange={this.handleChange} name="followupDate" onFocus={() => { this.setState({ appointmentCalendarDialog: true }) }} />
                                                                         </div>
                                                                         {
                                                                             validationErrors.followupDate &&
@@ -489,7 +532,7 @@ export default class Prescription extends React.Component
                         </Panel>
                     </div>
                 </div>
-                <Dialog header="Add Medicine" visible={editDialog} onHide={() => this.setState({ editDialog: false })} style={{ width: '80vw' }} >
+                <Dialog header="Add Medicine" visible={editDialog} onHide={() => this.setState({ editDialog: false })} className="p-scroll-dialog w-75" >
                     {
                         editDialog &&
                         <form>
@@ -565,6 +608,15 @@ export default class Prescription extends React.Component
                                 </div>
                             </div>
                         </form>
+                    }
+                </Dialog>
+                <Dialog header="Appointment Calendar" visible={appointmentCalendarDialog} className="p-scroll-dialog w-50" onHide={() => this.setState({ appointmentCalendarDialog: false })}>
+                    {
+                        appointmentCalendarDialog &&
+                        <>
+                            <AppointmentTypeIndicator options={appointmentTypeOptions} />
+                            <FullCalendar options={this.options} events={appointments} ref={(el) => this.fullcalendar = el} />
+                        </>
                     }
                 </Dialog>
             </>
