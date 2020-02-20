@@ -3,12 +3,10 @@ import { Panel } from "primereact/panel";
 import * as Constants from "../../common/constants";
 import OpdForm from "./opd-form";
 
-export default class AddOpd extends React.Component
-{
-  render()
-  {
+export default class AddOpd extends React.Component {
+  render() {
     return (
-      <div className="row col-lg-6 col-md-9">
+      <div className="row col-md-8">
         <Panel header={Constants.ADD_OPD_TITLE} toggleable={true}>
           <OpdForm />
         </Panel>
