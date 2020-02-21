@@ -1,6 +1,6 @@
-import React from 'react';
-import { Route } from 'react-router-dom';
-import { render } from 'react-dom';
+import React from "react";
+import { Route } from "react-router-dom";
+import { render } from "react-dom";
 
 export default class LoginLayout extends React.Component {
   render() {
@@ -9,6 +9,6 @@ export default class LoginLayout extends React.Component {
         <p>This is the First Layout</p>
         {this.props.children}
       </div>
-    )
+    );
   }
 }
