@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Redirect } from "react-router-dom";
 
 //import LoginLayoutRoute from "./components/shared/layouts/LoginLayout";
-import MainLayout from "./components/shared/layouts/MainLayout";
+import MainLayout from "./components/shared/layouts/main-layout";
 
 import Dashboard from "./components/dashboard";
 import Patients from "./components/patient/patients";
@@ -15,9 +15,9 @@ import Opds from "./components/opd/opds";
 import Ipds from "./components/ipd/ipds";
 import OpdReport from "./components/report/opd-report";
 import IpdReport from "./components/report/ipd-report";
-import Users from "./components/users";
+import Users from "./components/user/users";
 import MonthlyIpdReport from "./components/report/monthly-ipd-report";
-import AppointmentCalendar from "./components/appointment-calendar";
+import Appointments from "./components/appointment/appointments";
 import Statistics from "./components/statistics";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
@@ -49,7 +49,7 @@ const routes = (
       <Route path="/archive-admin-panel" component={AdminPanel} />
 
       <Route path="/prescription" component={Prescription} />
-      <Route path="/appointment-calendar" component={AppointmentCalendar} />
+      <Route path="/appointments" component={Appointments} />
       <Route path="/statistics" component={Statistics} />
       <Route path="/opd-report" component={OpdReport} />
       <Route path="/ipd-report" component={IpdReport} />

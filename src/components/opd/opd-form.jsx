@@ -1,5 +1,5 @@
 import React from "react";
-import InputField from "../shared/InputField";
+import InputField from "../shared/input-field";
 import { caseTypeOptions } from "../../common/constants";
 import { helper } from "../../common/helpers";
 import { Dialog } from "primereact/dialog";
@@ -7,6 +7,7 @@ import * as Constants from "../../common/constants";
 import { repository } from "../../common/repository";
 import PatientForm from "../patient/patient-form";
 import $ from "jquery";
+import FormFooterButton from "../shared/form-footer-button";
 
 const controller = "opds";
 export default class OpdForm extends React.Component {
@@ -282,16 +283,7 @@ export default class OpdForm extends React.Component {
               />
             </div>
           </div>
-          <div className="modal-footer">
-            {!id && (
-              <button type="reset" className="btn btn-secondary">
-                Reset
-              </button>
-            )}
-            <button type="submit" className="btn btn-info">
-              Save
-            </button>
-          </div>
+          <FormFooterButton showReset={!id} />
         </form>
         <Dialog
           header={Constants.PATIENT_REGISTRATION_TITLE}

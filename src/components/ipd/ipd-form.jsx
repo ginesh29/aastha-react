@@ -1,5 +1,5 @@
 import React from "react";
-import InputField from "../shared/InputField";
+import InputField from "../shared/input-field";
 import { roomTypeOptions, genderOptions } from "../../common/constants";
 import { departmentTypeEnum, lookupTypeEnum } from "../../common/enums";
 import { Dialog } from "primereact/dialog";
@@ -9,6 +9,7 @@ import { repository } from "../../common/repository";
 import * as Constants from "../../common/constants";
 import PatientForm from "../patient/patient-form";
 import $ from "jquery";
+import FormFooterButton from "../shared/form-footer-button";
 
 const controller = "ipds";
 export default class IpdForm extends React.Component {
@@ -778,17 +779,7 @@ export default class IpdForm extends React.Component {
               </tr>
             </tfoot>
           </table>
-
-          <div className="modal-footer">
-            {!id && (
-              <button type="reset" className="btn btn-secondary">
-                Reset
-              </button>
-            )}
-            <button type="submit" className="btn btn-info">
-              Save
-            </button>
-          </div>
+          <FormFooterButton showReset={!id} />
         </form>
         <Dialog
           header={Constants.PATIENT_REGISTRATION_TITLE}

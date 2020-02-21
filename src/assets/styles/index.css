@@ -137,6 +137,9 @@ hr {
   white-space: pre-line;
 }
 @media print {
+  #print-div {
+    font-size: 14pt;
+  }
   .report-table,
   .invoice-table {
     border-style: hidden !important;

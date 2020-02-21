@@ -1,5 +1,5 @@
 import React from "react";
-import LeftMenu from "../LeftMenu";
+import LeftMenu from "../left-menu";
 
 export default class MainLayout extends React.Component {
   render() {
