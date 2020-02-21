@@ -393,6 +393,7 @@ export default class Patients extends Component {
           header="Edit Patient"
           visible={editDialog}
           onHide={() => this.setState({ editDialog: false })}
+          style={{ width: "550px" }}
         >
           {editDialog && (
             <PatientForm

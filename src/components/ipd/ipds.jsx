@@ -462,6 +462,7 @@ export default class Ipds extends Component {
             this.setState({ editDialog: false });
           }}
           className="p-scroll-dialog"
+          style={{ width: "700px" }}
         >
           {editDialog && (
             <IpdForm
