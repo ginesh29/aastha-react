@@ -15,7 +15,7 @@ import Opds from "./components/opd/opds";
 import Ipds from "./components/ipd/ipds";
 import OpdReport from "./components/report/opd-report";
 import IpdReport from "./components/report/ipd-report";
-import Users from "./components/user/users";
+// import Users from "./components/user/users";
 import MonthlyIpdReport from "./components/report/monthly-ipd-report";
 import Appointments from "./components/appointment/appointments";
 import Statistics from "./components/statistics";
@@ -42,9 +42,6 @@ const routes = (
       <Route path="/ipds" component={Ipds} />
       <Route path="/archive-ipds" component={Ipds} />
 
-      <Route path="/users" component={Users} />
-      <Route path="/archive-users" component={Users} />
-
       <Route path="/admin-panel" component={AdminPanel} />
       <Route path="/archive-admin-panel" component={AdminPanel} />
 
@@ -54,6 +51,16 @@ const routes = (
       <Route path="/opd-report" component={OpdReport} />
       <Route path="/ipd-report" component={IpdReport} />
       <Route path="/monthly-ipd-report" component={MonthlyIpdReport} />
+
+      {/* <Route path="/users" component={Users} /> */}
+      {/* <Route path="/archive-users" component={Users} /> */}
+      {/* 
+
+      
+
+      
+
+       */}
     </MainLayout>
   </BrowserRouter>
 );

@@ -136,33 +136,25 @@ hr {
 .display-linebreak {
   white-space: pre-line;
 }
+@page {
+  size: auto;
+}
 @media print {
-  #print-div {
-    font-size: 14pt;
+  body {
+    background: none;
   }
-  .report-table,
-  .invoice-table {
-    border-style: hidden !important;
-  }
-  label,
+  /* label,
   span,
   strong {
     font-size: 14px;
-  }
-  .fa {
-    display: block;
-  }
+  } */
   .report-table th,
   .report-table td,
   .invoice-table th,
   .invoice-table td {
-    padding: 1px !important;
+    padding: 2px !important;
     line-height: 1.2 !important;
     vertical-align: top !important;
     font-size: 12pt !important;
-  }
-  .invoice-table th,
-  .invoice-table .invoice-footer td {
-    background: #ebebeb !important;
   }
 }

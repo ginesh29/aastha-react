@@ -144,6 +144,9 @@ form .p-multiselect,
 .p-paginator .p-highlight {
   pointer-events: none !important;
 }
+.p-panelmenu-icon {
+  float: right;
+}
 .invoice-detail td {
   border-style: hidden !important;
   padding: 1px !important;

@@ -100,9 +100,9 @@ export default class Dashboard extends React.Component {
                     <i className="fa fa-envelope"></i>
                   </div>
                   <div className="num">{totalIpds}</div>
-                  <h3>IPD Patients</h3>
-                  <p>Current Month IPD Patients {currentMonthIpds}</p>
-                  <p>Current Year IPD Patients {currentYearIpds}</p>
+                  <h3>Ipd Patients</h3>
+                  <p>Current Month Ipd Patients {currentMonthIpds}</p>
+                  <p>Current Year Ipd Patients {currentYearIpds}</p>
                 </div>
               </div>
             </div>
