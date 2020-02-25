@@ -14,16 +14,9 @@ export default class IpdInvoice extends Component {
     this.repository = new repository();
   }
   getCharges = () => {
-    this.repository
-      .get(
-        "lookups",
-        `filter=type-eq-{${
-          lookupTypeEnum.CHARGENAME.value
-        }} and isDeleted-neq-${true}`
-      )
-      .then(res => {
-        this.setState({ chargeNames: res && res.data });
-      });
+    this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.CHARGENAME.value}} and isDeleted-neq-${true}`).then(res => {
+      this.setState({ chargeNames: res && res.data });
+    });
   };
   componentDidMount = () => {
     this.getCharges();
@@ -53,17 +46,11 @@ export default class IpdInvoice extends Component {
           amount: amount
         };
       });
-    let chargesColumns = Object.keys(InvoiceData).filter(m =>
-      m.includes("dynamic-charge")
-    );
+    let chargesColumns = Object.keys(InvoiceData).filter(m => m.includes("dynamic-charge"));
     return (
       InvoiceData && (
-        <div>
-          <img
-            src={invoice_header}
-            className="img-fluid"
-            alt="Invoice Header"
-          />
+        <>
+          <img src={invoice_header} className="img-fluid" alt="Invoice Header" />
           <h3 className="invoice-title">Indoor Invoice</h3>
           <table className="table table-borderless invoice-detail">
             <tbody>
@@ -113,10 +100,7 @@ export default class IpdInvoice extends Component {
                         <td>{InvoiceData[key].chargeName}</td>
                         <td className="text-right"> {InvoiceData[key].rate}</td>
                         <td className="text-right"> {InvoiceData[key].days}</td>
-                        <td className="text-right">
-                          {" "}
-                          {this.helper.formatCurrency(InvoiceData[key].amount)}
-                        </td>
+                        <td className="text-right"> {this.helper.formatCurrency(InvoiceData[key].amount)}</td>
                       </tr>
                     );
                   })}
@@ -127,49 +111,36 @@ export default class IpdInvoice extends Component {
                       Grand Total <span></span>
                     </td>
                     <td className="text-right">
-                      <strong>
-                        {" "}
-                        {this.helper.formatCurrency(totalAmount)}
-                      </strong>
+                      <strong> {this.helper.formatCurrency(totalAmount)}</strong>
                     </td>
                   </tr>
                   <tr>
                     <td colSpan="4">Discount</td>
                     <td className="text-right">
-                      <strong>
-                        {" "}
-                        {this.helper.formatCurrency(InvoiceData.discount)}
-                      </strong>
+                      <strong> {this.helper.formatCurrency(InvoiceData.discount)}</strong>
                     </td>
                   </tr>
                   <tr>
                     <td colSpan="4">
-                      Net Payable Amount :
-                      <span className="text-capitalize">
-                        {" "}
-                        {`${amountInWord} Only`}
-                      </span>
+                      Net Payable Amount :<span className="text-capitalize"> {`${amountInWord} Only`}</span>
                     </td>
                     <td className="text-right">
-                      <strong>
-                        {" "}
-                        {this.helper.formatCurrency(payableAmount)}
-                      </strong>
+                      <strong> {this.helper.formatCurrency(payableAmount)}</strong>
                     </td>
                   </tr>
                 </tfoot>
               </table>
-              <div className="row" style={{ marginTop: "15px" }}>
+              <div className="row">
                 <div className="col-md-9">
                   <span>Rececived By</span>
                 </div>
                 <div className="col-md-3">
-                  <label>Dr. Bhaumik Tandel</label>
+                  <span>Dr. Bhaumik Tandel</span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
       )
     );
   }
