@@ -585,6 +585,7 @@ export default class Opds extends Component {
                     </button>
                   )}
                   content={() => this.printRef}
+                  pageStyle="@page {  size: 8.5in 11in; margin: 0mm; }"
                 />
               </div>
             </>
