@@ -14,9 +14,16 @@ export default class IpdInvoice extends Component {
     this.repository = new repository();
   }
   getCharges = () => {
-    this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.CHARGENAME.value}} and isDeleted-neq-${true}`).then(res => {
-      this.setState({ chargeNames: res && res.data });
-    });
+    this.repository
+      .get(
+        "lookups",
+        `filter=type-eq-{${
+          lookupTypeEnum.CHARGENAME.value
+        }} and isDeleted-neq-${true}`
+      )
+      .then(res => {
+        this.setState({ chargeNames: res && res.data });
+      });
   };
   componentDidMount = () => {
     this.getCharges();
@@ -46,11 +53,17 @@ export default class IpdInvoice extends Component {
           amount: amount
         };
       });
-    let chargesColumns = Object.keys(InvoiceData).filter(m => m.includes("dynamic-charge"));
+    let chargesColumns = Object.keys(InvoiceData).filter(m =>
+      m.includes("dynamic-charge")
+    );
     return (
       InvoiceData && (
         <>
-          <img src={invoice_header} className="img-fluid" alt="Invoice Header" />
+          <img
+            src={invoice_header}
+            className="img-fluid"
+            alt="Invoice Header"
+          />
           <h3 className="invoice-title">Indoor Invoice</h3>
           <table className="table table-borderless invoice-detail">
             <tbody>
@@ -80,66 +93,71 @@ export default class IpdInvoice extends Component {
               </tr>
             </tbody>
           </table>
-          <div className="row">
-            <div className="col-md-12">
-              <table className="table table-bordered invoice-table">
-                <thead>
-                  <tr>
-                    <th width="10px">No.</th>
-                    <th>Description</th>
-                    <th width="50px">Rate</th>
-                    <th width="50px">Days</th>
-                    <th width="50px">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {chargesColumns.map((key, i) => {
-                    return (
-                      <tr key={`charge-${i}`}>
-                        <td>{i + 1}</td>
-                        <td>{InvoiceData[key].chargeName}</td>
-                        <td className="text-right"> {InvoiceData[key].rate}</td>
-                        <td className="text-right"> {InvoiceData[key].days}</td>
-                        <td className="text-right"> {this.helper.formatCurrency(InvoiceData[key].amount)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-                <tfoot className="invoice-footer">
-                  <tr>
-                    <td colSpan="4">
-                      Grand Total <span></span>
-                    </td>
+          <table className="table table-bordered invoice-table">
+            <thead>
+              <tr>
+                <th width="10px">No.</th>
+                <th>Description</th>
+                <th width="50px">Rate</th>
+                <th width="50px">Days</th>
+                <th width="50px">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {chargesColumns.map((key, i) => {
+                return (
+                  <tr key={`charge-${i}`}>
+                    <td>{i + 1}</td>
+                    <td>{InvoiceData[key].chargeName}</td>
+                    <td className="text-right"> {InvoiceData[key].rate}</td>
+                    <td className="text-right"> {InvoiceData[key].days}</td>
                     <td className="text-right">
-                      <strong> {this.helper.formatCurrency(totalAmount)}</strong>
+                      {" "}
+                      {this.helper.formatCurrency(InvoiceData[key].amount)}
                     </td>
                   </tr>
-                  <tr>
-                    <td colSpan="4">Discount</td>
-                    <td className="text-right">
-                      <strong> {this.helper.formatCurrency(InvoiceData.discount)}</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="4">
-                      Net Payable Amount :<span className="text-capitalize"> {`${amountInWord} Only`}</span>
-                    </td>
-                    <td className="text-right">
-                      <strong> {this.helper.formatCurrency(payableAmount)}</strong>
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-              <div className="row">
-                <div className="col-md-9">
-                  <span>Rececived By</span>
-                </div>
-                <div className="col-md-3">
-                  <span>Dr. Bhaumik Tandel</span>
-                </div>
-              </div>
+                );
+              })}
+            </tbody>
+            <tfoot className="invoice-footer">
+              <tr>
+                <td colSpan="4">
+                  Grand Total <span></span>
+                </td>
+                <td className="text-right">
+                  <strong> {this.helper.formatCurrency(totalAmount)}</strong>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="4">Discount</td>
+                <td className="text-right">
+                  <strong>
+                    {" "}
+                    {this.helper.formatCurrency(InvoiceData.discount)}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="4">
+                  Net Payable Amount :
+                  <span className="text-capitalize">
+                    {" "}
+                    {`${amountInWord} Only`}
+                  </span>
+                </td>
+                <td className="text-right">
+                  <strong> {this.helper.formatCurrency(payableAmount)}</strong>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+          <div className="d-flex">
+            <div className="flex-grow-1">Rececived By</div>
+            <div className="">
+              <label>Dr. Bhaumik Tandel</label>
             </div>
           </div>
+          <div className="page-break"></div>
         </>
       )
     );

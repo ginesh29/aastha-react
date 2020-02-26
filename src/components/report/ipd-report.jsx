@@ -200,9 +200,10 @@ export default class IpdReport extends Component {
               onShowSummary={e => this.op.toggle(e)}
               data={ipdData}
               exportReport={this.exportReport}
+              printRef={this.printRef}
             />
             <hr />
-            <div id="print-div">
+            <div id="print-div" ref={el => (this.printRef = el)}>
               <h3 className="report-header">Ipd Report {reportTitle}</h3>
               <table className="table table-bordered report-table">
                 <thead>

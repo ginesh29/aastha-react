@@ -18,9 +18,7 @@ import { FullCalendar } from "primereact/fullcalendar";
 import "@fullcalendar/core/main.css";
 import AppointmentTypeIndicator from "./appointment/appointment-indicator";
 import _ from "lodash";
-import jquery from "jquery";
-window.jQuery = jquery;
-require("jQuery.print");
+import ReactToPrint from "react-to-print";
 
 const title = "Prescription";
 let cnt = 0;
@@ -362,7 +360,6 @@ export default class Prescription extends React.Component {
         this.repository.post(`appointments`, appointment);
         this.setState({ submitted: true });
       }
-      jquery("#print-div").print();
     }
   };
   render() {
@@ -399,11 +396,16 @@ export default class Prescription extends React.Component {
       <>
         <span className="p-panel-title">{`${title} Preview`}</span>
         <div className="float-right">
-          <Button
-            icon="pi pi-print"
-            tooltip="Save & Print"
-            tooltipOptions={{ position: "bottom" }}
-            onClick={this.saveAppointment}
+          <ReactToPrint
+            trigger={() => (
+              <Button
+                icon="pi pi-print"
+                tooltip="Save & Print"
+                tooltipOptions={{ position: "bottom" }}
+                onClick={this.saveAppointment}
+              />
+            )}
+            content={() => this.printRef}
           />
         </div>
       </>
@@ -609,7 +611,7 @@ export default class Prescription extends React.Component {
           </div>
           <div className="col-md-6">
             <Panel header={header} className="prescription-preview">
-              <div id="print-div">
+              <div id="print-div" ref={el => (this.printRef = el)}>
                 <div className="row">
                   <div className="col-md">
                     <label>Patient Name : </label> {patient && patient.label}

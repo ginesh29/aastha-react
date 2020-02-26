@@ -13,9 +13,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import invoice_header from "../../assets/images/invoice_header.jpg";
 import numberToWords from "number-to-words";
-import jquery from "jquery";
-window.jQuery = jquery;
-require("jQuery.print");
+import ReactToPrint from "react-to-print";
 
 export default class Opds extends Component {
   constructor(props) {
@@ -484,7 +482,7 @@ export default class Opds extends Component {
         >
           {invoiceDialog && (
             <>
-              <div id="print-div">
+              <div id="print-div" ref={el => (this.printRef = el)}>
                 <img
                   src={invoice_header}
                   className="img-fluid"
@@ -580,13 +578,14 @@ export default class Opds extends Component {
                 </div>
               </div>
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn bt-sm btn-secondary"
-                  onClick={() => jquery("#print-div").print()}
-                >
-                  <i className="fa fa-print"></i> Print Invoice
-                </button>
+                <ReactToPrint
+                  trigger={() => (
+                    <button type="button" className="btn bt-sm btn-secondary">
+                      <i className="fa fa-print"></i> Print Invoice
+                    </button>
+                  )}
+                  content={() => this.printRef}
+                />
               </div>
             </>
           )}

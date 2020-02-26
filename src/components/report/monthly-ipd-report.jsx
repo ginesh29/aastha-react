@@ -25,24 +25,40 @@ export default class MonthlyIpdReport extends Component {
     this.helper = new helper();
   }
   getIpds = () => {
-    const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-    this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`).then(res => {
-      res &&
-        res.data.map(item => {
-          item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
-          item.formatedDischargeDate = this.helper.formatDate(item.dischargeDate);
-          item.fullname = item.patient.fullname;
-          item.address = item.patient.address && item.patient.address.name;
-          return item;
+    const {
+      first,
+      rows,
+      filterString,
+      sortString,
+      includeProperties,
+      controller
+    } = this.state;
+    this.repository
+      .get(
+        controller,
+        `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`
+      )
+      .then(res => {
+        res &&
+          res.data.map(item => {
+            item.formatedAddmissionDate = this.helper.formatDate(
+              item.addmissionDate
+            );
+            item.formatedDischargeDate = this.helper.formatDate(
+              item.dischargeDate
+            );
+            item.fullname = item.patient.fullname;
+            item.address = item.patient.address && item.patient.address.name;
+            return item;
+          });
+        this.setState({
+          first: first,
+          rows: rows,
+          totalRecords: res && res.totalCount,
+          ipds: res && res.data,
+          loading: false
         });
-      this.setState({
-        first: first,
-        rows: rows,
-        totalRecords: res && res.totalCount,
-        ipds: res && res.data,
-        loading: false
       });
-    });
   };
   componentDidMount = e => {
     const month = this.helper.getMonthFromDate(TODAY_DATE);
@@ -80,27 +96,32 @@ export default class MonthlyIpdReport extends Component {
     const { ipds } = this.state;
     return (
       <>
-        <div id="print-div">
-          <div className="row1">
-            <div className="w-50 inline">1</div>
-            <div className="w-50 inline page-break">2</div>
-          </div>
-          <div className="row1">
-            <div className="w-50">1</div>
-            <div className="w-50 page-break">2</div>
-          </div>
-        </div>
         <div className="card">
           <div className="card-body">
-            <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={e => this.setState({ reportType: e.value })} data={ipds} showSummary={false} />
+            <ReportFilter
+              {...this.state}
+              onDateSelection={this.onDateSelection}
+              onReportTypeChange={e => this.setState({ reportType: e.value })}
+              data={ipds}
+              showSummary={false}
+              printRef={this.printRef}
+            />
             <hr />
-            <div id="print-div">
+            <div id="print-div" ref={el => (this.printRef = el)}>
               <div className="row invoice">
                 {ipds &&
                   ipds.map((items, i) => {
                     return (
-                      <div className={`col-md-6 ${i % 2 === 0 ? "vertical-devider" : ""}`} key={i}>
-                        <IpdInvoice InvoiceData={items} index={i % 2 === 0 ? "odd" : "even"} />
+                      <div
+                        className={`col-md-6 ${
+                          i % 2 === 0 ? "vertical-devider" : ""
+                        }`}
+                        key={i}
+                      >
+                        <IpdInvoice
+                          InvoiceData={items}
+                          index={i % 2 === 0 ? "odd" : "even"}
+                        />
                       </div>
                     );
                   })}

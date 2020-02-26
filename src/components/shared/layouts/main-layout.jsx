@@ -7,9 +7,6 @@ export default class MainLayout extends React.Component {
       <section id="container">
         <header className="header fixed-top clearfix">
           <div className="brand">
-            <a href="index-2.html" className="logo">
-              <img src="images/logo.png" alt="" />
-            </a>
             <div className="sidebar-toggle-box">
               <div className="fa fa-bars"></div>
             </div>
@@ -30,7 +27,6 @@ export default class MainLayout extends React.Component {
                   className="dropdown-toggle icon-user"
                   href="{#}"
                 >
-                  <img alt="" src="images/avatar1_small.jpg" />
                   <i className="fa fa-user"></i>
                   <span className="username">John Doe</span>
                   <b className="caret"></b>
@@ -177,11 +173,7 @@ export default class MainLayout extends React.Component {
                 <ul className="widget-container">
                   <li>
                     <div className="prog-row">
-                      <div className="user-thumb">
-                        <a href="{#}">
-                          <img src=" images/avatar1_small.jpg" alt="" />
-                        </a>
-                      </div>
+                      <div className="user-thumb"></div>
                       <div className="user-details">
                         <h4>
                           <a href="{#}">Jonathan Smith</a>
@@ -193,11 +185,7 @@ export default class MainLayout extends React.Component {
                       </div>
                     </div>
                     <div className="prog-row">
-                      <div className="user-thumb">
-                        <a href="{#}">
-                          <img src="images/avatar1.jpg" alt="" />
-                        </a>
-                      </div>
+                      <div className="user-thumb"></div>
                       <div className="user-details">
                         <h4>
                           <a href="{#}">Anjelina Joe</a>
@@ -209,11 +197,7 @@ export default class MainLayout extends React.Component {
                       </div>
                     </div>
                     <div className="prog-row">
-                      <div className="user-thumb">
-                        <a href="{#}">
-                          <img src="images/chat-avatar2.jpg" alt="" />
-                        </a>
-                      </div>
+                      <div className="user-thumb"></div>
                       <div className="user-details">
                         <h4>
                           <a href="{#}">John Doe</a>
@@ -225,11 +209,7 @@ export default class MainLayout extends React.Component {
                       </div>
                     </div>
                     <div className="prog-row">
-                      <div className="user-thumb">
-                        <a href="{#}">
-                          <img src="images/avatar1_small.jpg" alt="" />
-                        </a>
-                      </div>
+                      <div className="user-thumb"></div>
                       <div className="user-details">
                         <h4>
                           <a href="{#}">Mark Henry</a>
@@ -241,11 +221,7 @@ export default class MainLayout extends React.Component {
                       </div>
                     </div>
                     <div className="prog-row">
-                      <div className="user-thumb">
-                        <a href="{#}">
-                          <img src="images/avatar1.jpg" alt="" />
-                        </a>
-                      </div>
+                      <div className="user-thumb"></div>
                       <div className="user-details">
                         <h4>
                           <a href="{#}">Shila Jones</a>

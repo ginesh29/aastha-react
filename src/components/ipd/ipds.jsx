@@ -12,6 +12,7 @@ import { Calendar } from "primereact/calendar";
 import { departmentTypeEnum } from "../../common/enums";
 import IpdForm from "./ipd-form";
 import IpdInvoice from "./ipd-invoice";
+import ReactToPrint from "react-to-print";
 
 export default class Ipds extends Component {
   constructor(props) {
@@ -480,7 +481,21 @@ export default class Ipds extends Component {
           className="p-scroll-dialog"
           style={{ width: "650px" }}
         >
-          {invoiceDialog && <IpdInvoice InvoiceData={selectedIpd} />}
+          {invoiceDialog && (
+            <div id="print-div" ref={el => (this.printRef = el)}>
+              <IpdInvoice InvoiceData={selectedIpd} />
+            </div>
+          )}
+          <div className="modal-footer">
+            <ReactToPrint
+              trigger={() => (
+                <button type="button" className="btn bt-sm btn-secondary">
+                  <i className="fa fa-print"></i> Print Invoice
+                </button>
+              )}
+              content={() => this.printRef}
+            />
+          </div>
         </Dialog>
         {/* <Dialog header="Edit Patient" visible={editDialog} onHide={() => this.setState({ editDialog: false })}>
                     <PatientForm {...this.state} />
