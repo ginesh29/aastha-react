@@ -14,22 +14,15 @@ export default class IpdInvoice extends Component {
     this.repository = new repository();
   }
   getCharges = () => {
-    this.repository
-      .get(
-        "lookups",
-        `filter=type-eq-{${
-          lookupTypeEnum.CHARGENAME.value
-        }} and isDeleted-neq-${true}`
-      )
-      .then(res => {
-        this.setState({ chargeNames: res && res.data });
-      });
+    this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.CHARGENAME.value}} and isDeleted-neq-${true}`).then(res => {
+      this.setState({ chargeNames: res && res.data });
+    });
   };
   componentDidMount = () => {
     this.getCharges();
   };
   render() {
-    const { InvoiceData } = this.props;
+    const { InvoiceData, invoiceClass } = this.props;
     const { chargeNames } = this.state;
     const totalAmount = _.sumBy(InvoiceData.charges, x => x.amount);
     const payableAmount = totalAmount - InvoiceData.discount;
@@ -53,42 +46,36 @@ export default class IpdInvoice extends Component {
           amount: amount
         };
       });
-    let chargesColumns = Object.keys(InvoiceData).filter(m =>
-      m.includes("dynamic-charge")
-    );
+    let chargesColumns = Object.keys(InvoiceData).filter(m => m.includes("dynamic-charge"));
     return (
       InvoiceData && (
-        <>
-          <img
-            src={invoice_header}
-            className="img-fluid"
-            alt="Invoice Header"
-          />
+        <div className={invoiceClass}>
+          <img src={invoice_header} className="img-fluid" alt="Invoice Header" />
           <h3 className="invoice-title">Indoor Invoice</h3>
           <table className="table table-borderless invoice-detail">
             <tbody>
               <tr>
                 <td>
-                  <b>Name :</b> {InvoiceData.patient.fullname}
+                  <label>Name :</label> {InvoiceData.patient.fullname}
                 </td>
                 <td width="200px">
-                  <b>Date :</b> {InvoiceData.formatedDischargeDate}
+                  <label>Date :</label> {InvoiceData.formatedDischargeDate}
                 </td>
               </tr>
               <tr>
                 <td>
-                  <b>Invoice No. :</b> {InvoiceData.uniqueId}
+                  <label>Invoice No. :</label> {InvoiceData.uniqueId}
                 </td>
                 <td>
-                  <b>Address :</b> {InvoiceData.address}
+                  <label>Address :</label> {InvoiceData.address}
                 </td>
               </tr>
               <tr>
                 <td>
-                  <b>Indoor No. :</b> {InvoiceData.invoiceNo}
+                  <label>Indoor No. :</label> {InvoiceData.invoiceNo}
                 </td>
                 <td>
-                  <b>Room Type :</b> {InvoiceData.roomTypeName}
+                  <label>Room Type :</label> {InvoiceData.roomTypeName}
                 </td>
               </tr>
             </tbody>
@@ -111,10 +98,7 @@ export default class IpdInvoice extends Component {
                     <td>{InvoiceData[key].chargeName}</td>
                     <td className="text-right"> {InvoiceData[key].rate}</td>
                     <td className="text-right"> {InvoiceData[key].days}</td>
-                    <td className="text-right">
-                      {" "}
-                      {this.helper.formatCurrency(InvoiceData[key].amount)}
-                    </td>
+                    <td className="text-right"> {this.helper.formatCurrency(InvoiceData[key].amount)}</td>
                   </tr>
                 );
               })}
@@ -131,19 +115,12 @@ export default class IpdInvoice extends Component {
               <tr>
                 <td colSpan="4">Discount</td>
                 <td className="text-right">
-                  <strong>
-                    {" "}
-                    {this.helper.formatCurrency(InvoiceData.discount)}
-                  </strong>
+                  <strong> {this.helper.formatCurrency(InvoiceData.discount)}</strong>
                 </td>
               </tr>
               <tr>
                 <td colSpan="4">
-                  Net Payable Amount :
-                  <span className="text-capitalize">
-                    {" "}
-                    {`${amountInWord} Only`}
-                  </span>
+                  Net Payable Amount :<span className="text-capitalize"> {`${amountInWord} Only`}</span>
                 </td>
                 <td className="text-right">
                   <strong> {this.helper.formatCurrency(payableAmount)}</strong>
@@ -153,12 +130,9 @@ export default class IpdInvoice extends Component {
           </table>
           <div className="d-flex">
             <div className="flex-grow-1">Rececived By</div>
-            <div className="">
-              <label>Dr. Bhaumik Tandel</label>
-            </div>
+            <div className="font-weight-semi-bold">Dr. Bhaumik Tandel</div>
           </div>
-          <div className="page-break"></div>
-        </>
+        </div>
       )
     );
   }

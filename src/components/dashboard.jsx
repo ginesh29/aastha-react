@@ -14,15 +14,13 @@ export default class Dashboard extends React.Component {
   }
   getStatistics = year => {
     const { controller } = this.state;
-    this.repository
-      .get(`${controller}/GetPatientStatistics`, `year=${year}`)
-      .then(res => {
-        this.setState({
-          patientStatistics: res && res.patients,
-          opdStatistics: res && res.opds,
-          ipdStatistics: res && res.ipds
-        });
+    this.repository.get(`${controller}/GetPatientStatistics`, `year=${year}`).then(res => {
+      this.setState({
+        patientStatistics: res && res.patients,
+        opdStatistics: res && res.opds,
+        ipdStatistics: res && res.ipds
       });
+    });
   };
   componentDidMount = () => {
     const year = this.helper.getYearFromDate(TODAY_DATE);
@@ -33,40 +31,16 @@ export default class Dashboard extends React.Component {
   render() {
     const month = Number(this.helper.getMonthFromDate(TODAY_DATE));
     const { patientStatistics, opdStatistics, ipdStatistics } = this.state;
-    const totalPatients =
-      patientStatistics &&
-      patientStatistics.reduce((total, item) => total + item.totalPatient, 0);
-    const totalOpds =
-      opdStatistics &&
-      opdStatistics.reduce((total, item) => total + item.totalPatient, 0);
-    const totalIpds =
-      ipdStatistics &&
-      ipdStatistics.reduce((total, item) => total + item.totalPatient, 0);
+    const totalPatients = patientStatistics && patientStatistics.reduce((total, item) => total + item.totalPatient, 0);
+    const totalOpds = opdStatistics && opdStatistics.reduce((total, item) => total + item.totalPatient, 0);
+    const totalIpds = ipdStatistics && ipdStatistics.reduce((total, item) => total + item.totalPatient, 0);
 
-    const currentMonthPatients =
-      patientStatistics &&
-      patientStatistics
-        .filter(m => m.month === month)
-        .reduce((total, item) => total + item.totalPatient, 0);
-    const currentMonthOpds =
-      opdStatistics &&
-      opdStatistics
-        .filter(m => m.month === month)
-        .reduce((total, item) => total + item.totalPatient, 0);
-    const currentMonthIpds =
-      ipdStatistics &&
-      ipdStatistics
-        .filter(m => m.month === month)
-        .reduce((total, item) => total + item.totalPatient, 0);
-    const currentYearPatients =
-      patientStatistics &&
-      patientStatistics.reduce((total, item) => total + item.totalPatient, 0);
-    const currentYearOpds =
-      opdStatistics &&
-      opdStatistics.reduce((total, item) => total + item.totalPatient, 0);
-    const currentYearIpds =
-      ipdStatistics &&
-      ipdStatistics.reduce((total, item) => total + item.totalPatient, 0);
+    const currentMonthPatients = patientStatistics && patientStatistics.filter(m => m.month === month).reduce((total, item) => total + item.totalPatient, 0);
+    const currentMonthOpds = opdStatistics && opdStatistics.filter(m => m.month === month).reduce((total, item) => total + item.totalPatient, 0);
+    const currentMonthIpds = ipdStatistics && ipdStatistics.filter(m => m.month === month).reduce((total, item) => total + item.totalPatient, 0);
+    const currentYearPatients = patientStatistics && patientStatistics.reduce((total, item) => total + item.totalPatient, 0);
+    const currentYearOpds = opdStatistics && opdStatistics.reduce((total, item) => total + item.totalPatient, 0);
+    const currentYearIpds = ipdStatistics && ipdStatistics.reduce((total, item) => total + item.totalPatient, 0);
     return (
       <div className="card">
         <div className="card-body">
@@ -89,9 +63,9 @@ export default class Dashboard extends React.Component {
                     <i className="fa fa-bar-chart"></i>
                   </div>
                   <div className="num">{totalOpds}</div>
-                  <h3>OPD Patients</h3>
-                  <p>Current Month OPD Patients {currentMonthOpds}</p>
-                  <p>Current Year OPD Patients {currentYearOpds}</p>
+                  <h3>Opd Patients</h3>
+                  <p>Current Month Opd Patients {currentMonthOpds}</p>
+                  <p>Current Year Opd Patients {currentYearOpds}</p>
                 </div>
               </div>
               <div className="col-md-4">
