@@ -102,12 +102,13 @@ export default class Prescription extends React.Component {
   };
 
   handleMedicineChange = (e, weight) => {
-    const { isValidationFired, medicineFormFields } = this.state;
+    const { isValidationFired, medicineFormFields, medicineData } = this.state;
     const { medicineInstructions, medicineInstructionsValue } = this.state.medicineFormFields;
     let fields = medicineFormFields;
     fields[e.target.name] = e.target.value;
+    debugger;
     if (e.target.name === "medicineType") {
-      this.bindMedicineName(e.target.value.value);
+      e.target.value && this.bindMedicineName(e.target.value.value);
     } else if (e.target.name === "medicineInstructions") {
       let selectedInstructions = [...medicineInstructions];
       let selectedInstructionsValue = [...medicineInstructionsValue];
@@ -120,6 +121,13 @@ export default class Prescription extends React.Component {
       }
       fields[e.target.name] = selectedInstructions;
       fields.medicineInstructionsValue = selectedInstructionsValue;
+    } else if (e.target.name === "qty") {
+      medicineData
+        .filter(m => m.id === Number(e.target.id))
+        .map(item => {
+          item.qty = e.target.value;
+          return item;
+        });
     }
     this.setState({
       medicineFormFields: fields
@@ -316,7 +324,7 @@ export default class Prescription extends React.Component {
   };
   render() {
     const { patient, date, clinicDetail, followup, advices, followupInstruction, followupDate } = this.state.formFields;
-    const { medicineType, days, medicineName, medicineInstructions } = this.state.medicineFormFields;
+    const { id, medicineType, days, medicineName, medicineInstructions } = this.state.medicineFormFields;
     const { medicineTypeOptions, medicineNameOptions, medicineData, validationErrors, editDialog, adviceOptions, appointmentCalendarDialog, appointments } = this.state;
     const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
     const appointmentTypeOptions = this.helper.enumToObject(appointmentTypeEnum);
@@ -338,11 +346,13 @@ export default class Prescription extends React.Component {
     };
     this.options.dateClick = dateClickInfo => {
       const { formFields } = this.state;
+      let followupDate = this.helper.formatDate(dateClickInfo.date);
       this.setState({
         appointmentCalendarDialog: false,
         formFields: {
           ...formFields,
-          followupDate: this.helper.formatDate(dateClickInfo.date)
+          followupInstruction: `ફરી ${followupDate} ના રોજ બતાવવા આવવું`,
+          followupDate: followupDate
         }
       });
     };
@@ -389,7 +399,7 @@ export default class Prescription extends React.Component {
                 </div>
                 <div className="row">
                   <div className="col-md-2">
-                    <label> Advice : </label>
+                    <span className="font-weight-semi-bold"> Advice : </span>
                   </div>
                   <div className="col-md-10">
                     {adviceOptions &&
@@ -405,10 +415,10 @@ export default class Prescription extends React.Component {
                       })}
                   </div>
                 </div>
-                <hr />
-                <div className="row">
+
+                <div className="row mt-3">
                   <div className="col-md-2">
-                    <label>Follow&nbsp;up&nbsp;:</label>
+                    <span className="font-weight-semi-bold">Follow&nbsp;up&nbsp;:</span>
                   </div>
                   <div className="col-md-10">
                     <div className="followup-check">
@@ -506,15 +516,15 @@ export default class Prescription extends React.Component {
                 </table>
                 <h4>Rx</h4>
                 <div>
-                  <table className="table medicine-table">
+                  <table className="table table-borderless table-sm medicine-table">
                     <thead>
                       <tr>
-                        <th width="10px"></th>
+                        <th width="100px"></th>
                         <th></th>
-                        <th width="30px" className="text-right">
+                        <th width="50px" className="text-right">
                           Days
                         </th>
-                        <th width="30px" className="text-right">
+                        <th width="50px" className="text-right">
                           Qty
                         </th>
                       </tr>
@@ -525,14 +535,13 @@ export default class Prescription extends React.Component {
                           return (
                             <tr key={i}>
                               <td className="align-top">{item.medicineType.label}</td>
-                              <td>
+                              <td className="text-left">
                                 {item.medicineName.label}
                                 <br />
                                 <span className="gujarati-text">{item.medicineInstructions.join(" --- ")}</span>
                               </td>
                               <td className="text-right">{item.days}</td>
                               <td className="text-right">{item.qty}</td>
-                              <td width="1%" className="hidden-print"></td>
                             </tr>
                           );
                         })}
@@ -558,7 +567,7 @@ export default class Prescription extends React.Component {
                     <table>
                       <tbody>
                         <tr>
-                          <th width="80px">Follow up&nbsp;:&nbsp;</th>
+                          <th width="80px">Follow&nbsp;up&nbsp;:&nbsp;</th>
                           <td className="gujarati-text align-bottom">{followupInstruction}</td>
                         </tr>
                       </tbody>
@@ -590,18 +599,17 @@ export default class Prescription extends React.Component {
                           <InputField name="days" title="Days" value={days} onChange={this.handleMedicineChange} {...this.state} keyfilter="pint" />
                         </div>
                         <div>
-                          <button className="btn btn-sm btn-secondary" type="button" onClick={this.addMedicine} style={{ marginTop: "30px" }}>
-                            {" "}
-                            <i className="fa fa-plus"></i>
+                          <button className="btn btn-secondary" type="button" onClick={this.addMedicine} style={{ marginTop: "30px" }}>
+                            <i className={`fa ${id ? "fa-save" : "fa-plus"}`}></i>
                           </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="row gujarati-text">
+                  <div className="row gujarati-text mt-3">
                     {medicineInstructionOptions.map((item, i) => {
                       return (
-                        <div className={`instruction-check col-md-${item.label.length < 15 ? "3" : item.label.length <= 35 ? "6" : "12"}`} key={i + 1}>
+                        <div className={`instruction-check col-md-${item.label.length < 15 ? "3" : item.label.length <= 35 ? "6" : "12"} mb-1`} key={i + 1}>
                           <Checkbox inputId={`instruction${i}`} name="medicineInstructions" value={item.label} checked={medicineInstructions.includes(item.label)} onChange={e => this.handleMedicineValidation() && this.handleMedicineChange(e, item.value)} />
                           <label htmlFor={`instruction${i}`} className="p-radiobutton-label">
                             {item.label}
@@ -612,7 +620,7 @@ export default class Prescription extends React.Component {
                   </div>
                 </div>
                 <div className="col-md-6">
-                  <table className="table">
+                  <table className="table table-sm">
                     <thead>
                       <tr>
                         <th width="10px"></th>
@@ -623,6 +631,7 @@ export default class Prescription extends React.Component {
                         <th width="55px" className="text-right">
                           Qty
                         </th>
+                        <th width="50px"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -631,7 +640,7 @@ export default class Prescription extends React.Component {
                           return (
                             <tr key={i}>
                               <td className="align-top">{item.medicineType.label}</td>
-                              <td>
+                              <td className="text-left">
                                 {item.medicineName.label}
                                 <br />
                                 <span className="gujarati-text">{item.medicineInstructions.join(" --- ")}</span>
@@ -639,6 +648,7 @@ export default class Prescription extends React.Component {
                               <td className="text-right">{item.days}</td>
                               <td className="text-right">
                                 <InputText
+                                  id={item.id}
                                   name="qty"
                                   type="text"
                                   keyfilter="pint"
@@ -651,12 +661,12 @@ export default class Prescription extends React.Component {
                                   }}
                                 />
                               </td>
-                              <td width="55px" className="no-print">
-                                <button className="icon-button" type="button" onClick={() => this.editMedicine(item.id)}>
-                                  <i className="pi pi-pencil" />
+                              <td width="100px" className="no-print">
+                                <button className="btn btn-secondary btn-grid mr-2" type="button" onClick={() => this.editMedicine(item.id)}>
+                                  <i className="fa fa-pencil" />
                                 </button>
-                                <button className="icon-button" type="button" onClick={() => this.removeMedicine(item.id)}>
-                                  <i className="pi pi-times" />
+                                <button className="btn btn-danger btn-grid mr-2" type="button" onClick={() => this.removeMedicine(item.id)}>
+                                  <i className="fa fa-times" />
                                 </button>
                               </td>
                             </tr>

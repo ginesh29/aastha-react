@@ -123,7 +123,7 @@ export default class OpdReport extends Component {
             <hr />
             <div id="print-div" ref={el => (this.printRef = el)}>
               <h3 className="report-header">Opd Report {reportTitle}</h3>
-              <table className="table table-bordered report-table">
+              <table className="table table-bordered report-table table-sm">
                 <thead>
                   <tr>
                     <th>Invoice No</th>
@@ -206,7 +206,7 @@ export default class OpdReport extends Component {
         </div>
         <OverlayPanel ref={el => (this.op = el)} showCloseIcon={true}>
           <label> Opd Report Summary</label>
-          <table className="table table-bordered report-table">
+          <table className="table table-bordered report-table table-sm">
             <thead>
               <tr>
                 <th>Date</th>
