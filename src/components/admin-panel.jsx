@@ -84,6 +84,8 @@ export default class AdminPanel extends Component {
             rows: rows,
             totalRecords: res && res.totalCount,
             lookups: res && res.data,
+            startNo: res && res.startPage,
+            endNo: res && res.endPage,
             loading: false
           },
           () => {
@@ -317,7 +319,9 @@ export default class AdminPanel extends Component {
       lookupType,
       selectedType,
       medicineTypeOptions,
-      selectedLookup
+      selectedLookup,
+      startNo,
+      endNo
     } = this.state;
     let linkUrl = isArchive ? "/admin-panel" : "/archive-admin-panel";
     let buttonText = !isArchive ? "Archived Lookups" : "Lookups";
@@ -347,13 +351,13 @@ export default class AdminPanel extends Component {
         />
       </div>
     );
-    const startNo = first + 1;
-    const endNo = totalRecords > rows ? first + rows : totalRecords;
     let paginatorRight = totalRecords && (
       <div className="m-1">
-        Showing {this.helper.formatAmount(startNo)} to{" "}
-        {this.helper.formatAmount(endNo)} of{" "}
-        {this.helper.formatAmount(totalRecords)} records
+        {`Showing ${this.helper.formatAmount(
+          startNo
+        )} to ${this.helper.formatAmount(endNo)} of ${this.helper.formatAmount(
+          totalRecords
+        )} records`}
       </div>
     );
     return (

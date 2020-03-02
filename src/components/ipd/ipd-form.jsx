@@ -717,7 +717,6 @@ export default class IpdForm extends React.Component {
                     <tr key={index}>
                       <th>{index + 1}</th>
                       <td>{item.label}</td>
-                      {console.log(rate)}
                       <td>
                         <InputText
                           type="text"
