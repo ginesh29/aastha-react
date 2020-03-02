@@ -1,21 +1,20 @@
-
 import interactionPlugin from "@fullcalendar/interaction";
-import dayGridPlugin from '@fullcalendar/daygrid';
+import dayGridPlugin from "@fullcalendar/daygrid";
 export const BASE_API_URL = {
   development: "http://localhost:61194/api",
   production: "http://localhost:8082/api"
 };
 export const ROWS = 10;
-export const TODAY_DATE = new Date()
-TODAY_DATE.setFullYear(TODAY_DATE.getFullYear() - 1);
-export const TEN_YEAR_RANGE = `${ TODAY_DATE.getFullYear() - 10 }:${ TODAY_DATE.getFullYear() + 10 }`;
+export const TODAY_DATE = new Date();
+// TODAY_DATE.setFullYear(TODAY_DATE.getFullYear() - 1);
+export const TEN_YEAR_RANGE = `${TODAY_DATE.getFullYear() - 10}:${TODAY_DATE.getFullYear() + 10}`;
 
 export const FULLCALENDAR_OPTION = {
   firstDay: 1,
   eventLimit: 6,
   hiddenDays: [0],
   plugins: [dayGridPlugin, interactionPlugin]
-}
+};
 
 //Title
 export const PATIENT_REGISTRATION_TITLE = "Patient Registration";
