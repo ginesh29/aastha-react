@@ -6,12 +6,14 @@ import { Growl } from 'primereact/growl';
 import { Messages } from 'primereact/messages';
 import $ from "jquery";
 
+const env = process.env.NODE_ENV;
 export class repository
 {
+
     get(controller, querystring)
     {
         ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
-        return axios.get(`${ BASE_API_URL }/${ controller }?${ querystring }`)
+        return axios.get(`${ BASE_API_URL[env] }/${ controller }?${ querystring }`)
             .then(res => res.data.Result)
             .catch(error => this.handleError(error))
     }
@@ -21,7 +23,7 @@ export class repository
         $("#errors").remove();
         ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
         if (!model.id)
-            return axios.post(`${ BASE_API_URL }/${ controller }`, model, config)
+            return axios.post(`${ BASE_API_URL[env] }/${ controller }`, model, config)
                 .then(res =>
                 {
                     if (config && config.responseType === "blob") {
@@ -34,7 +36,7 @@ export class repository
                     }
                 }).catch(error => this.handleError(error))
         else
-            return axios.put(`${ BASE_API_URL }/${ controller }`, model)
+            return axios.put(`${ BASE_API_URL[env] }/${ controller }`, model)
                 .then(res =>
                 {
                     this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
@@ -45,7 +47,7 @@ export class repository
     delete(controller, querystring)
     {
         ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
-        return axios.delete(`${ BASE_API_URL }/${ controller }/${ querystring }`)
+        return axios.delete(`${ BASE_API_URL[env] }/${ controller }/${ querystring }`)
             .then(res =>
             {
                 this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
