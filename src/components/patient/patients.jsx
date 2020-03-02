@@ -50,6 +50,8 @@ export default class Patients extends Component {
           rows: rows,
           totalRecords: res && res.totalCount,
           patients: res && res.data,
+          startNo: res && res.startPage,
+          endNo: res && res.endPage,
           loading: false
         });
       });
@@ -68,7 +70,6 @@ export default class Patients extends Component {
           res.data.map(function(item) {
             return { value: item.id, label: item.name };
           });
-        // addresses && addresses.splice(0, 0, )
         this.setState({
           addressOptions: res && [{ value: null, label: "[All]" }, ...addresses]
         });
@@ -251,7 +252,9 @@ export default class Patients extends Component {
       selectedPatient,
       includeProperties,
       selectedAddress,
-      addressOptions
+      addressOptions,
+      startNo,
+      endNo
     } = this.state;
     let addressFilter = (
       <Dropdown
@@ -268,8 +271,6 @@ export default class Patients extends Component {
     let panelTitle = isArchive ? "Archived Patients" : "Patients";
     let buttonText = !isArchive ? "Archived Patients" : "Patients";
     let action = isArchive ? "restore" : "delete";
-    const startNo = first + 1;
-    const endNo = totalRecords > rows ? first + rows : totalRecords;
     const deleteDialogFooter = (
       <div>
         <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
@@ -283,9 +284,11 @@ export default class Patients extends Component {
     );
     let paginatorRight = totalRecords && (
       <div className="m-1">
-        Showing {this.helper.formatAmount(startNo)} to{" "}
-        {this.helper.formatAmount(endNo)} of{" "}
-        {this.helper.formatAmount(totalRecords)} records
+        {`Showing ${this.helper.formatAmount(
+          startNo
+        )} to ${this.helper.formatAmount(endNo)} of ${this.helper.formatAmount(
+          totalRecords
+        )} records`}
       </div>
     );
     return (

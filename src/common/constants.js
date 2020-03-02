@@ -1,7 +1,10 @@
 
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from '@fullcalendar/daygrid';
-export const BASE_API_URL = "http://localhost:61194/api";
+export const BASE_API_URL = {
+  development: "http://localhost:61194/api",
+  production: "http://localhost:8082/api"
+};
 export const ROWS = 10;
 export const TODAY_DATE = new Date()
 TODAY_DATE.setFullYear(TODAY_DATE.getFullYear() - 1);
@@ -11,7 +14,6 @@ export const FULLCALENDAR_OPTION = {
   firstDay: 1,
   eventLimit: 6,
   hiddenDays: [0],
-  // height: 1000,
   plugins: [dayGridPlugin, interactionPlugin]
 }
 
