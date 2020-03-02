@@ -62,8 +62,6 @@ hr {
 .statistics-table td {
   padding: 8px !important;
 }
-.report-table th,
-.report-table td,
 .invoice-table th,
 .invoice-table td {
   padding: 4px !important;
@@ -201,8 +199,11 @@ hr {
     vertical-align: top !important;
     font-size: 12pt !important;
   }
-
-  .page-break {
-    page-break-after: always !important;
+  .thead-dark th {
+    background-color: #343a40 !important;
+    color: #fff !important;
+  }
+  .invoice-footer td {
+    background-color: rgba(0, 0, 0, 0.075) !important;
   }
 }

@@ -526,8 +526,8 @@ export default class Opds extends Component {
                     </tr>
                   </tbody>
                 </table>
-                <table className="table table-bordered invoice-table">
-                  <thead>
+                <table className="table table-bordered invoice-table table-sm">
+                  <thead className="thead-dark">
                     <tr>
                       <th width="10px">No.</th>
                       <th>Description</th>
@@ -567,7 +567,7 @@ export default class Opds extends Component {
                       <td className="text-right">{selectedOpd.otherCharge}</td>
                     </tr>
                   </tbody>
-                  <tfoot>
+                  <tfoot className="invoice-footer">
                     <tr>
                       <td colSpan="2" className="text-capitalize">
                         Grand Total &nbsp;|{" "}
