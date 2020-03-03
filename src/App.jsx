@@ -1,0 +1,55 @@
+import React, { Component } from "react";
+import { Route, Redirect } from "react-router-dom";
+
+//import LoginLayoutRoute from "./components/shared/layouts/LoginLayout";
+import MainLayout from "./components/shared/layouts/main-layout";
+
+import Dashboard from "./components/dashboard";
+import Patients from "./components/patient/patients";
+import PatientContainer from "./components/patient/patient-container";
+import Prescription from "./components/prescription";
+import AdminPanel from "./components/admin-panel";
+import OpdContainer from "./components/opd/opd-container";
+import IpdContainer from "./components/ipd/ipd-container";
+import Opds from "./components/opd/opds";
+import Ipds from "./components/ipd/ipds";
+import OpdReport from "./components/report/opd-report";
+import IpdReport from "./components/report/ipd-report";
+import MonthlyIpdReport from "./components/report/monthly-ipd-report";
+import Appointments from "./components/appointment/appointments";
+import Statistics from "./components/statistics";
+
+export default class App extends Component {
+  render() {
+    return (
+      <MainLayout>
+        <Route exact path="/">
+          <Redirect to="/dashboard" />
+        </Route>
+        <Route path="/dashboard" component={Dashboard} />
+
+        <Route path="/add-patient" component={PatientContainer} />
+        <Route path="/patients" component={Patients} />
+        <Route path="/archive-patients" component={Patients} />
+
+        <Route path="/add-opd" component={OpdContainer} />
+        <Route path="/opds" component={Opds} />
+        <Route path="/archive-opds" component={Opds} />
+
+        <Route path="/add-ipd" component={IpdContainer} />
+        <Route path="/ipds" component={Ipds} />
+        <Route path="/archive-ipds" component={Ipds} />
+
+        <Route path="/admin-panel" component={AdminPanel} />
+        <Route path="/archive-admin-panel" component={AdminPanel} />
+
+        <Route path="/prescription" component={Prescription} />
+        <Route path="/appointments" component={Appointments} />
+        <Route path="/statistics" component={Statistics} />
+        <Route path="/opd-report" component={OpdReport} />
+        <Route path="/ipd-report" component={IpdReport} />
+        <Route path="/monthly-ipd-report" component={MonthlyIpdReport} />
+      </MainLayout>
+    );
+  }
+}
