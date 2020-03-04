@@ -19,36 +19,46 @@ import MonthlyIpdReport from "./components/report/monthly-ipd-report";
 import Appointments from "./components/appointment/appointments";
 import Statistics from "./components/statistics";
 
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        true ? <Component {...props} /> : <Redirect to="/login" />
+      }
+    />
+  );
+};
 export default class App extends Component {
   render() {
     return (
       <MainLayout>
-        <Route exact path="/">
+        <PrivateRoute exact path="/">
           <Redirect to="/dashboard" />
-        </Route>
-        <Route path="/dashboard" component={Dashboard} />
+        </PrivateRoute>
+        <PrivateRoute path="/dashboard" component={Dashboard} />
 
-        <Route path="/add-patient" component={PatientContainer} />
-        <Route path="/patients" component={Patients} />
-        <Route path="/archive-patients" component={Patients} />
+        <PrivateRoute path="/add-patient" component={PatientContainer} />
+        <PrivateRoute path="/patients" component={Patients} />
+        <PrivateRoute path="/archive-patients" component={Patients} />
 
-        <Route path="/add-opd" component={OpdContainer} />
-        <Route path="/opds" component={Opds} />
-        <Route path="/archive-opds" component={Opds} />
+        <PrivateRoute path="/add-opd" component={OpdContainer} />
+        <PrivateRoute path="/opds" component={Opds} />
+        <PrivateRoute path="/archive-opds" component={Opds} />
 
-        <Route path="/add-ipd" component={IpdContainer} />
-        <Route path="/ipds" component={Ipds} />
-        <Route path="/archive-ipds" component={Ipds} />
+        <PrivateRoute path="/add-ipd" component={IpdContainer} />
+        <PrivateRoute path="/ipds" component={Ipds} />
+        <PrivateRoute path="/archive-ipds" component={Ipds} />
 
-        <Route path="/admin-panel" component={AdminPanel} />
-        <Route path="/archive-admin-panel" component={AdminPanel} />
+        <PrivateRoute path="/admin-panel" component={AdminPanel} />
+        <PrivateRoute path="/archive-admin-panel" component={AdminPanel} />
 
-        <Route path="/prescription" component={Prescription} />
-        <Route path="/appointments" component={Appointments} />
-        <Route path="/statistics" component={Statistics} />
-        <Route path="/opd-report" component={OpdReport} />
-        <Route path="/ipd-report" component={IpdReport} />
-        <Route path="/monthly-ipd-report" component={MonthlyIpdReport} />
+        <PrivateRoute path="/prescription" component={Prescription} />
+        <PrivateRoute path="/appointments" component={Appointments} />
+        <PrivateRoute path="/statistics" component={Statistics} />
+        <PrivateRoute path="/opd-report" component={OpdReport} />
+        <PrivateRoute path="/ipd-report" component={IpdReport} />
+        <PrivateRoute path="/monthly-ipd-report" component={MonthlyIpdReport} />
       </MainLayout>
     );
   }
