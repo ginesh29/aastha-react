@@ -101,10 +101,7 @@ export default class IpdForm extends React.Component {
     }
     const grandTotal =
       chargeFormFields &&
-      chargeFormFields.reduce(
-        (total, item) => (total + item.amount ? Number(item.amount) : 0),
-        0
-      );
+      chargeFormFields.reduce((total, item) => total + item.amount, 0);
     const amountPaid = grandTotal - formFields.discount;
     this.setState({
       chargeFormFields: charges,
@@ -160,7 +157,7 @@ export default class IpdForm extends React.Component {
         } else return { lookupId: item };
       });
       const deliveryDetail = {
-        id: deliveryId ? deliveryId : "",
+        id: deliveryId ? deliveryId : null,
         ipdId: id,
         date: this.helper.formatDate(deliveryDate, "en-US"),
         time: this.helper.formatTime(deliveryTime),
@@ -169,7 +166,7 @@ export default class IpdForm extends React.Component {
       };
 
       const operationDetail = {
-        id: operationId ? operationId : "",
+        id: operationId ? operationId : null,
         ipdId: id,
         date: this.helper.formatDate(operationDate, "en-US")
       };
