@@ -84,7 +84,7 @@ export default class MonthlyIpdReport extends Component {
           <div className="card-body">
             <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={e => this.setState({ reportType: e.value })} data={ipds} showSummary={false} printRef={this.printRef} />
             <hr />
-            <div id="print-div" ref={el => (this.printRef = el)}>
+            <div ref={el => (this.printRef = el)}>
               <div className="row monthly-invoice">
                 {ipds &&
                   ipds.map((items, i) => {
