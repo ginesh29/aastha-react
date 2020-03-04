@@ -7,19 +7,25 @@ import { Messages } from 'primereact/messages';
 import $ from "jquery";
 
 const env = process.env.NODE_ENV;
+const headerConfig = {
+    headers: { 'Authorization': `Bearer ${ localStorage.getItem("token") }` }
+}
 export class repository
 {
-
     get(controller, querystring)
     {
         ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
-        return axios.get(`${ BASE_API_URL[env] }/${ controller }?${ querystring }`)
+        return axios.get(`${ BASE_API_URL[env] }/${ controller }?${ querystring }`, headerConfig)
             .then(res => res.data.Result)
             .catch(error => this.handleError(error))
     }
 
     post(controller, model, config)
     {
+        if (config)
+            config.headers = { 'Authorization': `Bearer ${ localStorage.getItem("token") }` }
+        else
+            config = headerConfig;
         $("#errors").remove();
         ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
         if (!model.id)
@@ -47,7 +53,7 @@ export class repository
     delete(controller, querystring)
     {
         ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
-        return axios.delete(`${ BASE_API_URL[env] }/${ controller }/${ querystring }`)
+        return axios.delete(`${ BASE_API_URL[env] }/${ controller }/${ querystring }`, headerConfig)
             .then(res =>
             {
                 this.growl.show({ severity: 'success', summary: 'Success Message', detail: res.data.Message });
@@ -62,20 +68,29 @@ export class repository
             $("#errors").remove();
             if ($(".p-dialog-content:visible").length)
                 $(".p-dialog-content:visible").prepend('<div id="errors"></div>');
-            else if ($(".p-panel-content").length)
-                $(".p-panel-content").prepend('<div id="errors"></div>');
+            else if ($(".p-panel-content:visible").length)
+                $(".p-panel-content:visible").prepend('<div id="errors"></div>');
+            else if ($(".card").length)
+                $(".card").prepend('<div id="errors"></div>');
             ReactDOM.render(<Messages ref={(el) => this.errors = el} />, document.getElementById("errors"));
-
-            let errorResult = error.response.data;
-            let errors = errorResult.ValidationSummary;
-            errors && Object.keys(errors).map((item, i) => (
-                errors && this.errors.show({ severity: 'warn', summary: errorResult.Message, detail: errors[item], sticky: true })
-            ))
-            return { errors: errors };
+            if (error.response.data) {
+                let errorResult = error.response.data;
+                let errors = errorResult.ValidationSummary;
+                errors && Object.keys(errors).map((item, i) => (
+                    errors && this.errors.show({ severity: 'warn', summary: errorResult.Message, detail: errors[item], sticky: true })
+                ))
+                return { errors: errors };
+            }
+            else {
+                if (error.response.status === 401) {
+                    const returnUrl = window.location.pathname.replace("/", "");
+                    window.location.href = `/login?returnUrl=${ returnUrl }`;
+                    this.messages.show({ severity: 'error', summary: 'Authorization error', detail: "Please Login again", sticky: true })
+                }
+            }
         } else if (error.request) {
             if ($("#messages div").is(':empty'))
                 this.messages.show({ severity: 'error', summary: 'Server error', detail: "Please check internet connection", sticky: true })
-        } else {
         }
     }
 }

@@ -57,7 +57,7 @@ export default class ReportFilter extends Component {
           <div className="col-md-7">
             <div className="p-inputgroup float-right">
               <div className="form-group">
-                {data && data.length && showSummary !== false && (
+                {data && data.length && showSummary !== false ? (
                   <Button
                     icon="pi pi-info"
                     className="p-button-primary"
@@ -65,6 +65,8 @@ export default class ReportFilter extends Component {
                     tooltip="Show summary"
                     tooltipOptions={{ position: "bottom" }}
                   />
+                ) : (
+                  ""
                 )}
                 {reportType === reportTypeEnum.DAILY.value && (
                   <Calendar
@@ -104,7 +106,7 @@ export default class ReportFilter extends Component {
                     readOnlyInput={true}
                   />
                 )}
-                {data && data.length && (
+                {data && data.length ? (
                   <ReactToPrint
                     trigger={() => (
                       <Button
@@ -115,14 +117,18 @@ export default class ReportFilter extends Component {
                     )}
                     content={() => printRef}
                   />
+                ) : (
+                  ""
                 )}
-                {data && data.length && showSummary !== false && (
+                {data && data.length && showSummary !== false ? (
                   <Button
                     icon="pi pi-file-excel"
                     className="p-button-primary"
                     onClick={exportReport}
                     tooltip="Export to excel"
                   />
+                ) : (
+                  ""
                 )}
               </div>
             </div>

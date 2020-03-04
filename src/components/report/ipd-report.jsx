@@ -115,7 +115,7 @@ export default class IpdReport extends Component {
   };
   exportReport = () => {
     const { controller, reportTitle, ipds } = this.state;
-    this.repository.file(`${controller}/ExportReport`, ipds).then(res => {
+    this.repository.post(`${controller}/ExportReport`, ipds).then(res => {
       const downloadUrl = window.URL.createObjectURL(new Blob([res]));
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -150,7 +150,6 @@ export default class IpdReport extends Component {
           },
           item
         );
-        //delete item.charges;
         return item;
       });
       let ipdGroupByDate = _.groupBy(mapWithCharge, "formatedDischargeDate");
