@@ -474,7 +474,7 @@ export default class IpdForm extends React.Component {
             <div className="col-md-4">
               <InputField
                 name="uniqueId"
-                title="Invoice No."
+                title="Indoor No."
                 value={uniqueId || ""}
                 onChange={this.handleChange}
                 {...this.state}

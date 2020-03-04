@@ -11,7 +11,7 @@ export default class OpdReport extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      reportType: reportTypeEnum.MONTHLY.value,
+      reportType: reportTypeEnum.DAILY.value,
       opds: [],
       loading: true,
       filterString: "",
@@ -27,37 +27,52 @@ export default class OpdReport extends Component {
     this.helper = new helper();
   }
   getOpds = () => {
-    const { filterString, sortString, includeProperties, controller } = this.state;
-    this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`).then(res => {
-      res &&
-        res.data.map(item => {
-          item.formatedOpdDate = this.helper.formatDate(item.date);
-          item.fullname = item.patient.fullname;
-          return item;
+    const {
+      filterString,
+      sortString,
+      includeProperties,
+      controller
+    } = this.state;
+    this.repository
+      .get(
+        controller,
+        `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`
+      )
+      .then(res => {
+        res &&
+          res.data.map(item => {
+            item.formatedOpdDate = this.helper.formatDate(item.date);
+            item.fullname = item.patient.fullname;
+            return item;
+          });
+        this.setState({
+          opds: res && res.data,
+          loading: false
         });
-      this.setState({
-        opds: res && res.data,
-        loading: false
       });
-    });
   };
   exportReport = () => {
     const { controller, reportTitle, opds, config } = this.state;
-    this.repository.post(`${controller}/ExportReport`, opds, config).then(res => {
-      const downloadUrl = window.URL.createObjectURL(new Blob([res]));
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.setAttribute("download", `Opd Report ${reportTitle.split("/").join("-")}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    });
+    this.repository
+      .post(`${controller}/ExportReport`, opds, config)
+      .then(res => {
+        const downloadUrl = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.setAttribute(
+          "download",
+          `Opd Report ${reportTitle.split("/").join("-")}.xlsx`
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      });
   };
   componentDidMount = e => {
-    const month = this.helper.getMonthFromDate(TODAY_DATE);
-    const year = this.helper.getYearFromDate(TODAY_DATE);
-    const filter = `Date.Month-eq-{${month}} and Date.Year-eq-{${year}}`;
-    this.setState({ filterString: filter, reportTitle: `${month}/${year}` }, () => {
+    const date = this.helper.formatDate(TODAY_DATE, "en-US");
+    const title = this.helper.formatDate(TODAY_DATE);
+    const filter = `Date-eq-{${date}}`;
+    this.setState({ filterString: filter, reportTitle: title }, () => {
       this.getOpds();
     });
   };
@@ -100,26 +115,75 @@ export default class OpdReport extends Component {
       result.opdDate = key;
       result.data = items;
       result.count = items.length;
-      result.consultCharge = items.reduce((total, item) => total + Number(item.consultCharge), 0);
-      result.usgCharge = items.reduce((total, item) => total + Number(item.usgCharge), 0);
-      result.uptCharge = items.reduce((total, item) => total + Number(item.uptCharge), 0);
-      result.injectionCharge = items.reduce((total, item) => total + Number(item.injectionCharge), 0);
-      result.otherCharge = items.reduce((total, item) => total + Number(item.otherCharge), 0);
-      result.totalCharge = items.reduce((total, item) => total + Number(item.totalCharge), 0);
+      result.consultCharge = items.reduce(
+        (total, item) => total + Number(item.consultCharge),
+        0
+      );
+      result.usgCharge = items.reduce(
+        (total, item) => total + Number(item.usgCharge),
+        0
+      );
+      result.uptCharge = items.reduce(
+        (total, item) => total + Number(item.uptCharge),
+        0
+      );
+      result.injectionCharge = items.reduce(
+        (total, item) => total + Number(item.injectionCharge),
+        0
+      );
+      result.otherCharge = items.reduce(
+        (total, item) => total + Number(item.otherCharge),
+        0
+      );
+      result.totalCharge = items.reduce(
+        (total, item) => total + Number(item.totalCharge),
+        0
+      );
       return result;
     });
-    const opdCount = opdData.reduce((total, item) => total + Number(item.count), 0);
-    const consultChargeTotal = opdData.reduce((total, item) => total + Number(item.consultCharge), 0);
-    const usgChargeTotal = opdData.reduce((total, item) => total + Number(item.usgCharge), 0);
-    const uptChargeTotal = opdData.reduce((total, item) => total + Number(item.uptCharge), 0);
-    const injectionChargeTotal = opdData.reduce((total, item) => total + Number(item.injectionCharge), 0);
-    const otherChargeTotal = opdData.reduce((total, item) => total + Number(item.otherCharge), 0);
-    const amountChargeTotal = opdData.reduce((total, item) => total + Number(item.totalCharge), 0);
+    const opdCount = opdData.reduce(
+      (total, item) => total + Number(item.count),
+      0
+    );
+    const consultChargeTotal = opdData.reduce(
+      (total, item) => total + Number(item.consultCharge),
+      0
+    );
+    const usgChargeTotal = opdData.reduce(
+      (total, item) => total + Number(item.usgCharge),
+      0
+    );
+    const uptChargeTotal = opdData.reduce(
+      (total, item) => total + Number(item.uptCharge),
+      0
+    );
+    const injectionChargeTotal = opdData.reduce(
+      (total, item) => total + Number(item.injectionCharge),
+      0
+    );
+    const otherChargeTotal = opdData.reduce(
+      (total, item) => total + Number(item.otherCharge),
+      0
+    );
+    const amountChargeTotal = opdData.reduce(
+      (total, item) => total + Number(item.totalCharge),
+      0
+    );
     return (
       <>
         <div className="card">
           <div className="card-body">
-            <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={e => this.setState({ reportType: e.value }, () => this.getOpds())} onShowSummary={e => this.op.toggle(e)} data={opdData} exportReport={this.exportReport} printRef={this.printRef} />
+            <ReportFilter
+              {...this.state}
+              onDateSelection={this.onDateSelection}
+              onReportTypeChange={e =>
+                this.setState({ reportType: e.value }, () => this.getOpds())
+              }
+              onShowSummary={e => this.op.toggle(e)}
+              data={opdData}
+              exportReport={this.exportReport}
+              printRef={this.printRef}
+            />
             <hr />
             <div id="print-div" ref={el => (this.printRef = el)}>
               <h3 className="report-header">Opd Report {reportTitle}</h3>
@@ -157,12 +221,24 @@ export default class OpdReport extends Component {
                               <td>{subitem.invoiceNo}</td>
                               <td>{subitem.fullname}</td>
                               <td>{subitem.caseTypeName}</td>
-                              <td className="text-right">{subitem.consultCharge}</td>
-                              <td className="text-right">{subitem.usgCharge} </td>
-                              <td className="text-right">{subitem.uptCharge}</td>
-                              <td className="text-right">{subitem.injectionCharge}</td>
-                              <td className="text-right">{subitem.otherCharge}</td>
-                              <td className="text-right">{subitem.totalCharge}</td>
+                              <td className="text-right">
+                                {subitem.consultCharge}
+                              </td>
+                              <td className="text-right">
+                                {subitem.usgCharge}{" "}
+                              </td>
+                              <td className="text-right">
+                                {subitem.uptCharge}
+                              </td>
+                              <td className="text-right">
+                                {subitem.injectionCharge}
+                              </td>
+                              <td className="text-right">
+                                {subitem.otherCharge}
+                              </td>
+                              <td className="text-right">
+                                {subitem.totalCharge}
+                              </td>
                             </tr>
                           );
                         })}
@@ -172,7 +248,9 @@ export default class OpdReport extends Component {
                           <td className="text-right">{items.consultCharge}</td>
                           <td className="text-right">{items.usgCharge}</td>
                           <td className="text-right">{items.uptCharge}</td>
-                          <td className="text-right">{items.injectionCharge}</td>
+                          <td className="text-right">
+                            {items.injectionCharge}
+                          </td>
                           <td className="text-right">{items.otherCharge}</td>
                           <td className="text-right">{items.totalCharge}</td>
                         </tr>
@@ -220,7 +298,9 @@ export default class OpdReport extends Component {
                   <tr key={`summaryRow${index}`}>
                     <td>{items.opdDate}</td>
                     <td className="text-right">{items.count}</td>
-                    <td className="text-right">{this.helper.formatCurrency(items.totalCharge)}</td>
+                    <td className="text-right">
+                      {this.helper.formatCurrency(items.totalCharge)}
+                    </td>
                   </tr>
                 );
               })}
@@ -230,7 +310,9 @@ export default class OpdReport extends Component {
                 <tr className="report-group-title">
                   <td>Grand Total</td>
                   <td className="text-right">{opdCount}</td>
-                  <td className="text-right">{this.helper.formatCurrency(amountChargeTotal)}</td>
+                  <td className="text-right">
+                    {this.helper.formatCurrency(amountChargeTotal)}
+                  </td>
                 </tr>
               ) : (
                 <tr>
