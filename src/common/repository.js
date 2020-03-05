@@ -22,10 +22,10 @@ export class repository
 
     post(controller, model, config)
     {
-        if (config)
-            config.headers = { 'Authorization': `Bearer ${ localStorage.getItem("token") }` }
-        else
-            config = headerConfig;
+        // if (config)
+        //     config.headers = { 'Authorization': `Bearer ${ localStorage.getItem("token") }` }
+        // else
+        //     config = headerConfig;
         $("#errors").remove();
         ReactDOM.render(<Growl ref={(el) => this.growl = el} />, document.getElementById("toast"));
         if (!model.id)
@@ -63,6 +63,7 @@ export class repository
 
     handleError(error)
     {
+        console.log(error.request)
         ReactDOM.render(<Messages ref={(el) => this.messages = el} />, document.getElementById("messages"));
         if (error.response) {
             $("#errors").remove();

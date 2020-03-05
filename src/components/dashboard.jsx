@@ -25,10 +25,7 @@ export default class Dashboard extends React.Component {
       });
   };
   componentDidMount = () => {
-    localStorage.setItem(
-      "token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIxIiwiZXhwIjoxNTg1OTk0MDQ1LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjIwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjIwMDAifQ.C8H53dfvecEuD0VGAgXnKfG9RD6cko_1zKKBeiZJ9ZE"
-    );
+    // localStorage.setItem("token", null);
     const year = this.helper.getYearFromDate(TODAY_DATE);
     this.setState({ year: year }, () => {
       this.getStatistics(year);
