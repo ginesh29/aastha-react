@@ -7,12 +7,11 @@ export const BASE_API_URL = {
 export const ROWS = 10;
 export const TODAY_DATE = new Date();
 // TODAY_DATE.setFullYear(TODAY_DATE.getFullYear() - 1);
-export const TEN_YEAR_RANGE = `${ TODAY_DATE.getFullYear() - 10 }:${ TODAY_DATE.getFullYear() + 10 }`;
+export const TEN_YEAR_RANGE = `${TODAY_DATE.getFullYear() - 10}:${TODAY_DATE.getFullYear() + 10}`;
 
 export const FULLCALENDAR_OPTION = {
   firstDay: 1,
   eventLimit: 6,
-  hiddenDays: [0],
   plugins: [dayGridPlugin, interactionPlugin]
 };
 
@@ -65,12 +64,23 @@ export const medicineInstructionOptions = [
   { id: 11, label: "નાસ્તા પહેલા" },
   { id: 12, label: "નાસ્તા પછી" },
 
-  { id: 13, label: "૧ ગોળી તાવ આવે ત્યારે જ લેવી." },
-  { id: 14, label: "૧ ગોળી માથુ દુખે ત્યારે જ લેવી." },
-  { id: 15, label: "૧ ગોળી પેટમાં દુખે ત્યારે જ લેવી." },
+  { id: 13, label: "પેટ પર લગાવવું." },
+  { id: 14, label: "કમર પર માલીશ કરવી" },
 
-  { id: 16, label: "૧ ગોળી રોજ રાત્રે સૂતા પહેલા માસિકના ભાગે મૂકવી" },
-  { id: 17, label: "ટ્યુબ રોજ રાત્રે સૂતા પહેલા માસિકના અંદરના ભાગે લગાવવી" },
-  { id: 18, label: "૨ ચમચી અડધા ગ્લાસ પાણીમાં નાખીને દિવસમાં ત્રણવાર જમ્યા પછી પીવુ" },
-  { id: 19, label: "૨ ચમચી પાઉડર ૧ ગ્લાસ પાણી/દુધમાં નાખીને દિવસમાં બેવાર પીવુ" }
+  { id: 15, label: "૧ ગોળી તાવ આવે ત્યારે જ લેવી." },
+  { id: 16, label: "૧ ગોળી માથુ દુખે ત્યારે જ લેવી." },
+
+  { id: 17, label: "૧ ગોળી પેટમાં દુખે ત્યારે જ લેવી." },
+  { id: 18, label: "૧ ગોળી કમરમાં દુખે ત્યારે જ લેવી." },
+
+  { id: 19, label: "૧ ગોળી જરૂર પડે ત્યારે જ લેવી." },
+  { id: 20, label: "૧ ગોળી/ કેપસ્યુલ દર રવિવારે નાસ્તા પછી." },
+
+  { id: 21, label: "૧ ગોળી રોજ રાત્રે સૂતા પહેલા માસિકના ભાગે મૂકવી" },
+  { id: 22, label: "ટ્યુબ રોજ રાત્રે સૂતા પહેલા માસિકના અંદરના ભાગે લગાવવી" },
+  { id: 23, label: "૨ ચમચી પાઉડર ૧ ગ્લાસ દુધમાં નાખીને દિવસમાં બેવાર પીવુ." },
+  { id: 24, label: "૨ ચમચી પાઉડર ૧ ગ્લાસ પાણી/દુધમાં નાખીને દિવસમાં બેવાર પીવુ" },
+  { id: 25, label: "૨ ચમચી પાઉડર ૧ ગ્લાસ પાણીમાં નાખીને દિવસમાં ત્રણ થી ચાર વાર પીવુ." },
+  { id: 26, label: "૨ ચમચી અડધા ગ્લાસ પાણીમાં નાખીને દિવસમાં ત્રણવાર જમ્યા પછી પીવુ" },
+  { id: 27, label: "૩ ચમચી(15ml) અડધા ગ્લાસ પાણીમાં નાખીને દિવસમાં બે વાર જમ્યા પછી પીવુ." }
 ];
