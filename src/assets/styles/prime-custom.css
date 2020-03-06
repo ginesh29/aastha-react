@@ -1,5 +1,5 @@
 .p-component {
-  font-family: "Titillium Web", sans-serif !important;
+	font-family: "Titillium Web", sans-serif !important;
 }
 
 form .p-dropdown,
@@ -12,7 +12,7 @@ form .p-multiselect,
 .p-datatable-thead th .p-inputtext,
 .p-datatable-thead th .p-dropdown,
 .p-panel {
-  width: 100%;
+	width: 100%;
 }
 
 .p-inputtext.error,
@@ -20,137 +20,137 @@ form .p-multiselect,
 .p-multiselect.error,
 .p-dropdown.error,
 .p-select2.error .css-yk16xz-control {
-  border: 1px solid #ff0000 !important;
-  background-color: #ffeeee !important;
-  border-radius: 4px;
+	border: 1px solid #ff0000 !important;
+	background-color: #ffeeee !important;
+	border-radius: 4px;
 }
 
 .p-dropdown.error .p-inputtext {
-  background-color: #ffeeee !important;
+	background-color: #ffeeee !important;
 }
 .p-multiselect .p-multiselect-trigger {
-  background-color: transparent !important;
+	background-color: transparent !important;
 }
 .p-growl {
-  z-index: 9999 !important;
+	z-index: 9999 !important;
 }
 .p-panel-titlebar {
-  background: #fafafa !important;
-  padding: 12px !important;
+	background: #fafafa !important;
+	padding: 12px !important;
 }
 .p-panel-title {
-  font-size: 18px !important;
-  font-weight: 600;
+	font-size: 18px !important;
+	font-weight: 600;
 }
 .p-dropdown {
-  min-width: 20px !important;
+	min-width: 20px !important;
 }
 .p-button-icon-only {
-  background-color: #6c757d !important;
-  border-color: #6c757d !important;
+	background-color: #6c757d !important;
+	border-color: #6c757d !important;
 }
 .p-readonly,
 .p-readonly .p-inputtext,
 .p-readonly .p-dropdown-trigger {
-  background-color: #eee !important;
-  pointer-events: none;
+	background-color: #eee !important;
+	pointer-events: none;
 }
 .p-readonly .p-dropdown-clear-icon {
-  display: none;
+	display: none;
 }
 .p-dropdown-label,
 .p-radiobutton-label {
-  font-weight: 500 !important;
-  text-align: left !important;
+	font-weight: 500 !important;
+	text-align: left !important;
 }
 
 .p-scroll-dialog {
-  position: absolute;
-  top: 20px;
+	position: absolute;
+	top: 20px;
 }
 
 .p-component-overlay {
-  z-index: 1004 !important;
-  overflow: auto;
+	z-index: 1004 !important;
+	overflow: auto;
 }
 .p-select2 .css-yk16xz-control {
-  border: 1px solid #a6a6a6 !important;
+	border: 1px solid #a6a6a6 !important;
 }
 .p-select2 .css-yk16xz-control:hover {
-  border: 1px solid #000 !important;
+	border: 1px solid #000 !important;
 }
 
 .p-multiselect .p-multiselect-trigger {
-  background-color: transparent !important;
+	background-color: transparent !important;
 }
 .p-growl {
-  z-index: 9999 !important;
+	z-index: 9999 !important;
 }
 .p-panel-titlebar {
-  background: #fafafa !important;
-  padding: 12px !important;
+	background: #fafafa !important;
+	padding: 12px !important;
 }
 .p-panel-title {
-  font-size: 18px !important;
-  font-weight: 600;
+	font-size: 18px !important;
+	font-weight: 600;
 }
 .p-datatable {
-  font-size: 0.9em !important;
+	font-size: 0.9em !important;
 }
 .p-datatable table {
-  table-layout: inherit !important;
+	table-layout: inherit !important;
 }
 .p-sortable-column-icon {
-  float: right;
-  font-size: 0.9em !important;
+	float: right;
+	font-size: 0.9em !important;
 }
 .p-datatable-thead th {
-  vertical-align: top;
-  text-align: center !important;
-  padding: 5px !important;
-  font-weight: 600 !important;
-  font-size: 1.1em;
+	vertical-align: top;
+	text-align: center !important;
+	padding: 5px !important;
+	font-weight: 600 !important;
+	font-size: 1.1em;
 }
 .p-datatable-thead th .p-inputtext {
-  padding: 4px !important;
+	padding: 4px !important;
 }
 .p-datatable tr:not(.p-highlight) {
-  background-color: #ffffff !important;
+	background-color: #ffffff !important;
 }
 .p-datatable .p-datatable-tbody > tr > td {
-  padding: 4px !important;
+	padding: 4px !important;
 }
 .p-datepicker table {
-  font-size: 12px !important;
-  font-weight: 100;
+	font-size: 12px !important;
+	font-weight: 100;
 }
 .p-datatable tr.p-highlight {
-  background-color: #bdedbc !important;
-  color: black !important;
+	background-color: #bdedbc !important;
+	color: black !important;
 }
 .p-paginator-pages .p-highlight {
-  background-color: #6c757d !important;
+	background-color: #6c757d !important;
 }
 .p-datatable-wrapper .p-sortable-column.p-highlight {
-  background-color: #e4e4e4 !important;
-  color: #000 !important;
+	background-color: #e4e4e4 !important;
+	color: #000 !important;
 }
 .p-datatable-wrapper .p-sortable-column.p-highlight .p-sortable-column-icon {
-  color: #000 !important;
+	color: #000 !important;
 }
 .p-dialog-content .p-messages {
-  margin: 0 !important;
+	margin: 0 !important;
 }
 .p-paginator .p-highlight {
-  pointer-events: none !important;
+	pointer-events: none !important;
 }
 .p-panelmenu-icon {
-  float: right;
+	float: right;
 }
 .invoice-detail td {
-  border-style: hidden !important;
-  padding: 1px !important;
-  line-height: 1.2 !important;
-  vertical-align: top !important;
-  font-size: 12pt !important;
+	border-style: hidden !important;
+	padding: 1px !important;
+	line-height: 1.2 !important;
+	vertical-align: top !important;
+	font-size: 12pt !important;
 }
