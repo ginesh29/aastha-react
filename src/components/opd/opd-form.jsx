@@ -6,7 +6,7 @@ import { Dialog } from "primereact/dialog";
 import * as Constants from "../../common/constants";
 import { repository } from "../../common/repository";
 import PatientForm from "../patient/patient-form";
-import $ from "jquery";
+import jquery from "jquery";
 import FormFooterButton from "../shared/form-footer-button";
 
 const controller = "opds";
@@ -38,7 +38,7 @@ export default class OpdForm extends React.Component {
 
   handleChange = (e, action) => {
     const { isValidationFired, formFields } = this.state;
-    $("#errors").remove();
+    jquery("#errors").remove();
     let fields = formFields;
     if (action)
       fields[action.name] =
@@ -136,7 +136,7 @@ export default class OpdForm extends React.Component {
     this.setState(this.getInitialState());
   };
   componentDidMount = () => {
-    $("#errors").remove();
+    jquery("#errors").remove();
     const { selectedOpd } = this.props;
     if (selectedOpd) {
       selectedOpd.opdDate = selectedOpd.date && new Date(selectedOpd.date);

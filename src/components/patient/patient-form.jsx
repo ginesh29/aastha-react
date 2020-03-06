@@ -7,7 +7,7 @@ import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import * as Constants from "../../common/constants";
 import { lookupTypeEnum } from "../../common/enums";
-import $ from "jquery";
+import jquery from "jquery";
 import FormFooterButton from "../shared/form-footer-button";
 
 const controller = "patients";
@@ -36,9 +36,13 @@ export default class PatientForm extends Component {
   });
   handleChange = (e, action) => {
     const { isValidationFired, formFields } = this.state;
-    $("#errors").remove();
+    jquery("#errors").remove();
     let fields = formFields;
-    if (action) fields[action.name] = action !== Constants.SELECT2_ACTION_CLEAR_TEXT ? e && { value: e.value, label: e.label } : null;
+    if (action)
+      fields[action.name] =
+        action !== Constants.SELECT2_ACTION_CLEAR_TEXT
+          ? e && { value: e.value, label: e.label }
+          : null;
     else fields[e.target.name] = e.target.value;
 
     this.setState({
@@ -49,7 +53,16 @@ export default class PatientForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { id, firstname, middlename, fathername, lastname, age, address, mobile } = this.state.formFields;
+    const {
+      id,
+      firstname,
+      middlename,
+      fathername,
+      lastname,
+      age,
+      address,
+      mobile
+    } = this.state.formFields;
     const { hideEditDialog, savePatient, includeProperties } = this.props;
     if (this.handleValidation()) {
       const patient = {
@@ -62,21 +75,34 @@ export default class PatientForm extends Component {
         mobile: mobile,
         addressId: address.value
       };
-      this.repository.post(`${controller}?includeProperties=${includeProperties ? includeProperties : ""}`, patient).then(res => {
-        if (res && !res.errors) {
-          hideEditDialog && hideEditDialog();
-          savePatient && savePatient(res, patient.id);
-          !hideEditDialog && this.handleReset();
-        }
-        res.errors &&
-          this.setState({
-            isExist: true
-          });
-      });
+      this.repository
+        .post(
+          `${controller}?includeProperties=${
+            includeProperties ? includeProperties : ""
+          }`,
+          patient
+        )
+        .then(res => {
+          if (res && !res.errors) {
+            hideEditDialog && hideEditDialog();
+            savePatient && savePatient(res, patient.id);
+            !hideEditDialog && this.handleReset();
+          }
+          res.errors &&
+            this.setState({
+              isExist: true
+            });
+        });
     }
   };
   handleValidation = e => {
-    const { firstname, middlename, lastname, age, address } = this.state.formFields;
+    const {
+      firstname,
+      middlename,
+      lastname,
+      age,
+      address
+    } = this.state.formFields;
     let errors = {};
     let isValid = true;
     if (!firstname) {
@@ -133,7 +159,7 @@ export default class PatientForm extends Component {
     }
   };
   componentDidMount = () => {
-    $("#errors").remove();
+    jquery("#errors").remove();
     const { selectedPatient } = this.props;
     if (selectedPatient)
       this.setState({
@@ -141,11 +167,25 @@ export default class PatientForm extends Component {
       });
   };
   render() {
-    const { id, firstname, middlename, fathername, lastname, age, address, mobile } = this.state.formFields;
+    const {
+      id,
+      firstname,
+      middlename,
+      fathername,
+      lastname,
+      age,
+      address,
+      mobile
+    } = this.state.formFields;
     const { addressDialog, addressText, addressError, isExist } = this.state;
     let addressDialogFooter = (
       <div className="ui-dialog-buttonpane p-clearfix">
-        <Button label="Close" icon="pi pi-times" className="p-button-secondary" onClick={e => this.setState({ addressDialog: false })} />
+        <Button
+          label="Close"
+          icon="pi pi-times"
+          className="p-button-secondary"
+          onClick={e => this.setState({ addressDialog: false })}
+        />
         <Button label="Save" icon="pi pi-check" onClick={this.saveAddress} />
       </div>
     );
@@ -154,26 +194,69 @@ export default class PatientForm extends Component {
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col">
-              <InputField name="firstname" title="Firstname" value={firstname || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              <InputField
+                name="firstname"
+                title="Firstname"
+                value={firstname || ""}
+                onChange={this.handleChange}
+                onInput={this.helper.toSentenceCase}
+                {...this.state}
+              />
             </div>
             <div className="col">
-              <InputField name="middlename" title="Middlename" value={middlename || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              <InputField
+                name="middlename"
+                title="Middlename"
+                value={middlename || ""}
+                onChange={this.handleChange}
+                onInput={this.helper.toSentenceCase}
+                {...this.state}
+              />
             </div>
             {(isExist || fathername) && (
               <div className="col">
-                <InputField name="fathername" title="Fathername" value={fathername || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+                <InputField
+                  name="fathername"
+                  title="Fathername"
+                  value={fathername || ""}
+                  onChange={this.handleChange}
+                  onInput={this.helper.toSentenceCase}
+                  {...this.state}
+                />
               </div>
             )}
             <div className="col">
-              <InputField name="lastname" title="Lastname" value={lastname || ""} onChange={this.handleChange} onInput={this.helper.toSentenceCase} {...this.state} />
+              <InputField
+                name="lastname"
+                title="Lastname"
+                value={lastname || ""}
+                onChange={this.handleChange}
+                onInput={this.helper.toSentenceCase}
+                {...this.state}
+              />
             </div>
           </div>
           <div className="row">
             <div className="col-md-6">
-              <InputField name="age" title="Age" value={age || ""} onChange={this.handleChange} {...this.state} keyfilter="pint" maxLength="2" />
+              <InputField
+                name="age"
+                title="Age"
+                value={age || ""}
+                onChange={this.handleChange}
+                {...this.state}
+                keyfilter="pint"
+                maxLength="2"
+              />
             </div>
             <div className="col-md-6">
-              <InputField name="mobile" title="Mobile" value={mobile || ""} onChange={this.handleChange} {...this.state} keyfilter="pint" />
+              <InputField
+                name="mobile"
+                title="Mobile"
+                value={mobile || ""}
+                onChange={this.handleChange}
+                {...this.state}
+                keyfilter="pint"
+              />
             </div>
           </div>
           <div className="row">
@@ -193,7 +276,9 @@ export default class PatientForm extends Component {
                 }
                 {...this.state}
                 controlType="select2"
-                loadOptions={(e, callback) => this.helper.AddressOptions(e, callback)}
+                loadOptions={(e, callback) =>
+                  this.helper.AddressOptions(e, callback)
+                }
                 onInputChange={e => {
                   e &&
                     this.setState({
@@ -205,7 +290,13 @@ export default class PatientForm extends Component {
           </div>
           <FormFooterButton showReset={!id} />
         </form>
-        <Dialog header={Constants.ADD_ADDRESS_TITLE} footer={addressDialogFooter} visible={addressDialog} onHide={() => this.setState({ addressDialog: false })} baseZIndex={0}>
+        <Dialog
+          header={Constants.ADD_ADDRESS_TITLE}
+          footer={addressDialogFooter}
+          visible={addressDialog}
+          onHide={() => this.setState({ addressDialog: false })}
+          baseZIndex={0}
+        >
           {addressText && (
             <div className="form-group">
               <div className="row">

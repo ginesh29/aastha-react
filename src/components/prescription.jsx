@@ -322,6 +322,7 @@ export default class Prescription extends React.Component {
           }
         });
       }
+      jquery(".p-dialog-content .p-dropdown-filter").val("");
     }
   };
   removeMedicine = id => {
@@ -499,7 +500,6 @@ export default class Prescription extends React.Component {
                           this.setState({ editDialog: true })
                         }
                       >
-                        {" "}
                         <i className="fa fa-plus"></i> Add Medicine
                       </button>
                     </div>

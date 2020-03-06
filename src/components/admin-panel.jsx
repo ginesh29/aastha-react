@@ -10,7 +10,7 @@ import { Dialog } from "primereact/dialog";
 import { NavLink } from "react-router-dom";
 import { Dropdown } from "primereact/dropdown";
 import InputField from "./shared/input-field";
-import $ from "jquery";
+import jquery from "jquery";
 import FormFooterButton from "./shared/form-footer-button";
 export default class AdminPanel extends Component {
   constructor(props) {
@@ -235,7 +235,7 @@ export default class AdminPanel extends Component {
   };
   handleChange = (e, action) => {
     const { isValidationFired, selectedLookup } = this.state;
-    $("#errors").remove();
+    jquery("#errors").remove();
     let fields = selectedLookup;
 
     fields[e.target.name] = e.target.value;

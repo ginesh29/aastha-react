@@ -8,7 +8,7 @@ import { InputText } from "primereact/inputtext";
 import { repository } from "../../common/repository";
 import * as Constants from "../../common/constants";
 import PatientForm from "../patient/patient-form";
-import $ from "jquery";
+import jquery from "jquery";
 import FormFooterButton from "../shared/form-footer-button";
 
 const controller = "ipds";
@@ -50,7 +50,7 @@ export default class IpdForm extends React.Component {
   });
   handleChange = (e, action) => {
     const { isValidationFired, formFields } = this.state;
-    $("#errors").remove();
+    jquery("#errors").remove();
     let fields = formFields;
     if (action)
       fields[action.name] =
@@ -364,7 +364,7 @@ export default class IpdForm extends React.Component {
     this.setState(this.getInitialState());
   };
   componentDidMount = () => {
-    $("#errors").remove();
+    jquery("#errors").remove();
     const { selectedIpd } = this.props;
     if (selectedIpd && selectedIpd.id) {
       selectedIpd.addmissionDate =
