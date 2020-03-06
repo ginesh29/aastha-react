@@ -11,12 +11,11 @@ import "./assets/styles/theme.css";
 import "./assets/styles/prime-custom.css";
 import "./assets/styles/index.css";
 
-import "jquery/src/jquery";
 import "bootstrap/dist/js/bootstrap.js";
 
 ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
-  document.getElementById("root")
+	<BrowserRouter>
+		<App />
+	</BrowserRouter>,
+	document.getElementById("root"),
 );

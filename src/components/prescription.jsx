@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import { Panel } from "primereact/panel";
 import InputField from "./shared/input-field";
 import { helper } from "./../common/helpers";
@@ -59,7 +60,7 @@ export default class Prescription extends React.Component {
 			res &&
 				res.data &&
 				res.data.map(item => {
-					item.title = this.helper.stringShortning(item.patient.fullname, 15);
+					item.title = item.patient.fullname;
 					item.start = this.helper.formatFullcalendarDate(item.date);
 					item.color = appointmentTypeEnum[item.appointmentType.toUpperCase()].color;
 					item.extendedProps = {
@@ -340,12 +341,21 @@ export default class Prescription extends React.Component {
 				</div>
 			</>
 		);
+		this.options.eventRender = info => {
+			const content = (
+				<div className="fc-content" data-toggle="tooltip" title={info.event.extendedProps.patient.fullname}>
+					<span className="fc-title">{info.event.title}</span>
+				</div>
+			);
+			ReactDOM.render(content, info.el);
+		};
 		this.options.datesRender = info => {
 			const startDate = this.helper.formatFullcalendarDate(info.view.currentStart);
 			const endDate = this.helper.formatFullcalendarDate(info.view.currentEnd);
 			const filter = `Date-gte-{${startDate}} and Date-lte-{${endDate}}`;
 			this.setState({ filterString: filter }, () => {
 				this.getAppointments();
+				window.dispatchEvent(new Event("resize"));
 			});
 		};
 		this.options.dateClick = dateClickInfo => {

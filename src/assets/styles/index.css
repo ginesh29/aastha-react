@@ -101,7 +101,10 @@ hr {
 	cursor: pointer;
 }
 .fc-title {
-	padding: 2px;
+	width: 75%;
+	display: inline-block;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .icon-button {
 	background: none !important;

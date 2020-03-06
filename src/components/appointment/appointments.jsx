@@ -11,6 +11,7 @@ import ReactDOM from "react-dom";
 import { Button } from "primereact/button";
 import AppointmentTypeIndicator from "./appointment-indicator";
 import AppointmentForm from "./appointment-form";
+import jquery from "jquery";
 
 const title = "Appointment";
 export default class AppointmentCalendar extends Component {
@@ -27,30 +28,13 @@ export default class AppointmentCalendar extends Component {
 		this.repository = new repository();
 		this.helper = new helper();
 		this.options = FULLCALENDAR_OPTION;
-
-		this.options.eventRender = info => {
-			const content = (
-				<div className="fc-content" data-toggle="tooltip" title={info.event.extendedProps.patient.fullname}>
-					<span className="fc-title">{info.event.title}</span>
-					<div className="float-right">
-						<button className="icon-button">
-							<i className="pi pi-pencil" />
-						</button>
-						<button className="icon-button">
-							<i className="pi pi-times" />
-						</button>
-					</div>
-				</div>
-			);
-			ReactDOM.render(content, info.el);
-		};
 	}
 	getAppointments = () => {
 		const { controller, includeProperties, filterString } = this.state;
 		this.repository.get(controller, `filter=${filterString} and isDeleted-neq-{${true}}&includeProperties=${includeProperties}`).then(res => {
 			res &&
 				res.data.map(item => {
-					item.title = this.helper.stringShortning(item.patient.fullname, 15);
+					item.title = item.patient.fullname;
 					item.start = this.helper.formatFullcalendarDate(item.date);
 					item.color = appointmentTypeEnum[item.appointmentType.toUpperCase()].color;
 					item.extendedProps = {
@@ -66,6 +50,7 @@ export default class AppointmentCalendar extends Component {
 	componentDidMount = () => {
 		const appointmentTypeOptions = this.helper.enumToObject(appointmentTypeEnum);
 		this.setState({ appointmentTypeOptions: appointmentTypeOptions });
+		jquery("[rel='tooltip']").tooltip();
 	};
 	saveAppointment = (updatedAppointment, id) => {
 		const { appointmentTypeOptions } = this.state;
@@ -90,6 +75,22 @@ export default class AppointmentCalendar extends Component {
 	};
 
 	render() {
+		this.options.eventRender = info => {
+			const content = (
+				<div className="fc-content" data-toggle="tooltip" title={info.event.extendedProps.patient.fullname}>
+					<span className="fc-title">{info.event.title}</span>
+					<div className="float-right">
+						<button className="icon-button">
+							<i className="pi pi-pencil" />
+						</button>
+						<button className="icon-button">
+							<i className="pi pi-times" />
+						</button>
+					</div>
+				</div>
+			);
+			ReactDOM.render(content, info.el);
+		};
 		const { appointments, editDialog, deleteDialog, deleteCallback, appointmentTypeOptions, selectedAppointment, includeProperties } = this.state;
 		const deleteDialogFooter = (
 			<div>
@@ -127,7 +128,7 @@ export default class AppointmentCalendar extends Component {
 					id: event.id,
 					patientId: {
 						value: event.extendedProps.patientId,
-						label: event.title,
+						label: event.extendedProps.patient.fullname,
 					},
 					date: event.start,
 					type: event.extendedProps.type,

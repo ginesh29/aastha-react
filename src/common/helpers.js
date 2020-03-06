@@ -31,7 +31,6 @@ export class helper {
 
 	PatientOptions = (inputValue, callback) => {
 		let name = inputValue && inputValue.toLowerCase().split(" ");
-
 		let filter = `firstname.contains({${name[0] ? name[0] : ""}}) and middlename.contains({${name[1] ? name[1] : ""}}) and lastname.contains({${name[2] ? name[2] : ""}})`;
 		this.repository.get("patients", `take=15&filter=${filter}`).then(res => {
 			let patients =
@@ -159,6 +158,6 @@ export class helper {
 		this.setState({ [event.target.id]: event.value });
 	};
 	stringShortning = (name, length) => {
-		return `${name.substr(0, length)}...`;
+		return name.length > length ? `${name.substr(0, length)}...` : name;
 	};
 }
