@@ -25,7 +25,7 @@ export default class Ipds extends Component {
       loading: true,
       controller: "ipds",
       includeProperties:
-        "Patient.Address,Charges,DeliveryDetail,OperationDetail,IpdLookups.Lookup",
+        "Patient.Address,Charges.ChargeDetail,DeliveryDetail,OperationDetail,IpdLookups.Lookup",
       selectedIpd: null,
       isArchive: props.location.pathname.includes("archive"),
       selectedIpdType: null,

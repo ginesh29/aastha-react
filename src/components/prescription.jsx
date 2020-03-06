@@ -360,9 +360,10 @@ export default class Prescription extends React.Component {
   saveAppointment = () => {
     const { followupDate, patient, followup } = this.state.formFields;
     const { submitted } = this.state;
+
     if (this.handleValidation()) {
       const appointment = {
-        date: this.helper.formatDate(followupDate),
+        date: this.helper.formatStringToDate(followupDate),
         patientId: patient.value,
         type: followup
       };
