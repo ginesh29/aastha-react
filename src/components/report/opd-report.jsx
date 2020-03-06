@@ -182,7 +182,6 @@ export default class OpdReport extends Component {
               }
               data={opdData}
               exportReport={this.exportReport}
-              printRef={this.printRef}
             />
             <hr />
             <TabView
@@ -293,7 +292,7 @@ export default class OpdReport extends Component {
                 </div>
               </TabPanel>
               <TabPanel header="Summary">
-                <div ref={el => (this.printRef = el)} id="print-div">
+                <div id="print-div">
                   <h3 className="report-header">
                     Opd Report Summary {reportTitle}
                   </h3>

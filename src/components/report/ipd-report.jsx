@@ -28,34 +28,52 @@ export default class IpdReport extends Component {
     this.helper = new helper();
   }
   getIpds = () => {
-    const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
-    this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`).then(res => {
-      this.getCharges();
-      res &&
-        res.data.map(item => {
-          item.formatedAddmissionDate = this.helper.formatDate(item.addmissionDate);
-          item.formatedDischargeDate = this.helper.formatDate(item.dischargeDate);
-          item.fullname = item.patient.fullname;
-          return item;
+    const {
+      first,
+      rows,
+      filterString,
+      sortString,
+      includeProperties,
+      controller
+    } = this.state;
+    this.repository
+      .get(
+        controller,
+        `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`
+      )
+      .then(res => {
+        this.getCharges();
+        res &&
+          res.data.map(item => {
+            item.formatedAddmissionDate = this.helper.formatDate(
+              item.addmissionDate
+            );
+            item.formatedDischargeDate = this.helper.formatDate(
+              item.dischargeDate
+            );
+            item.fullname = item.patient.fullname;
+            return item;
+          });
+        this.setState({
+          first: first,
+          rows: rows,
+          totalRecords: res && res.totalCount,
+          ipds: res && res.data,
+          loading: false
         });
-      this.setState({
-        first: first,
-        rows: rows,
-        totalRecords: res && res.totalCount,
-        ipds: res && res.data,
-        loading: false
       });
-    });
   };
   getCharges = () => {
-    this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.CHARGENAME.value}}`).then(res => {
-      let charges = res && res.data;
-      charges &&
-        this.setState({
-          chargeNames: charges,
-          chargesLength: charges.length
-        });
-    });
+    this.repository
+      .get("lookups", `filter=type-eq-{${lookupTypeEnum.CHARGENAME.value}}`)
+      .then(res => {
+        let charges = res && res.data;
+        charges &&
+          this.setState({
+            chargeNames: charges,
+            chargesLength: charges.length
+          });
+      });
   };
   componentDidMount = e => {
     const date = this.helper.formatDate(TODAY_DATE, "en-US");
@@ -98,18 +116,29 @@ export default class IpdReport extends Component {
   };
   exportReport = () => {
     const { controller, reportTitle, ipds, config } = this.state;
-    this.repository.post(`${controller}/ExportReport`, ipds, config).then(res => {
-      const downloadUrl = window.URL.createObjectURL(new Blob([res]));
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.setAttribute("download", `Ipd Report ${reportTitle.split("/").join("-")}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    });
+    this.repository
+      .post(`${controller}/ExportReport`, ipds, config)
+      .then(res => {
+        const downloadUrl = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.setAttribute(
+          "download",
+          `Ipd Report ${reportTitle.split("/").join("-")}.xlsx`
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      });
   };
   render() {
-    const { ipds, chargesLength, chargeNames, reportTitle, activeIndex } = this.state;
+    const {
+      ipds,
+      chargesLength,
+      chargeNames,
+      reportTitle,
+      activeIndex
+    } = this.state;
     let ipdData;
     let chargesColumns;
     let amount = 0;
@@ -120,7 +149,9 @@ export default class IpdReport extends Component {
           chargeNames,
           function(hash, key) {
             chargeName = `${key.name.substring(0, 4)}Charge`;
-            let obj = item.charges && item.charges.filter(item => item.lookupId === key.id)[0];
+            let obj =
+              item.charges &&
+              item.charges.filter(item => item.lookupId === key.id)[0];
             amount = obj && obj.amount;
             hash[chargeName] = amount ? Number(amount) : 0;
             hash.amount = _.sumBy(item.charges, x => x.amount);
@@ -141,27 +172,48 @@ export default class IpdReport extends Component {
           chargeNames,
           function(hash, key) {
             chargeName = `${key.name.substring(0, 4)}Charge`;
-            result[`${chargeName}`] = items.reduce((total, item) => total + Number(item[chargeName]), 0);
-            result.total = items.reduce((total, item) => total + Number(item.amount), 0);
+            result[`${chargeName}`] = items.reduce(
+              (total, item) => total + Number(item[chargeName]),
+              0
+            );
+            result.total = items.reduce(
+              (total, item) => total + Number(item.amount),
+              0
+            );
             return hash;
           },
           items
         );
         return result;
       });
-      chargesColumns = ipdData[0] && Object.keys(ipdData[0].data[0]).filter(m => m.includes("Charge"));
+      chargesColumns =
+        ipdData[0] &&
+        Object.keys(ipdData[0].data[0]).filter(m => m.includes("Charge"));
     }
-    let ipdCount = ipdData && ipdData.reduce((total, item) => total + Number(item.count), 0);
-    let amountTotal = ipdData && ipdData.reduce((total, item) => total + Number(item.total), 0);
+    let ipdCount =
+      ipdData && ipdData.reduce((total, item) => total + Number(item.count), 0);
+    let amountTotal =
+      ipdData && ipdData.reduce((total, item) => total + Number(item.total), 0);
     return (
       <>
         <div className="card">
           <div className="card-body">
-            <ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={e => this.setState({ reportType: e.value })} onShowSummary={e => this.op.toggle(e)} data={ipdData} exportReport={this.exportReport} printRef={this.printRef} printSummaryRef={this.printSummaryRef} activeIndex={activeIndex} />
+            <ReportFilter
+              {...this.state}
+              onDateSelection={this.onDateSelection}
+              onReportTypeChange={e => this.setState({ reportType: e.value })}
+              onShowSummary={e => this.op.toggle(e)}
+              data={ipdData}
+              exportReport={this.exportReport}
+              activeIndex={activeIndex}
+            />
             <hr />
-            <TabView activeIndex={this.state.activeIndex} onTabChange={e => this.setState({ activeIndex: e.index })}>
+            <TabView
+              activeIndex={this.state.activeIndex}
+              onTabChange={e => this.setState({ activeIndex: e.index })}
+            >
               <TabPanel header="Report">
-                <div ref={el => (this.printRef = el)}>
+                <div id="print-div">
                   <h3 className="report-header">Ipd Report {reportTitle}</h3>
                   <table className="table table-bordered report-table table-sm">
                     <thead>
@@ -188,9 +240,13 @@ export default class IpdReport extends Component {
                             <React.Fragment key={`fragement${key}`}>
                               <tr className="report-group-title">
                                 <td colSpan="5" className="text-center">
-                                  Discharge & Billing Date: {items.dischargeDate}
+                                  Discharge & Billing Date:{" "}
+                                  {items.dischargeDate}
                                 </td>
-                                <td colSpan={chargesLength} className="text-center">
+                                <td
+                                  colSpan={chargesLength}
+                                  className="text-center"
+                                >
                                   {items.count} Patients
                                 </td>
                               </tr>
@@ -208,7 +264,9 @@ export default class IpdReport extends Component {
                                         </td>
                                       );
                                     })}
-                                    <td className="text-right">{subitem.amount}</td>
+                                    <td className="text-right">
+                                      {subitem.amount}
+                                    </td>
                                   </tr>
                                 );
                               })}
@@ -236,7 +294,12 @@ export default class IpdReport extends Component {
                             Grand Total
                           </td>
                           {chargesColumns.map((key, i) => {
-                            chargeTotal = ipdData && ipdData.reduce((total, item) => total + Number(item[key]), 0);
+                            chargeTotal =
+                              ipdData &&
+                              ipdData.reduce(
+                                (total, item) => total + Number(item[key]),
+                                0
+                              );
                             return (
                               <td key={i} className="text-right">
                                 {chargeTotal}
@@ -257,8 +320,10 @@ export default class IpdReport extends Component {
                 </div>
               </TabPanel>
               <TabPanel header="Summary">
-                <div ref={el => (this.printSummaryRef = el)}>
-                  <h3 className="report-header">Ipd Report {reportTitle}</h3>
+                <div ref={el => (this.printSummaryRef = el)} id="print-div">
+                  <h3 className="report-header">
+                    Ipd Report Summary{reportTitle}
+                  </h3>
                   <table className="table table-bordered report-table table-sm">
                     <thead>
                       <tr>
@@ -274,7 +339,9 @@ export default class IpdReport extends Component {
                             <tr key={`summaryRow${index}`}>
                               <td>{items.dischargeDate}</td>
                               <td className="text-right">{items.count}</td>
-                              <td className="text-right">{this.helper.formatCurrency(items.total)}</td>
+                              <td className="text-right">
+                                {this.helper.formatCurrency(items.total)}
+                              </td>
                             </tr>
                           );
                         })}
@@ -284,7 +351,9 @@ export default class IpdReport extends Component {
                         <tr className="report-group-title">
                           <td>Grand Total</td>
                           <td className="text-right">{ipdCount}</td>
-                          <td className="text-right">{this.helper.formatCurrency(amountTotal)}</td>
+                          <td className="text-right">
+                            {this.helper.formatCurrency(amountTotal)}
+                          </td>
                         </tr>
                       ) : (
                         <tr>
