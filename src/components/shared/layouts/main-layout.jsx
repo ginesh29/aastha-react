@@ -15,11 +15,19 @@ export default class MainLayout extends React.Component {
           <div className="top-nav clearfix">
             <ul className="nav float-right top-menu">
               <li>
-                <input type="text" className="form-control search" placeholder=" Search" />
+                <input
+                  type="text"
+                  className="form-control search"
+                  placeholder=" Search"
+                />
               </li>
 
               <li className="dropdown">
-                <a data-toggle="dropdown" className="dropdown-toggle icon-user" href="{#}">
+                <a
+                  data-toggle="dropdown"
+                  className="dropdown-toggle icon-user"
+                  href="{#}"
+                >
                   <i className="fa fa-user"></i>
                   <span className="username">John Doe</span>
                   <b className="caret"></b>
@@ -73,7 +81,10 @@ export default class MainLayout extends React.Component {
           <div className="right-stat-bar">
             <ul className="right-side-accordion">
               <li className="widget-collapsible">
-                <a href="{#}" className="head widget-head red-bg active clearfix">
+                <a
+                  href="{#}"
+                  className="head widget-head red-bg active clearfix"
+                >
                   <span className="pull-left">work progress (5)</span>
                   <span className="float-right widget-collapse">
                     <i className="ico-minus"></i>
@@ -97,7 +108,16 @@ export default class MainLayout extends React.Component {
                       </div>
                       <div className="side-mini-graph">
                         <div className="p-delivery">
-                          <div className="sparkline" data-type="bar" data-resize="true" data-height="30" data-width="90%" data-bar-color="#39b7ab" data-bar-width="5" data-data="[200,135,667,333,526,996,564,123,890,564,455]"></div>
+                          <div
+                            className="sparkline"
+                            data-type="bar"
+                            data-resize="true"
+                            data-height="30"
+                            data-width="90%"
+                            data-bar-color="#39b7ab"
+                            data-bar-width="5"
+                            data-data="[200,135,667,333,526,996,564,123,890,564,455]"
+                          ></div>
                         </div>
                       </div>
                     </div>
@@ -128,7 +148,13 @@ export default class MainLayout extends React.Component {
                         <h4>total progress</h4>
                         <p>50%, Deadline 12 june 13</p>
                         <div className="progress progress-xs mtop10">
-                          <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="20" role="progressbar" className="progress-bar progress-bar-info">
+                          <div
+                            aria-valuemax="100"
+                            aria-valuemin="0"
+                            aria-valuenow="20"
+                            role="progressbar"
+                            className="progress-bar progress-bar-info"
+                          >
                             <span className="sr-only">50% Complete</span>
                           </div>
                         </div>
@@ -138,7 +164,10 @@ export default class MainLayout extends React.Component {
                 </ul>
               </li>
               <li className="widget-collapsible">
-                <a href="{#}" className="head widget-head terques-bg active clearfix">
+                <a
+                  href="{#}"
+                  className="head widget-head terques-bg active clearfix"
+                >
                   <span className="pull-left">contact online (5)</span>
                   <span className="float-right widget-collapse">
                     <i className="ico-minus"></i>
@@ -230,7 +259,8 @@ export default class MainLayout extends React.Component {
                       <div className="rsn-details ">
                         <p className="text-muted">just now</p>
                         <p>
-                          <a href="{#}">Jim Doe </a>Purchased new equipments for zonal office setup
+                          <a href="{#}">Jim Doe </a>Purchased new equipments for
+                          zonal office setup
                         </p>
                       </div>
                     </div>
@@ -241,7 +271,8 @@ export default class MainLayout extends React.Component {
                       <div className="rsn-details ">
                         <p className="text-muted">2 min ago</p>
                         <p>
-                          <a href="{#}">Jane Doe </a>Purchased new equipments for zonal office setup
+                          <a href="{#}">Jane Doe </a>Purchased new equipments
+                          for zonal office setup
                         </p>
                       </div>
                     </div>
@@ -252,7 +283,8 @@ export default class MainLayout extends React.Component {
                       <div className="rsn-details ">
                         <p className="text-muted">1 day ago</p>
                         <p>
-                          <a href="{#}">Jim Doe </a>Purchased new equipments for zonal office setup
+                          <a href="{#}">Jim Doe </a>Purchased new equipments for
+                          zonal office setup
                         </p>
                       </div>
                     </div>
@@ -272,7 +304,13 @@ export default class MainLayout extends React.Component {
                       <div className="prog-row">
                         <p>Full sleeve baby wear (SL: 17665)</p>
                         <div className="progress progress-xs mtop10">
-                          <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                          <div
+                            className="progress-bar progress-bar-success"
+                            role="progressbar"
+                            aria-valuenow="20"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                          >
                             <span className="sr-only">40% Complete</span>
                           </div>
                         </div>
@@ -280,7 +318,13 @@ export default class MainLayout extends React.Component {
                       <div className="prog-row">
                         <p>Full sleeve baby wear (SL: 17665)</p>
                         <div className="progress progress-xs mtop10">
-                          <div className="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                          <div
+                            className="progress-bar progress-bar-info"
+                            role="progressbar"
+                            aria-valuenow="20"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                          >
                             <span className="sr-only">70% Completed</span>
                           </div>
                         </div>
