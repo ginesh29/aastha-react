@@ -267,32 +267,30 @@ export default class Opds extends Component {
 							<div id="print-div" className="A5">
 								<img src={invoice_header} className="img-fluid" alt="Invoice Header" />
 								<h3 className="invoice-title">Outdoor Invoice</h3>
-								<table className="table table-borderless invoice-detail">
-									<tbody>
-										<tr>
-											<td>
-												<label>Patient Name :</label> {selectedOpd.patient && selectedOpd.patient.fullname}
-											</td>
-											<td width="200px">
-												<label>Date :</label> {this.helper.formatDate(selectedOpd.date)}
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<label>Invoice No. :</label> {selectedOpd.id}
-											</td>
-											<td>
-												<label>Address :</label> {selectedOpd.address}
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<label>Outdoor No. :</label> {selectedOpd && selectedOpd.invoiceNo}
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<table className="table table-bordered invoice-table table-sm">
+								<div className="invoice-detail">
+									<div class="d-flex justify-content-between">
+										<div>
+											<label>Patient Name :</label> {selectedOpd.patient && selectedOpd.patient.fullname}
+										</div>
+										<div>
+											<label>Date :</label> {this.helper.formatDate(selectedOpd.date)}
+										</div>
+									</div>
+									<div class="d-flex justify-content-between">
+										<div>
+											<label>Invoice No. :</label> {selectedOpd.id}
+										</div>
+										<div>
+											<label>Address :</label> {selectedOpd.address}
+										</div>
+									</div>
+									<div class="d-flex justify-content-between">
+										<div>
+											<label>Outdoor No. :</label> {selectedOpd && selectedOpd.invoiceNo}
+										</div>
+									</div>
+								</div>
+								<table className="table table-bordered invoice-table mt-2">
 									<thead className="thead-dark">
 										<tr>
 											<th width="10px">No.</th>
@@ -334,11 +332,11 @@ export default class Opds extends Component {
 											<td colSpan="2" className="text-capitalize">
 												Grand Total &nbsp;| {`${numberToWords.toWords(selectedOpd.totalCharge)} Only`}
 											</td>
-											<td className="text-right">{selectedOpd.totalCharge}</td>
+											<td className="text-right">{this.helper.formatCurrency(selectedOpd.totalCharge)}</td>
 										</tr>
 									</tfoot>
 								</table>
-								<div className="d-flex">
+								<div className="d-flex mt-5 invoice-foot">
 									<div className="flex-grow-1">Rececived By</div>
 									<div className="font-weight-semi-bold">Dr. Bhaumik Tandel</div>
 								</div>
