@@ -537,6 +537,7 @@ export default class Prescription extends React.Component {
 										<span className="display-linebreak"> {clinicDetail}</span>
 									</div>
 								</div>
+								<hr />
 								<h4>Rx</h4>
 								<div>
 									<table className="table table-borderless table-sm medicine-table">
@@ -583,14 +584,17 @@ export default class Prescription extends React.Component {
 										</div>
 									</div>
 									{followupInstruction && (
-										<div className="d-flex">
-											<div className="prescription-detail">
-												<label className="m-0">Follow&nbsp;up&nbsp;:&nbsp;</label>
+										<>
+											<hr />
+											<div className="d-flex">
+												<div className="prescription-detail">
+													<label className="m-0">Follow&nbsp;up&nbsp;:&nbsp;</label>
+												</div>
+												<div className="gujarati-text" style={{ paddingTop: "4px" }}>
+													{followupInstruction}
+												</div>
 											</div>
-											<div className="gujarati-text" style={{ paddingTop: "4px" }}>
-												{followupInstruction}
-											</div>
-										</div>
+										</>
 									)}
 								</div>
 								<div className="text-right invoice-foot" style={{ marginTop: "50px" }}>
