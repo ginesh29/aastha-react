@@ -88,13 +88,11 @@ export default class Prescription extends React.Component {
 				fields[e.target.name] = selectedAdvices;
 			} else if (e.target.name === "followup") {
 				fields.followupDate = "";
-				if (e.target.value <= 4 && e.target.value !== 0) followup = `ફરી ......... ના રોજ બતાવવા આવવું`;
+				if (e.target.value === 1) followup = `ફરી ......... ના રોજ બતાવવા આવવું`;
+				else if (e.target.value <= 4) followup = `ફરી ......... ના રોજ સોનોગ્રાફી માટે આવવું`;
 				else if (e.target.value === 5) followup = `માસિકના બીજા/ત્રીજા/પાંચમા દિવસે બતાવવા આવવું`;
 				else followup = "";
 				fields.followupInstruction = followup;
-			} else if (e.target.name === "followupDate") {
-				let followupDate = this.helper.formatDate(e.target.value);
-				fields.followupInstruction = `ફરી ${followupDate} ના રોજ બતાવવા આવવું`;
 			}
 		}
 
@@ -328,17 +326,26 @@ export default class Prescription extends React.Component {
 			}
 		}
 	};
+	gotoOpdEntry = () => {
+		const { date, patient } = this.state.formFields;
+		if (this.handleValidation()) {
+			window.open(`add-opd?patientId=${patient.value}&patientName=${patient.label}&date=${date}`, "_blank");
+		}
+	};
+
 	render() {
 		const { patient, date, clinicDetail, followup, advices, followupInstruction, followupDate } = this.state.formFields;
 		const { id, medicineType, days, medicineName, medicineInstructions } = this.state.medicineFormFields;
 		const { medicineTypeOptions, medicineNameOptions, medicineData, validationErrors, editDialog, adviceOptions, appointmentCalendarDialog, appointments } = this.state;
 		const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
 		const appointmentTypeOptions = this.helper.enumToObject(appointmentTypeEnum);
+
 		const header = (
 			<>
 				<span className="p-panel-title">{`${title} Preview`}</span>
 				<div className="float-right">
 					<Button icon="pi pi-print" tooltip="Save & Print" tooltipOptions={{ position: "bottom" }} onClick={this.saveAppointment} />
+					<Button icon="fa fa-mail-forward" tooltipOptions={{ position: "bottom" }} onClick={this.gotoOpdEntry} className="ml-2" />
 				</div>
 			</>
 		);
@@ -365,11 +372,12 @@ export default class Prescription extends React.Component {
 		this.options.dateClick = dateClickInfo => {
 			const { formFields } = this.state;
 			let followupDate = this.helper.formatDate(dateClickInfo.date);
+
 			this.setState({
 				appointmentCalendarDialog: false,
 				formFields: {
 					...formFields,
-					followupInstruction: `ફરી ${followupDate} ના રોજ બતાવવા આવવું`,
+					followupInstruction: followup === 1 ? `ફરી ${followupDate} ના રોજ બતાવવા આવવું` : `ફરી ${followupDate} ના રોજ સોનોગ્રાફી માટે આવવું`,
 					followupDate: followupDate,
 				},
 			});
@@ -503,7 +511,7 @@ export default class Prescription extends React.Component {
 						<Panel header={header} className="prescription-preview">
 							<div id="print-div" className="A5">
 								<div className="invoice-detail">
-									<div class="d-flex justify-content-between">
+									<div className="d-flex justify-content-between">
 										<div>
 											<label>Patient Name : </label> {patient && patient.label}
 										</div>
@@ -511,7 +519,7 @@ export default class Prescription extends React.Component {
 											<label>Date : </label> {date && this.helper.formatDate(date)}
 										</div>
 									</div>
-									<div class="d-flex justify-content-between">
+									<div className="d-flex justify-content-between">
 										<div>
 											<label>Patient Id : </label> {patient && patient.value}
 										</div>
@@ -529,7 +537,6 @@ export default class Prescription extends React.Component {
 										<span className="display-linebreak"> {clinicDetail}</span>
 									</div>
 								</div>
-								<hr />
 								<h4>Rx</h4>
 								<div>
 									<table className="table table-borderless table-sm medicine-table">
@@ -563,8 +570,7 @@ export default class Prescription extends React.Component {
 												})}
 										</tbody>
 									</table>
-
-									<div class="d-flex prescription-detail">
+									<div className="d-flex prescription-detail">
 										<div>
 											<label className="m-0">Advice&nbsp;:</label>
 										</div>
@@ -577,17 +583,14 @@ export default class Prescription extends React.Component {
 										</div>
 									</div>
 									{followupInstruction && (
-										<>
-											<hr />
-											<div class="d-flex">
-												<div className="prescription-detail">
-													<label className="m-0">Follow&nbsp;up&nbsp;:&nbsp;</label>
-												</div>
-												<div className="gujarati-text" style={{ paddingTop: "4px" }}>
-													{followupInstruction}
-												</div>
+										<div className="d-flex">
+											<div className="prescription-detail">
+												<label className="m-0">Follow&nbsp;up&nbsp;:&nbsp;</label>
 											</div>
-										</>
+											<div className="gujarati-text" style={{ paddingTop: "4px" }}>
+												{followupInstruction}
+											</div>
+										</div>
 									)}
 								</div>
 								<div className="text-right invoice-foot" style={{ marginTop: "50px" }}>

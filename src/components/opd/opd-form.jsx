@@ -138,6 +138,18 @@ export default class OpdForm extends React.Component {
   componentDidMount = () => {
     jquery("#errors").remove();
     const { selectedOpd } = this.props;
+    const query = new URLSearchParams(window.location.search);
+    const patientId = query.get("patientId");
+    const patientName = query.get("patientName");
+    const date = query.get("date");
+    if (patientId) {
+      this.setState({
+        formFields: {
+          patient: { value: patientId, label: patientName },
+          opdDate: new Date(date)
+        }
+      });
+    }
     if (selectedOpd) {
       selectedOpd.opdDate = selectedOpd.date && new Date(selectedOpd.date);
       this.setState({
