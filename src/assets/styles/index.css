@@ -153,21 +153,21 @@ hr {
 	.A5 {
 		width: 206mm;
 		padding-left: 1in;
-		padding-right: 1in;
+		padding-right: 0.75in;
 	}
 
 	#print-div .invoice-detail,
 	#print-div .invoice-foot,
 	#print-div .prescription-detail,
 	#print-div .medicine-table {
-		font-size: 22px !important;
+		font-size: 20px !important;
 	}
 
 	#print-div .invoice-table {
-		font-size: 20px !important;
+		font-size: 18px !important;
 	}
 	#print-div .gujarati-text {
-		font-size: 18px !important;
+		font-size: 16px !important;
 	}
 	.col-md-12 {
 		max-width: 100%;
