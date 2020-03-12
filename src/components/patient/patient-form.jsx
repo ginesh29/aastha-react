@@ -177,7 +177,7 @@ export default class PatientForm extends Component {
       address,
       mobile
     } = this.state.formFields;
-    const { addressDialog, addressText, addressError, isExist } = this.state;
+    const { addressDialog, addressText, addressError } = this.state;
     let addressDialogFooter = (
       <div className="ui-dialog-buttonpane p-clearfix">
         <Button
@@ -213,18 +213,16 @@ export default class PatientForm extends Component {
                 {...this.state}
               />
             </div>
-            {(isExist || fathername) && (
-              <div className="col">
-                <InputField
-                  name="fathername"
-                  title="Fathername"
-                  value={fathername || ""}
-                  onChange={this.handleChange}
-                  onInput={this.helper.toSentenceCase}
-                  {...this.state}
-                />
-              </div>
-            )}
+            <div className="col">
+              <InputField
+                name="fathername"
+                title="Fathername"
+                value={fathername || ""}
+                onChange={this.handleChange}
+                onInput={this.helper.toSentenceCase}
+                {...this.state}
+              />
+            </div>
             <div className="col">
               <InputField
                 name="lastname"
