@@ -268,7 +268,7 @@ export default class Opds extends Component {
 								<img src={invoice_header} className="img-fluid" alt="Invoice Header" />
 								<h3 className="invoice-title">Outdoor Invoice</h3>
 								<div className="invoice-detail">
-									<div class="d-flex justify-content-between">
+									<div className="d-flex justify-content-between">
 										<div>
 											<label>Patient Name :</label> {selectedOpd.patient && selectedOpd.patient.fullname}
 										</div>
@@ -276,7 +276,7 @@ export default class Opds extends Component {
 											<label>Date :</label> {this.helper.formatDate(selectedOpd.date)}
 										</div>
 									</div>
-									<div class="d-flex justify-content-between">
+									<div className="d-flex justify-content-between">
 										<div>
 											<label>Invoice No. :</label> {selectedOpd.id}
 										</div>
@@ -284,7 +284,7 @@ export default class Opds extends Component {
 											<label>Address :</label> {selectedOpd.address}
 										</div>
 									</div>
-									<div class="d-flex justify-content-between">
+									<div className="d-flex justify-content-between">
 										<div>
 											<label>Outdoor No. :</label> {selectedOpd && selectedOpd.invoiceNo}
 										</div>

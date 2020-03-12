@@ -85,17 +85,13 @@ export default class MonthlyIpdReport extends Component {
 						<ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={e => this.setState({ reportType: e.value })} data={ipds} showSummary={false} />
 						<hr />
 						<div id="print-div">
-							<div className="monthly-invoice">
+							<div className="monthly-invoice row">
 								{ipds &&
 									ipds.map((items, i) => {
 										return (
-											<>
-												<div className="row">
-													<div className={`col-md-6 ${i % 2 === 0 ? "vertical-devider" : ""}`} key={i}>
-														<IpdInvoice InvoiceData={items} invoiceClass={i % 2 === 0 ? "invoice-odd" : "invoice-even"} />
-													</div>
-												</div>
-											</>
+											<div className={`col-md-6 ${i % 2 === 0 ? "vertical-devider" : ""}`} key={i}>
+												<IpdInvoice InvoiceData={items} invoiceclassName={i % 2 === 0 ? "invoice-odd" : "invoice-even"} />
+											</div>
 										);
 									})}
 							</div>
