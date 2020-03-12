@@ -34,8 +34,11 @@
 }
 .instruction-check label,
 .followup-check label {
-	margin-bottom: 5px !important;
 	font-weight: 500 !important;
+}
+.followup-check,
+.followup-check .d-flex {
+	margin-bottom: 5px !important;
 }
 
 .gujarati-text {
