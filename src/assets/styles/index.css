@@ -145,6 +145,13 @@ hr {
 .medicine-table tr {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
+.monthly-invoice {
+	page-break-inside: avoid;
+	display: block;
+}
+.container-holder {
+	page-break-inside: avoid;
+}
 @page {
 	size: auto;
 	margin: 20px;

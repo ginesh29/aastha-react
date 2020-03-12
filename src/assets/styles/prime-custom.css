@@ -169,7 +169,11 @@ form .p-multiselect,
 .p-multiselect-panel label {
 	margin-top: 0 !important;
 	font-weight: 500 !important;
+	vertical-align: baseline !important;
 }
 .fc td.fc-today {
 	background-color: #bdedbc !important;
+}
+#print-div {
+	font-size: 14px;
 }
