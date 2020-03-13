@@ -172,3 +172,6 @@ form .p-multiselect,
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
+.p-dialog .p-dialog-content {
+  overflow-x: hidden;
+}
