@@ -64,14 +64,8 @@ form .p-multiselect,
   text-align: left !important;
 }
 
-.p-scroll-dialog {
-  position: absolute;
-  top: 20px;
-}
-
 .p-component-overlay {
   z-index: 1004 !important;
-  overflow: auto;
 }
 .p-select2 .css-yk16xz-control {
   border: 1px solid #a6a6a6 !important;
@@ -173,9 +167,6 @@ form .p-multiselect,
 }
 .fc td.fc-today {
   background-color: #bdedbc !important;
-}
-#print-div {
-  font-size: 14px;
 }
 .p-calendar .p-inputtext {
   border-top-right-radius: 0;

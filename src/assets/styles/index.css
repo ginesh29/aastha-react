@@ -1,233 +1,233 @@
 .prescription-preview .p-panel-content {
-	background: #fffcab !important;
+  background: #fffcab !important;
 }
 .prescription-preview table:not(.medicine-table) th {
-	width: 80px !important;
+  width: 80px !important;
 }
 
 .icon-btn-grid {
-	font-size: 11px;
-	line-height: 0.5;
-	border-radius: 2px;
+  font-size: 11px;
+  line-height: 0.5;
+  border-radius: 2px;
 }
 .btn-grid {
-	padding: 1px 5px;
-	font-size: 11px;
-	line-height: 1.5;
-	border-radius: 2px;
+  padding: 1px 5px;
+  font-size: 11px;
+  line-height: 1.5;
+  border-radius: 2px;
 }
 .btn-label {
-	position: relative;
-	left: -12px;
-	display: inline-block;
-	padding: 5px 8px;
-	background: rgba(0, 0, 0, 0.15);
-	border-radius: 3px 0 0 3px;
+  position: relative;
+  left: -12px;
+  display: inline-block;
+  padding: 5px 8px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px 0 0 3px;
 }
 .btn-labeled {
-	padding-top: 0;
-	padding-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .modal-footer {
-	padding: 10px 0 0 0 !important;
-	margin-top: 1rem !important;
+  padding: 10px 0 0 0 !important;
+  margin-top: 1rem !important;
 }
 .instruction-check label,
 .followup-check label {
-	font-weight: 500 !important;
+  font-weight: 500 !important;
 }
 .followup-check,
 .followup-check .d-flex {
-	margin-bottom: 5px !important;
+  margin-bottom: 5px !important;
 }
 
 .gujarati-text {
-	font-size: 12px !important;
+  font-size: 12px !important;
 }
 .report-header {
-	font-size: 21px;
-	text-align: center;
+  font-size: 21px;
+  text-align: center;
 }
 .report,
 .invoice {
-	font-size: 12px !important;
+  font-size: 12px !important;
 }
 hr {
-	margin-top: 1px !important;
+  margin-top: 1px !important;
 }
 
 .charge-table th,
 .charge-table td {
-	padding: 5px;
+  padding: 5px;
 }
 .statistics-table th,
 .statistics-table td {
-	padding: 8px !important;
+  padding: 8px !important;
 }
 .invoice-table th,
 .invoice-table td {
-	padding: 4px !important;
+  padding: 4px !important;
 }
 .report-footer td {
-	text-decoration: underline;
-	font-weight: 600;
+  text-decoration: underline;
+  font-weight: 600;
 }
 .invoice-footer td {
-	font-weight: 600;
+  font-weight: 600;
 }
 .invoice-table th,
 .statistics-table th,
 .report-table th,
 .report-footer td,
 .invoice-footer td {
-	background-color: rgba(0, 0, 0, 0.075);
-	font-weight: 600;
+  background-color: rgba(0, 0, 0, 0.075);
+  font-weight: 600;
 }
 .report-group-title td {
-	font-weight: 600;
+  font-weight: 600;
 }
 
 .invoice-title {
-	text-align: center;
-	margin-bottom: 20px;
-	font-weight: 600;
-	text-decoration: underline;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 .vertical-devider {
-	border-right: 1px dashed #333;
+  border-right: 1px dashed #333;
 }
 .fc-event {
-	padding: 2px 3px;
-	margin: 1px;
-	cursor: pointer;
+  padding: 2px 3px;
+  margin: 1px;
+  cursor: pointer;
 }
 .fc-title {
-	width: 75%;
-	display: inline-block;
-	overflow: hidden;
-	text-overflow: ellipsis;
+  width: 75%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .icon-button {
-	background: none !important;
-	border: none;
-	text-decoration: underline;
-	cursor: pointer;
-	padding: 0;
-	color: inherit;
+  background: none !important;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
 }
 .input-sm {
-	height: 28px !important;
-	font-size: 12px !important;
-	line-height: 1.5 !important;
-	border-radius: 2px !important;
+  height: 28px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border-radius: 2px !important;
 }
 .event-indicator {
-	cursor: move;
-	display: inline-block !important;
-	margin-bottom: 6px !important;
-	margin-right: 6px !important;
-	padding: 8px;
-	font-weight: normal;
-	line-height: 1;
-	color: #fff;
-	text-align: center;
-	white-space: nowrap;
-	vertical-align: baseline;
-	border-radius: 0.25em;
+  cursor: move;
+  display: inline-block !important;
+  margin-bottom: 6px !important;
+  margin-right: 6px !important;
+  padding: 8px;
+  font-weight: normal;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25em;
 }
 .display-linebreak {
-	white-space: pre-line;
+  white-space: pre-line;
 }
 .font-weight-semi-bold {
-	font-weight: 600;
+  font-weight: 600;
 }
 .medicine-table tr {
-	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 @page {
-	size: auto;
-	margin: 20px;
+  size: auto;
+  margin: 20px;
 }
 @media print {
-	body {
-		background: none;
-	}
-	.A5 {
-		width: 206mm;
-		padding-left: 1in;
-		padding-right: 0.75in;
-	}
+  body {
+    background: none;
+  }
+  .A5 {
+    width: 206mm;
+    padding-left: 1in;
+    padding-right: 0.75in;
+  }
 
-	#print-div .invoice-detail,
-	#print-div .prescription-detail,
-	#print-div .invoice-table,
-	#print-div .invoice-foot,
-	#print-div .medicine-table {
-		font-size: 18px !important;
-	}
-	#print-div .gujarati-text {
-		font-size: 16px !important;
-	}
-	.col-md-12 {
-		max-width: 100%;
-	}
-	.col-md-11 {
-		max-width: 91.66666667%;
-	}
-	.col-md-10 {
-		max-width: 83.33333333%;
-	}
-	.col-md-9 {
-		max-width: 75%;
-	}
-	.col-md-8 {
-		max-width: 66.66666667%;
-	}
-	.col-md-7 {
-		max-width: 58.33333333%;
-	}
-	.col-md-6 {
-		max-width: 50%;
-	}
-	.col-md-5 {
-		max-width: 41.66666667%;
-	}
-	.col-md-4 {
-		max-width: 33.33333333%;
-	}
-	.col-md-3 {
-		max-width: 25%;
-	}
-	.col-md-2 {
-		max-width: 16.66666667%;
-	}
-	.col-md-1 {
-		max-width: 8.33333%;
-	}
-	.invoice-odd {
-		padding-left: 45px;
-		height: 760px !important;
-	}
-	.invoice-even {
-		padding-left: 50px;
-		height: 760px !important;
-	}
-	.report-table th,
-	.report-table td,
-	.monthly-invoice table th,
-	.monthly-invoice table td {
-		padding: 2px !important;
-		line-height: 1.2 !important;
-		vertical-align: top !important;
-		font-size: 12pt !important;
-	}
-	.thead-dark th {
-		background-color: #343a40 !important;
-		color: #fff !important;
-	}
-	.invoice-footer td {
-		background-color: rgba(0, 0, 0, 0.075) !important;
-	}
+  #print-div .invoice-detail,
+  #print-div .prescription-detail,
+  #print-div .invoice-table,
+  #print-div .invoice-foot,
+  #print-div .medicine-table {
+    font-size: 18px !important;
+  }
+  #print-div .gujarati-text {
+    font-size: 16px !important;
+  }
+  .col-md-12 {
+    max-width: 100%;
+  }
+  .col-md-11 {
+    max-width: 91.66666667%;
+  }
+  .col-md-10 {
+    max-width: 83.33333333%;
+  }
+  .col-md-9 {
+    max-width: 75%;
+  }
+  .col-md-8 {
+    max-width: 66.66666667%;
+  }
+  .col-md-7 {
+    max-width: 58.33333333%;
+  }
+  .col-md-6 {
+    max-width: 50%;
+  }
+  .col-md-5 {
+    max-width: 41.66666667%;
+  }
+  .col-md-4 {
+    max-width: 33.33333333%;
+  }
+  .col-md-3 {
+    max-width: 25%;
+  }
+  .col-md-2 {
+    max-width: 16.66666667%;
+  }
+  .col-md-1 {
+    max-width: 8.33333%;
+  }
+  .invoice-odd {
+    padding-left: 45px;
+    height: 760px !important;
+  }
+  .invoice-even {
+    padding-left: 50px;
+    height: 760px !important;
+  }
+  .report-table th,
+  .report-table td,
+  .monthly-invoice table th,
+  .monthly-invoice table td {
+    padding: 2px !important;
+    line-height: 1.2 !important;
+    vertical-align: top !important;
+    font-size: 12pt !important;
+  }
+  .thead-dark th {
+    background-color: #343a40 !important;
+    color: #fff !important;
+  }
+  .invoice-footer td {
+    background-color: rgba(0, 0, 0, 0.075) !important;
+  }
 }
