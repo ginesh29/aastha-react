@@ -718,7 +718,7 @@ export default class IpdForm extends React.Component {
                         <InputText
                           type="text"
                           value={rate}
-                          className="input-sm"
+                          className="p-inputtext-sm"
                           keyfilter="pint"
                           name={`rate-${item.value}`}
                           onChange={this.handleChargeChange}
@@ -728,7 +728,7 @@ export default class IpdForm extends React.Component {
                         <InputText
                           type="text"
                           value={days}
-                          className="input-sm"
+                          className="p-inputtext-sm"
                           keyfilter="pint"
                           name={`days-${item.value}`}
                           onChange={this.handleChargeChange}
@@ -747,7 +747,7 @@ export default class IpdForm extends React.Component {
                     <div className="mr-2">
                       <InputText
                         type="text"
-                        className="input-sm"
+                        className="p-inputtext-sm"
                         keyfilter="pint"
                         value={grandTotal || ""}
                         readOnly
@@ -759,7 +759,7 @@ export default class IpdForm extends React.Component {
                     <div>
                       <InputText
                         name="discount"
-                        className="input-sm"
+                        className="p-inputtext-sm"
                         type="text"
                         keyfilter="pint"
                         value={discount || ""}

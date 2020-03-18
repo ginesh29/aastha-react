@@ -175,3 +175,9 @@ form .p-multiselect,
 .p-dialog .p-dialog-content {
   overflow-x: hidden;
 }
+.p-inputtext-sm {
+  height: 28px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border-radius: 2px !important;
+}
