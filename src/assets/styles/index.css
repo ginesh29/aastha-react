@@ -116,6 +116,12 @@ hr {
   padding: 0;
   color: inherit;
 }
+.input-sm {
+  height: 28px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  border-radius: 2px !important;
+}
 .event-indicator {
   cursor: move;
   display: inline-block !important;
