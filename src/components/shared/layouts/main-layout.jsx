@@ -15,11 +15,7 @@ export default class MainLayout extends React.Component {
           <div className="top-nav clearfix">
             <ul className="nav float-right top-menu">
               <li>
-                <input
-                  type="text"
-                  className="form-control search"
-                  placeholder=" Search"
-                />
+                <input type="text" className="search" placeholder=" Search" />
               </li>
 
               <li className="dropdown">

@@ -606,7 +606,7 @@ export default class Prescription extends React.Component {
                               <>
                                 <div className="mr-2">
                                   <InputText
-                                    className={`form-control p-inputtext-sm ${
+                                    className={`p-inputtext-sm ${
                                       validationErrors.followupDate
                                         ? "error"
                                         : ""
