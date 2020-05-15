@@ -29,9 +29,9 @@ export default class OpdReport extends Component {
 	}
 	getOpds = () => {
 		const { filterString, sortString, includeProperties, controller } = this.state;
-		this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`).then(res => {
+		this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`).then((res) => {
 			res &&
-				res.data.map(item => {
+				res.data.map((item) => {
 					item.formatedOpdDate = this.helper.formatDate(item.date);
 					item.fullname = item.patient.fullname;
 					return item;
@@ -44,7 +44,7 @@ export default class OpdReport extends Component {
 	};
 	exportReport = () => {
 		const { controller, reportTitle, opds, config } = this.state;
-		this.repository.post(`${controller}/ExportReport`, opds, config).then(res => {
+		this.repository.post(`${controller}/ExportReport`, opds, config).then((res) => {
 			const downloadUrl = window.URL.createObjectURL(new Blob([res]));
 			const link = document.createElement("a");
 			link.href = downloadUrl;
@@ -54,15 +54,15 @@ export default class OpdReport extends Component {
 			link.remove();
 		});
 	};
-	componentDidMount = e => {
+	componentDidMount = (e) => {
 		const date = this.helper.formatDate(TODAY_DATE, "en-US");
 		const title = this.helper.formatDate(TODAY_DATE);
-		const filter = `Date-eq-{${date}}`;
+		const filter = `Date-eq-{${date}} and isDeleted-neq-{true}`;
 		this.setState({ filterString: filter, reportTitle: title }, () => {
 			this.getOpds();
 		});
 	};
-	onDateSelection = e => {
+	onDateSelection = (e) => {
 		const { reportType } = this.state;
 		let name = e.target.name;
 		let value = e.target.value;
@@ -74,19 +74,19 @@ export default class OpdReport extends Component {
 		if (reportType === reportTypeEnum.DAILY.value) {
 			let date = this.helper.formatDate(value, "en-US");
 			let dateTitle = this.helper.formatDate(value);
-			filter = `Date-eq-{${date}}`;
+			filter = `Date-eq-{${date}} and isDeleted-neq-{true}`;
 			title = dateTitle;
 		} else if (reportType === reportTypeEnum.DATERANGE.value) {
 			let startDate = this.helper.formatDate(value[0], "en-US");
 			let endDate = this.helper.formatDate(value[1], "en-US");
 			let startDateTitle = this.helper.formatDate(value[0]);
 			let endDateTitle = this.helper.formatDate(value[1]);
-			filter = `Date-gte-{${startDate}} and Date-lte-{${endDate}}`;
+			filter = `Date-gte-{${startDate}} and Date-lte-{${endDate}} and isDeleted-neq-{true}`;
 			title = `${startDateTitle} - ${endDateTitle}`;
 		} else if (reportType === reportTypeEnum.MONTHLY.value) {
 			let month = this.helper.getMonthFromDate(value);
 			let year = this.helper.getYearFromDate(value);
-			filter = `Date.Month-eq-{${month}} and Date.Year-eq-{${year}}`;
+			filter = `Date.Month-eq-{${month}} and Date.Year-eq-{${year}} and isDeleted-neq-{true}`;
 			title = `${month}/${year}`;
 		}
 		this.setState({ filterString: filter, reportTitle: title }, () => {
@@ -120,9 +120,9 @@ export default class OpdReport extends Component {
 			<>
 				<div className="card">
 					<div className="card-body">
-						<ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={e => this.setState({ reportType: e.value }, () => this.getOpds())} data={opdData} exportReport={this.exportReport} />
+						<ReportFilter {...this.state} onDateSelection={this.onDateSelection} onReportTypeChange={(e) => this.setState({ reportType: e.value }, () => this.getOpds())} data={opdData} exportReport={this.exportReport} />
 						<hr />
-						<TabView activeIndex={activeIndex} onTabChange={e => this.setState({ activeIndex: e.index })}>
+						<TabView activeIndex={activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })}>
 							<TabPanel header="Report">
 								<div id="print-div">
 									<h3 className="report-header">Opd Report {reportTitle}</h3>
@@ -153,7 +153,7 @@ export default class OpdReport extends Component {
 																{items.count} Patients
 															</td>
 														</tr>
-														{items.data.map(subitem => {
+														{items.data.map((subitem) => {
 															return (
 																<tr key={`subitem${subitem.id}`}>
 																	<td>{subitem.id}</td>

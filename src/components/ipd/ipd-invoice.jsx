@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { helper } from "../../common/helpers";
 import { repository } from "../../common/repository";
 import numberToWords from "number-to-words";
+import { lookupTypeEnum } from "../../common/enums";
 import invoice_header from "../../assets/images/invoice_header.jpg";
 import _ from "lodash";
 
@@ -12,9 +13,28 @@ export default class IpdInvoice extends Component {
 		this.helper = new helper();
 		this.repository = new repository();
 	}
+	bindLookups = (e) => {
+		this.repository.get("lookups", `filter=type-neq-{0} and isDeleted-neq-${true}`).then((res) => {
+			let lookups =
+				res &&
+				res.data.map(function (item) {
+					return { value: item.id, label: item.name, type: item.type };
+				});
+			if (res) {
+				let chargeNames = lookups.filter((l) => l.type === lookupTypeEnum.CHARGENAME.value);
+				this.setState({
+					chargeNames: chargeNames,
+				});
+			}
+		});
+	};
+	componentDidMount() {
+		this.bindLookups();
+	}
 	render() {
 		const { InvoiceData } = this.props;
-		const totalAmount = _.sumBy(InvoiceData.charges, x => x.amount);
+		const { chargeNames } = this.state;
+		const totalAmount = _.sumBy(InvoiceData.charges, (x) => x.amount);
 		const payableAmount = totalAmount - InvoiceData.discount;
 		const amountInWord = numberToWords.toWords(payableAmount);
 		return (
@@ -59,20 +79,29 @@ export default class IpdInvoice extends Component {
 							</tr>
 						</thead>
 						<tbody>
-							{InvoiceData.charges
-								.filter(m => m.amount > 0)
-								.map((item, i) => {
+							{chargeNames &&
+								chargeNames.map((item, index) => {
+									let rate = "";
+									let days = "";
+									let amount = "";
+									if (InvoiceData.charges) {
+										const chargeObj = InvoiceData.charges.filter((c) => c.lookupId === item.value)[0];
+										rate = chargeObj ? chargeObj.rate : 0;
+										days = chargeObj ? chargeObj.days : 0;
+										amount = chargeObj ? chargeObj.amount : 0;
+									}
 									return (
-										<tr key={`charge-${i}`}>
-											<td>{i + 1}</td>
-											<td>{item.chargeDetail.name}</td>
-											<td className="text-right">{item.rate}</td>
-											<td className="text-right">{item.days}</td>
-											<td className="text-right">{this.helper.formatCurrency(item.amount)}</td>
+										<tr key={`charge-${index}`}>
+											<th>{index + 1}</th>
+											<td>{item.label}</td>
+											<td className="text-right">{rate}</td>
+											<td className="text-right">{days}</td>
+											<td className="text-right">{this.helper.formatCurrency(amount)}</td>
 										</tr>
 									);
 								})}
 						</tbody>
+
 						<tfoot className="invoice-footer">
 							<tr>
 								<td colSpan="4">

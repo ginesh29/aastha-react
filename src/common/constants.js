@@ -1,7 +1,7 @@
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 export const BASE_API_URL = {
-	development: "http://localhost:61194/api",
+	development: "http://localhost:8082/api",
 	production: "http://localhost:8082/api",
 };
 export const ROWS = 10;
