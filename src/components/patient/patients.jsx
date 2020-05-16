@@ -45,7 +45,7 @@ export default class Patients extends Component {
 		});
 	};
 	getAddresses = () => {
-		this.repository.get("lookups", `&filter=type-eq-{${lookupTypeEnum.ADDRESS.value}} and isDeleted-neq-{${false}}&sort=name asc`).then((res) => {
+		this.repository.get("lookups", `&filter=type-eq-{${lookupTypeEnum.ADDRESS.code}} and isDeleted-neq-{${false}}&sort=name asc`).then((res) => {
 			let addresses =
 				res &&
 				res.data.map(function (item) {
@@ -225,7 +225,6 @@ export default class Patients extends Component {
 							</div>
 							<div className="report-header">{panelTitle}</div>
 							<div>
-								{console.log(linkUrl)}
 								<NavLink to={linkUrl}>
 									<Button className="btn-archive p-btn-sm mb-2" icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`} tooltip={`Show ${buttonText}`} />
 								</NavLink>

@@ -48,7 +48,7 @@ export default class IpdReport extends Component {
 		});
 	};
 	getCharges = () => {
-		this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.CHARGENAME.value}} and isDeleted-neq-{true}`).then((res) => {
+		this.repository.get("lookups", `filter=type-eq-{${lookupTypeEnum.CHARGENAME.code}} and isDeleted-neq-{true}`).then((res) => {
 			let charges = res && res.data;
 			charges &&
 				this.setState({

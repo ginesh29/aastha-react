@@ -21,7 +21,7 @@ export default class IpdInvoice extends Component {
 					return { value: item.id, label: item.name, type: item.type };
 				});
 			if (res) {
-				let chargeNames = lookups.filter((l) => l.type === lookupTypeEnum.CHARGENAME.value);
+				let chargeNames = lookups.filter((l) => l.type === lookupTypeEnum.CHARGENAME.code);
 				this.setState({
 					chargeNames: chargeNames,
 				});

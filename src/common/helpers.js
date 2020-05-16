@@ -4,7 +4,7 @@ export class helper {
 	constructor() {
 		this.repository = new repository();
 	}
-	toSentenceCase = e => {
+	toSentenceCase = (e) => {
 		let value = e && e.target ? e.target.value : e;
 		let str = value;
 		let result = "";
@@ -13,7 +13,7 @@ export class helper {
 				str &&
 				str
 					.split(" ")
-					.map(w => w[0] && w[0].toUpperCase() + w.substr(1).toLowerCase())
+					.map((w) => w[0] && w[0].toUpperCase() + w.substr(1).toLowerCase())
 					.join(" ");
 		}
 		if (e && e.target) e.target.value = result;
@@ -21,9 +21,9 @@ export class helper {
 		return result;
 	};
 
-	enumToObject = function(enumValue) {
+	enumToObject = function (enumValue) {
 		const keys = Object.keys(enumValue);
-		const result = keys.map(key => {
+		const result = keys.map((key) => {
 			return enumValue[key];
 		});
 		return result;
@@ -32,29 +32,29 @@ export class helper {
 	PatientOptions = (inputValue, callback) => {
 		let name = inputValue && inputValue.toLowerCase().split(" ");
 		let filter = `firstname.contains({${name[0] ? name[0] : ""}}) and middlename.contains({${name[1] ? name[1] : ""}}) and lastname.contains({${name[2] ? name[2] : ""}})`;
-		this.repository.get("patients", `take=15&filter=${filter}`).then(res => {
+		this.repository.get("patients", `take=15&filter=${filter}`).then((res) => {
 			let patients =
 				res &&
-				res.data.map(function(item) {
+				res.data.map(function (item) {
 					return { value: item.id, label: item.fullname, age: item.age };
 				});
 			callback(patients);
 		});
 	};
 	AddressOptions = (inputValue, callback) => {
-		let filter = `type-eq-{${lookupTypeEnum.ADDRESS.value}}`;
+		let filter = `type-eq-{${lookupTypeEnum.ADDRESS.code}}`;
 		if (inputValue) filter = filter + ` and name.contains({${inputValue.toLowerCase()}})`;
-		this.repository.get("lookups", `take=15&filter=${filter}`).then(res => {
+		this.repository.get("lookups", `take=15&filter=${filter}`).then((res) => {
 			let addresses =
 				res &&
-				res.data.map(function(item) {
+				res.data.map(function (item) {
 					return { value: item.id, label: item.name };
 				});
 			callback(addresses);
 		});
 	};
 
-	generateFilterString = filters => {
+	generateFilterString = (filters) => {
 		let operatorCondition = [];
 		let filterMatchMode = "";
 		let filterValue = "";
@@ -67,12 +67,12 @@ export class helper {
 				let name = filterValue.split(" ");
 				if (field === "fullname") {
 					// eslint-disable-next-line
-					name.map(item => {
+					name.map((item) => {
 						operatorCondition.push(`(firstname.${filterMatchMode}({${item}}) or middlename.${filterMatchMode}({${item}}) or lastname.${filterMatchMode}({${item}}))`);
 					});
 				} else if (field === "patient.fullname") {
 					// eslint-disable-next-line
-					name.map(item => {
+					name.map((item) => {
 						operatorCondition.push(`(patient.firstname.${filterMatchMode}({${item}}) or patient.middlename.${filterMatchMode}({${item}}) or patient.lastname.${filterMatchMode}({${item}}))`);
 					});
 				} else operatorCondition.push(`${field}.${filterMatchMode}({${filterValue}})`);
@@ -89,7 +89,7 @@ export class helper {
 		});
 		return operatorCondition.join(" and ");
 	};
-	generateSortString = sortMeta => {
+	generateSortString = (sortMeta) => {
 		let sortField = "";
 		let sortOrder = "";
 		let operatorCondition = [];
@@ -113,7 +113,7 @@ export class helper {
 		});
 		return operatorCondition.join(",");
 	};
-	formatFullcalendarDate = date => {
+	formatFullcalendarDate = (date) => {
 		let d = date ? new Date(date) : new Date();
 		var month = d.getMonth() + 1;
 		var day = d.getDate();
@@ -123,32 +123,32 @@ export class helper {
 	formatDate = (date, format) => {
 		return new Date(date).toLocaleDateString(format ? format : "en-GB", { year: "numeric", month: "numeric", day: "numeric" });
 	};
-	formatTime = date => {
+	formatTime = (date) => {
 		let d = date ? new Date(date) : new Date();
 		var hour = d.getHours();
 		var minute = d.getMinutes();
 		return `${hour}:${minute}`;
 	};
-	getMonthFromDate = date => {
+	getMonthFromDate = (date) => {
 		let d = date ? new Date(date) : new Date();
 		let month = d.getMonth() + 1;
 		return month < 10 ? `0${month}` : month;
 	};
-	getYearFromDate = date => {
+	getYearFromDate = (date) => {
 		let d = date ? new Date(date) : new Date();
 		return d.getFullYear();
 	};
-	getDayFromDate = date => {
+	getDayFromDate = (date) => {
 		let d = date ? new Date(date) : new Date();
 		return d.getDate();
 	};
-	formatCurrency = number => {
+	formatCurrency = (number) => {
 		return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 0 }).format(number);
 	};
-	formatAmount = number => {
+	formatAmount = (number) => {
 		return new Intl.NumberFormat("en-IN", { minimumFractionDigits: 0 }).format(number);
 	};
-	formatStringToDate = date => {
+	formatStringToDate = (date) => {
 		var parts = date.split("/");
 		var newDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
 		return this.formatDate(newDate, "en-US");

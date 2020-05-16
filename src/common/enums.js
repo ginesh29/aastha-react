@@ -4,16 +4,16 @@ export const departmentTypeEnum = {
 	GENERAL: { value: 3, label: "General" },
 };
 export const lookupTypeEnum = {
-	DELIVERYTYPE: { value: 1, label: "Delivery Type" },
-	OPERATIONTYPE: { value: 2, label: "Operation Type" },
-	OPERATIONDIAGNOSIS: { value: 3, label: "Operation Diagnosis" },
-	GENERALDIAGNOSIS: { value: 4, label: "General Diagnosis" },
-	MEDICINETYPE: { value: 5, label: "Medicine Type" },
-	MEDICINENAME: { value: 6, label: "Medicine Name" },
-	CHARGENAME: { value: 7, label: "Indoor Charge Name" },
-	DELIVERYDIAGNOSIS: { value: 8, label: "Delivery Diagnosis" },
-	ADDRESS: { value: 9, label: "Address" },
-	ADVICE: { value: 10, label: "Advice" },
+	DELIVERYTYPE: { code: 1, label: "Delivery Type" },
+	OPERATIONTYPE: { code: 2, label: "Operation Type" },
+	OPERATIONDIAGNOSIS: { code: 3, label: "Operation Diagnosis" },
+	GENERALDIAGNOSIS: { code: 4, label: "General Diagnosis" },
+	MEDICINETYPE: { code: 5, label: "Medicine Type" },
+	MEDICINENAME: { code: 6, label: "Medicine Name" },
+	CHARGENAME: { code: 7, label: "Indoor Charge Name" },
+	DELIVERYDIAGNOSIS: { code: 8, label: "Delivery Diagnosis" },
+	ADDRESS: { code: 9, label: "Address" },
+	ADVICE: { code: 10, label: "Advice" },
 };
 
 export const reportTypeEnum = {

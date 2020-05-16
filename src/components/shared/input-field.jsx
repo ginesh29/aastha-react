@@ -25,7 +25,7 @@ export default class InputField extends Component {
 					</div>
 				)}
 				{controlType === "dropdown" && <Dropdown name={name} value={value} options={options} className={finalClassName} placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={true} ref={ref} />}
-				{controlType === "select2" && <AsyncCreatableSelect defaultOptions name={name} value={value} onCreateOption={onCreateOption} createOptionPosition="first" loadOptions={loadOptions} className={`${finalClassName} p-select2`} isClearable={true} isLoading={true} onChange={onChange} onInputChange={onInputChange} placeholder={"Select " + title} />}
+				{controlType === "select2" && <AsyncCreatableSelect defaultOptions name={name} value={value} onCreateOption={onCreateOption} createOptionPosition="first" loadOptions={loadOptions} className={`${finalClassName} p-select2`} isClearable={true} onChange={onChange} onInputChange={onInputChange} placeholder={"Select " + title} />}
 				{controlType === "datepicker" && (
 					<div className="p-inputgroup">
 						<Calendar name={name} value={value} showIcon={true} className={propClassName} inputClassName={errorClass} placeholder={"Enter " + title} onChange={onChange} dateFormat="dd/mm/yy" readOnlyInput={true} timeOnly={timeOnly} hourFormat={hourFormat} icon={icon} dataKey={dataKey} minDate={minDate} ref={ref} disabled={disabled} readOnly={readOnly} showButtonBar={true} />

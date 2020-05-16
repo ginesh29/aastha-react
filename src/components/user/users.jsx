@@ -47,7 +47,7 @@
 //   }
 //   getAddresses = () =>
 //   {
-//     this.repository.get("lookups", `&filter=type-eq-{${ lookupTypeEnum.ADDRESS.value }} and isDeleted-neq-{${ false }}&sort=name asc`)
+//     this.repository.get("lookups", `&filter=type-eq-{${ lookupTypeEnum.ADDRESS.codw }} and isDeleted-neq-{${ false }}&sort=name asc`)
 //       .then(res =>
 //       {
 //         let addresses = res && res.data.map(function (item)
