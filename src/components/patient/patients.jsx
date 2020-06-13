@@ -240,10 +240,10 @@ export default class Patients extends Component {
 						</DataTable>
 					</div>
 				</div>
-				<Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })}>
+				<Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })} dismissableMask={true}>
 					Are you sure you want to {action} this item ?
 				</Dialog>
-				<Dialog header="Edit Patient" visible={editDialog} onHide={() => this.setState({ editDialog: false })} style={{ width: "550px" }}>
+				<Dialog header="Edit Patient" visible={editDialog} onHide={() => this.setState({ editDialog: false })} style={{ width: "550px" }} dismissableMask={true}>
 					{editDialog && <PatientForm selectedPatient={selectedPatient} hideEditDialog={() => this.setState({ editDialog: false })} savePatient={this.savePatient} includeProperties={includeProperties} />}
 				</Dialog>
 			</>

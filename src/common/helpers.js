@@ -31,7 +31,13 @@ export class helper {
 
 	PatientOptions = (inputValue, callback) => {
 		let name = inputValue && inputValue.toLowerCase().split(" ");
-		let filter = `firstname.contains({${name[0] ? name[0] : ""}}) and middlename.contains({${name[1] ? name[1] : ""}}) and lastname.contains({${name[2] ? name[2] : ""}})`;
+		let filterCondition = [];
+		name &&
+			// eslint-disable-next-line
+			name.map((item) => {
+				filterCondition.push(`(firstname.contains({${item}}) or middlename.contains({${item}}) or lastname.contains({${item}}))`);
+			});
+		let filter = filterCondition.join(" and ");
 		this.repository.get("patients", `take=15&filter=${filter}`).then((res) => {
 			let patients =
 				res &&

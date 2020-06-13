@@ -50,7 +50,7 @@ export default class PatientForm extends Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
 		const { id, firstname, middlename, fathername, lastname, age, address, mobile } = this.state.formFields;
-		const { hideEditDialog, savePatient, includeProperties } = this.props;
+		const { hideEditDialog, savePatient, includeProperties, onHidePatientDialog } = this.props;
 		if (this.handleValidation()) {
 			const patient = {
 				id: id,
@@ -65,6 +65,7 @@ export default class PatientForm extends Component {
 			this.repository.post(`${controller}?includeProperties=${includeProperties ? includeProperties : ""}`, patient).then((res) => {
 				if (res && !res.errors) {
 					hideEditDialog && hideEditDialog();
+					onHidePatientDialog && onHidePatientDialog();
 					savePatient && savePatient(res, patient.id);
 					!hideEditDialog && this.handleReset();
 				}
@@ -203,7 +204,7 @@ export default class PatientForm extends Component {
 					</div>
 					<FormFooterButton showReset={!id} />
 				</form>
-				<Dialog header={Constants.ADD_ADDRESS_TITLE} footer={addressDialogFooter} visible={addressDialog} onHide={() => this.setState({ addressDialog: false })} baseZIndex={0}>
+				<Dialog header={Constants.ADD_ADDRESS_TITLE} footer={addressDialogFooter} visible={addressDialog} onHide={() => this.setState({ addressDialog: false })} baseZIndex={0} dismissableMask={true}>
 					{addressText && (
 						<div className="form-group">
 							<div className="row">

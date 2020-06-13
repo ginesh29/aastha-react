@@ -30,6 +30,7 @@ export default class IpdReport extends Component {
 	getIpds = () => {
 		const { first, rows, filterString, sortString, includeProperties, controller } = this.state;
 		this.repository.get(controller, `filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`).then((res) => {
+			console.log(filterString);
 			this.getCharges();
 			res &&
 				res.data.map((item) => {

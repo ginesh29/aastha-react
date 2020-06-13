@@ -9,7 +9,7 @@ import AsyncCreatableSelect from "react-select/async-creatable";
 
 export default class InputField extends Component {
 	render() {
-		const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref, loadOptions, onCreateOption, onInputChange } = this.props;
+		const { icon, timeOnly, onFocus, title, name, value, onChange, onInput, hourFormat, disabled, validationErrors, filterBy, controlType, options, optionLabel, filter, suggestions, completeMethod, keyfilter, maxLength, readOnly, groupIcon, className, minLength, dataKey, minDate, ref, loadOptions, onCreateOption, onInputChange, elRef } = this.props;
 		let errorClass = validationErrors[name] ? "error" : "";
 		let propClassName = className ? className : "";
 		let finalClassName = `${propClassName} ${errorClass}`;
@@ -24,7 +24,7 @@ export default class InputField extends Component {
 						</span>
 					</div>
 				)}
-				{controlType === "dropdown" && <Dropdown name={name} value={value} options={options} className={finalClassName} placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={true} ref={ref} />}
+				{controlType === "dropdown" && <Dropdown name={name} value={value} options={options} className={finalClassName} placeholder={"Select " + title} optionLabel={optionLabel} onChange={onChange} filter={filter} filterPlaceholder={"Please enter 1 or more charactor to Search " + title} filterBy={filterBy} showClear={true} ref={elRef} />}
 				{controlType === "select2" && <AsyncCreatableSelect defaultOptions name={name} value={value} onCreateOption={onCreateOption} createOptionPosition="first" loadOptions={loadOptions} className={`${finalClassName} p-select2`} isClearable={true} onChange={onChange} onInputChange={onInputChange} placeholder={"Select " + title} />}
 				{controlType === "datepicker" && (
 					<div className="p-inputgroup">

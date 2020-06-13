@@ -231,7 +231,7 @@ export default class AdminPanel extends Component {
 			const lookup = {
 				id: id && id,
 				name: name,
-				type: lookupType.value,
+				type: lookupType.code,
 				parentId: parentId,
 			};
 			this.repository.post(`${"lookups"}?includeProperties=${includeProperties} `, lookup).then((res) => {
@@ -257,7 +257,7 @@ export default class AdminPanel extends Component {
 		this.setState({
 			lookups: lookupData,
 			editDialog: false,
-			totalRecords: !id && totalRecords + 1,
+			totalRecords: !id ? totalRecords + 1 : totalRecords,
 		});
 	};
 
@@ -313,11 +313,11 @@ export default class AdminPanel extends Component {
 						</div>
 					</div>
 				</div>
-				<Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })}>
+				<Dialog header="Confirmation" visible={deleteDialog} footer={deleteDialogFooter} onHide={() => this.setState({ deleteDialog: false })} dismissableMask={true}>
 					Are you sure you want to {action} this item?
 				</Dialog>
 
-				<Dialog header={`Edit ${lookupType.label}`} visible={editDialog} onHide={() => this.setState({ editDialog: false })} style={{ width: texboxLength > 500 ? `${texboxLength}px` : "50%" }}>
+				<Dialog header={`Edit ${lookupType.label}`} visible={editDialog} onHide={() => this.setState({ editDialog: false })} style={{ width: texboxLength > 500 ? `${texboxLength}px` : "50%" }} dismissableMask={true}>
 					{editDialog && (
 						<form onSubmit={this.handleSubmit} onReset={this.handleReset}>
 							<div>

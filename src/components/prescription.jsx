@@ -17,6 +17,8 @@ import AppointmentTypeIndicator from "./appointment/appointment-indicator";
 import _ from "lodash";
 import jquery from "jquery";
 import ReactTooltip from "react-tooltip";
+import * as Constants from "./../common/constants";
+import PatientForm from "./patient/patient-form";
 window.$ = window.jQuery = jquery;
 require("jQuery.print/jQuery.print");
 
@@ -133,7 +135,8 @@ export default class Prescription extends React.Component {
 		this.setState({
 			medicineFormFields: fields,
 		});
-
+		this.medicineTypeDrp.resetFilter();
+		this.medicineNameDrp.resetFilter();
 		if (isValidationFired) this.handleValidation();
 	};
 
@@ -274,7 +277,7 @@ export default class Prescription extends React.Component {
 					},
 				});
 			}
-			jquery(".p-dialog-content .p-dropdown-filter").val("");
+			//jquery(".p-dialog-content .p-dropdown-filter").val("");
 		}
 	};
 	removeMedicine = (id) => {
@@ -334,6 +337,7 @@ export default class Prescription extends React.Component {
 	};
 
 	render() {
+		const { patientDialog } = this.state;
 		const { patient, date, clinicDetail, followup, advices, followupInstruction, followupDate } = this.state.formFields;
 		const { id, medicineType, days, medicineName, medicineInstructions } = this.state.medicineFormFields;
 		const { medicineTypeOptions, medicineNameOptions, medicineData, validationErrors, editDialog, adviceOptions, appointmentCalendarDialog, appointments } = this.state;
@@ -604,17 +608,17 @@ export default class Prescription extends React.Component {
 						</Panel>
 					</div>
 				</div>
-				<Dialog header="Add Medicine" visible={editDialog} onHide={() => this.setState({ editDialog: false })} className="p-scroll-dialog w-75">
+				<Dialog header="Add Medicine" visible={editDialog} onHide={() => this.setState({ editDialog: false })} className="p-scroll-dialog w-75" dismissableMask={true}>
 					{editDialog && (
 						<form>
 							<div className="row">
 								<div className="col-md-6">
 									<div className="row">
 										<div className="col-md-4">
-											<InputField name="medicineType" title="Medicine Type" value={medicineType} onChange={this.handleMedicineChange} {...this.state} controlType="dropdown" options={medicineTypeOptions} filter={true} optionLabel="label" />
+											<InputField name="medicineType" title="Medicine Type" value={medicineType} onChange={this.handleMedicineChange} {...this.state} controlType="dropdown" options={medicineTypeOptions} filter={true} optionLabel="label" elRef={(el) => (this.medicineTypeDrp = el)} />
 										</div>
 										<div className="col-md-4">
-											<InputField name="medicineName" title="Medicine Name" value={medicineName} onChange={this.handleMedicineChange} {...this.state} controlType="dropdown" options={medicineNameOptions} filter={true} optionLabel="label" />
+											<InputField name="medicineName" title="Medicine Name" value={medicineName} onChange={this.handleMedicineChange} {...this.state} controlType="dropdown" options={medicineNameOptions} filter={true} optionLabel="label" elRef={(el) => (this.medicineNameDrp = el)} />
 										</div>
 										<div className="col-md-4">
 											<div className="d-flex">
@@ -702,13 +706,16 @@ export default class Prescription extends React.Component {
 						</form>
 					)}
 				</Dialog>
-				<Dialog header="Appointment Calendar" visible={appointmentCalendarDialog} className="p-scroll-dialog w-50" onHide={() => this.setState({ appointmentCalendarDialog: false })}>
+				<Dialog header="Appointment Calendar" visible={appointmentCalendarDialog} className="p-scroll-dialog w-50" onHide={() => this.setState({ appointmentCalendarDialog: false })} dismissableMask={true}>
 					{appointmentCalendarDialog && (
 						<>
 							<AppointmentTypeIndicator options={appointmentTypeOptions} />
 							<FullCalendar options={this.options} events={appointments} ref={(el) => (this.fullcalendar = el)} />
 						</>
 					)}
+				</Dialog>
+				<Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialog} onHide={() => this.setState({ patientDialog: false })} baseZIndex={500} dismissableMask={true}>
+					{patientDialog && <PatientForm onHidePatientDialog={() => this.setState({ patientDialog: false })} {...this.state} />}
 				</Dialog>
 			</>
 		);

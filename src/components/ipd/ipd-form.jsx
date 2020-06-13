@@ -84,13 +84,14 @@ export default class IpdForm extends React.Component {
 		if (lookupId) {
 			if (chargeObj.length) {
 				chargeObj.map((item) => {
-					item.rate = rate ? rate : item.rate;
-					item.days = days ? days : item.days;
+					item.rate = name.includes("rate") ? rate : item.rate;
+					item.days = name.includes("days") ? days : item.days;
 					item.amount = item.rate && item.days ? item.rate * item.days : "";
 					return item;
 				});
 			} else charges.push({ lookupId: lookupId, rate: rate, days: days });
 		}
+		console.log(chargeFormFields);
 		const grandTotal = chargeFormFields && chargeFormFields.reduce((total, item) => total + item.amount, 0);
 		const amountPaid = grandTotal - formFields.discount;
 		this.setState({
@@ -486,7 +487,7 @@ export default class IpdForm extends React.Component {
 					</table>
 					<FormFooterButton showReset={!id} />
 				</form>
-				<Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialog} onHide={() => this.setState({ patientDialog: false })} baseZIndex={50}>
+				<Dialog header={Constants.PATIENT_REGISTRATION_TITLE} visible={patientDialog} onHide={() => this.setState({ patientDialog: false })} baseZIndex={50} dismissableMask={true}>
 					{patientDialog && <PatientForm onHidePatientDialog={() => this.setState({ patientDialog: false })} patientName={patientName} />}
 				</Dialog>
 			</>
