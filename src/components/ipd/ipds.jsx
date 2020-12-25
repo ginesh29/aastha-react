@@ -49,7 +49,7 @@ export default class Ipds extends Component {
         `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`
       )
       .then((res) => {
-        res &&
+        res &&res.data &&
           res.data.map((item) => {
             item.formatedAddmissionDate = this.helper.formatDate(
               item.addmissionDate
