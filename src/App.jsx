@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Route, Redirect, Switch } from "react-router-dom";
+import { Redirect, Switch, BrowserRouter, Route } from "react-router-dom";
 
-//import LoginLayoutRoute from "./components/shared/layouts/LoginLayout";
-import MainLayout from "./components/shared/layouts/main-layout";
+import MainLayoutRoute from "./components/shared/layouts/main-layout";
 
 import Dashboard from "./components/dashboard";
 import Patients from "./components/patient/patients";
@@ -18,53 +17,40 @@ import IpdReport from "./components/report/ipd-report";
 import MonthlyIpdReport from "./components/report/monthly-ipd-report";
 import Appointments from "./components/appointment/appointments";
 import Statistics from "./components/statistics";
+import Login from "./components/account/login";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        true ? <Component {...props} /> : <Redirect to="/login" />
-      }
-    />
-  );
-};
 export default class App extends Component {
   render() {
     return (
-      <MainLayout>
+      <BrowserRouter>
         <Switch>
-          <PrivateRoute exact path="/">
+          <Route path="/login" component={Login} />
+          <MainLayoutRoute exact path="/">
             <Redirect to="/dashboard" />
-          </PrivateRoute>
-          <PrivateRoute path="/dashboard" component={Dashboard} />
-
-          <PrivateRoute path="/add-patient" component={PatientContainer} />
-          <PrivateRoute path="/patients" component={Patients} />
-          <PrivateRoute path="/archive-patients" component={Patients} />
-
-          <PrivateRoute path="/add-opd" component={OpdContainer} />
-          <PrivateRoute path="/opds" component={Opds} />
-          <PrivateRoute path="/archive-opds" component={Opds} />
-
-          <PrivateRoute path="/add-ipd" component={IpdContainer} />
-          <PrivateRoute path="/ipds" component={Ipds} />
-          <PrivateRoute path="/archive-ipds" component={Ipds} />
-
-          <PrivateRoute path="/admin-panel" component={AdminPanel} />
-          <PrivateRoute path="/archive-admin-panel" component={AdminPanel} />
-
-          <PrivateRoute path="/prescription" component={Prescription} />
-          <PrivateRoute path="/appointments" component={Appointments} />
-          <PrivateRoute path="/statistics" component={Statistics} />
-          <PrivateRoute path="/opd-report" component={OpdReport} />
-          <PrivateRoute path="/ipd-report" component={IpdReport} />
-          <PrivateRoute
+          </MainLayoutRoute>
+          <MainLayoutRoute path="/dashboard" component={Dashboard} />
+          <MainLayoutRoute path="/add-patient" component={PatientContainer} />
+          <MainLayoutRoute path="/patients" component={Patients} />
+          <MainLayoutRoute path="/archive-patients" component={Patients} />
+          <MainLayoutRoute path="/add-opd" component={OpdContainer} />
+          <MainLayoutRoute path="/opds" component={Opds} />
+          <MainLayoutRoute path="/archive-opds" component={Opds} />
+          <MainLayoutRoute path="/add-ipd" component={IpdContainer} />
+          <MainLayoutRoute path="/ipds" component={Ipds} />
+          <MainLayoutRoute path="/archive-ipds" component={Ipds} />
+          <MainLayoutRoute path="/admin-panel" component={AdminPanel} />
+          <MainLayoutRoute path="/archive-admin-panel" component={AdminPanel} />
+          <MainLayoutRoute path="/prescription" component={Prescription} />
+          <MainLayoutRoute path="/appointments" component={Appointments} />
+          <MainLayoutRoute path="/statistics" component={Statistics} />
+          <MainLayoutRoute path="/opd-report" component={OpdReport} />
+          <MainLayoutRoute path="/ipd-report" component={IpdReport} />
+          <MainLayoutRoute
             path="/monthly-ipd-report"
             component={MonthlyIpdReport}
           />
         </Switch>
-      </MainLayout>
+      </BrowserRouter>
     );
   }
 }
