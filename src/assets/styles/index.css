@@ -1,3 +1,14 @@
+.dcjq-icon {
+  background: none !important;
+}
+.dcjq-parent .dcjq-icon::after {
+  font-family: FontAwesome;
+  content: "\f105";
+}
+.dcjq-parent.active .dcjq-icon::after {
+  font-family: FontAwesome;
+  content: "\f107";
+}
 .prescription-preview .p-panel-content {
   background: #fffcab !important;
 }

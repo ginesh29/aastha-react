@@ -29,13 +29,17 @@ export default class App extends Component {
             <Redirect to="/dashboard" />
           </MainLayoutRoute>
           <MainLayoutRoute path="/dashboard" component={Dashboard} />
+
           <MainLayoutRoute path="/add-patient" component={PatientContainer} />
+          <MainLayoutRoute path="/add-opd" component={OpdContainer} />
+          <MainLayoutRoute path="/add-ipd" component={IpdContainer} />
+
           <MainLayoutRoute path="/patients" component={Patients} />
           <MainLayoutRoute path="/archive-patients" component={Patients} />
-          <MainLayoutRoute path="/add-opd" component={OpdContainer} />
+
           <MainLayoutRoute path="/opds" component={Opds} />
           <MainLayoutRoute path="/archive-opds" component={Opds} />
-          <MainLayoutRoute path="/add-ipd" component={IpdContainer} />
+
           <MainLayoutRoute path="/ipds" component={Ipds} />
           <MainLayoutRoute path="/archive-ipds" component={Ipds} />
           <MainLayoutRoute path="/admin-panel" component={AdminPanel} />
