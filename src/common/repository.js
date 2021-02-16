@@ -91,6 +91,7 @@ export class repository {
         jquery(".p-panel-content:visible").prepend('<div id="errors"></div>');
       else if (jquery(".card").length)
         jquery(".card").prepend('<div id="errors"></div>');
+      else jquery("#msg-container").html('<div id="errors"></div>');
       ReactDOM.render(
         <Messages ref={(el) => (this.errors = el)} />,
         document.getElementById("errors")
@@ -110,17 +111,6 @@ export class repository {
               })
           );
         return { errors: errors };
-      } else {
-        if (error.response.status === 401) {
-          const returnUrl = window.location.pathname.replace("/", "");
-          window.location.href = `/login?returnUrl=${returnUrl}`;
-          this.messages.show({
-            severity: "error",
-            summary: "Authorization error",
-            detail: "Please Login again",
-            sticky: true,
-          });
-        }
       }
     } else if (error.request) {
       if (jquery("#messages div").is(":empty"))

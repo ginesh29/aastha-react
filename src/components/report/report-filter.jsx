@@ -25,7 +25,7 @@ export default class ReportFilter extends Component {
       onReportTypeChange,
       data,
       showSummary,
-      exportReport
+      exportReport,
     } = this.props;
     return (
       <>
@@ -63,7 +63,7 @@ export default class ReportFilter extends Component {
                     value={dateSelection}
                     onChange={onDateSelection}
                     readOnlyInput={true}
-                    dateFormat="dd/mm/yy"
+                    dateFormat="dd-mm-yy"
                     monthNavigator={true}
                     yearNavigator={true}
                     yearRange={TEN_YEAR_RANGE}
@@ -77,7 +77,7 @@ export default class ReportFilter extends Component {
                     selectionMode="range"
                     readonlyInput={true}
                     readOnlyInput={true}
-                    dateFormat="dd/mm/yy"
+                    dateFormat="dd-mm-yy"
                     monthNavigator={true}
                     yearNavigator={true}
                     yearRange={TEN_YEAR_RANGE}
@@ -100,6 +100,7 @@ export default class ReportFilter extends Component {
                     icon="pi pi-print"
                     className="p-button-primary"
                     tooltip="Print"
+                    tooltipOptions={{ position: "top" }}
                     onClick={() => jquery("#print-div").print()}
                   />
                 ) : (
@@ -111,6 +112,7 @@ export default class ReportFilter extends Component {
                     className="p-button-primary"
                     onClick={exportReport}
                     tooltip="Export to excel"
+                    tooltipOptions={{ position: "top" }}
                   />
                 ) : (
                   ""

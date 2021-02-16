@@ -131,7 +131,6 @@ export default class OpdForm extends React.Component {
     });
     return isValid;
   };
-
   handleReset = (e) => {
     this.setState(this.getInitialState());
   };

@@ -114,7 +114,7 @@ a:focus {
 }
 .form-signin h2.form-signin-heading {
   margin: 0;
-  padding: 35px 15px;
+  padding: 20px 5px;
   text-align: center;
   background: #aec785;
   border-radius: 5px 5px 0 0;
@@ -147,7 +147,6 @@ a:focus {
 }
 .form-signin input[type="text"],
 .form-signin input[type="password"] {
-  margin-bottom: 15px;
   border-radius: 5px;
   -webkit-border-radius: 5px;
   border: 1px solid #eaeaea;

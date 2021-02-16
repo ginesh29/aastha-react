@@ -3,7 +3,6 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { repository } from "../../common/repository";
-import { NavLink } from "react-router-dom";
 import { helper } from "../../common/helpers";
 import { ROWS } from "../../common/constants";
 import { Dialog } from "primereact/dialog";
@@ -185,14 +184,15 @@ export default class Opds extends Component {
   saveOpd = (updatedOpd, id) => {
     const { opds, totalRecords } = this.state;
     let opdData = [...opds];
-    updatedOpd.address = updatedOpd.patient.address && updatedOpd.patient.address.name;
+    updatedOpd.address =
+      updatedOpd.patient.address && updatedOpd.patient.address.name;
     updatedOpd.patient = updatedOpd.patient && {
       label: updatedOpd.patient.fullname,
       value: updatedOpd.patientId,
       fullname: updatedOpd.patient.fullname,
     };
     updatedOpd.formatedDate = this.helper.formatDate(updatedOpd.date);
-    
+
     if (!id) {
       opdData.splice(0, 0, updatedOpd);
     } else {
@@ -270,9 +270,7 @@ export default class Opds extends Component {
       endNo,
     } = this.state;
 
-    let linkUrl = isArchive ? "/opds" : "/archive-opds";
     let panelTitle = isArchive ? "Archived Opds" : "Opds";
-    let buttonText = !isArchive ? "Archived Opds" : "Opds";
     let action = isArchive ? "restore" : "delete";
     const typeOptions = caseTypeOptions && [
       { value: null, label: "[All]" },
@@ -284,7 +282,7 @@ export default class Opds extends Component {
         name="date"
         value={selectedDate}
         onChange={this.onFilterChange}
-        dateFormat="dd/mm/yy"
+        dateFormat="dd-mm-yy"
         readOnlyInput={true}
         monthNavigator={true}
         yearNavigator={true}
@@ -326,6 +324,7 @@ export default class Opds extends Component {
         <div className="card">
           <div className="card-body">
             <div className="d-flex justify-content-between">
+              <div className="report-header">{panelTitle}</div>
               <div>
                 {!isArchive && (
                   <button
@@ -339,16 +338,6 @@ export default class Opds extends Component {
                     Add
                   </button>
                 )}
-              </div>
-              <div className="report-header">{panelTitle}</div>
-              <div>
-                <NavLink to={linkUrl}>
-                  <Button
-                    className="btn-archive p-btn-sm mb-2"
-                    icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`}
-                    tooltip={`Show ${buttonText}`}
-                  />
-                </NavLink>
               </div>
             </div>
             <DataTable

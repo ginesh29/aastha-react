@@ -216,7 +216,6 @@ export default class IpdForm extends React.Component {
       roomType,
       departmentType,
       addmissionDate,
-      dischargeDate,
       deliveryDate,
       deliveryTime,
       typesOfDelivery,
@@ -246,10 +245,6 @@ export default class IpdForm extends React.Component {
     if (!addmissionDate) {
       isValid = false;
       errors.addmissionDate = "Addmission Date is required";
-    }
-    if (!dischargeDate) {
-      isValid = false;
-      errors.dischargeDate = "Dishcharge Date is required";
     }
     if (!departmentType) {
       isValid = false;

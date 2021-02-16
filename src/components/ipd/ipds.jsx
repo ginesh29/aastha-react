@@ -6,7 +6,6 @@ import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
 import { ROWS, TEN_YEAR_RANGE } from "../../common/constants";
 import { Dialog } from "primereact/dialog";
-import { NavLink } from "react-router-dom";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { departmentTypeEnum } from "../../common/enums";
@@ -49,7 +48,8 @@ export default class Ipds extends Component {
         `take=${rows}&skip=${first}&filter=${filterString}&sort=${sortString}&includeProperties=${includeProperties}`
       )
       .then((res) => {
-        res &&res.data &&
+        res &&
+          res.data &&
           res.data.map((item) => {
             item.formatedAddmissionDate = this.helper.formatDate(
               item.addmissionDate
@@ -214,7 +214,8 @@ export default class Ipds extends Component {
     const { ipds, totalRecords } = this.state;
 
     let ipdData = [...ipds];
-    updatedIpd.address = updatedIpd.patient.address && updatedIpd.patient.address.name;
+    updatedIpd.address =
+      updatedIpd.patient.address && updatedIpd.patient.address.name;
     updatedIpd.patient = {
       label: updatedIpd.patient.fullname,
       value: updatedIpd.patientId,
@@ -275,9 +276,7 @@ export default class Ipds extends Component {
       { value: null, label: "[All]" },
       ...this.helper.enumToObject(departmentTypeEnum),
     ];
-    let linkUrl = isArchive ? "/ipds" : "/archive-ipds";
     let panelTitle = isArchive ? "Archived Ipds" : "Ipds";
-    let buttonText = !isArchive ? "Archived Ipds" : "Ipds";
     let action = isArchive ? "restore" : "delete";
     const deleteDialogFooter = (
       <div>
@@ -296,7 +295,7 @@ export default class Ipds extends Component {
         name="addmissionDate"
         value={selectedAddmissionDate}
         onChange={this.onFilterChange}
-        dateFormat="dd/mm/yy"
+        dateFormat="dd-mm-yy"
         readOnlyInput={true}
         monthNavigator={true}
         yearNavigator={true}
@@ -309,7 +308,7 @@ export default class Ipds extends Component {
         name="dischargeDate"
         value={selectedDischargeDate}
         onChange={this.onFilterChange}
-        dateFormat="dd/mm/yy"
+        dateFormat="dd-mm-yy"
         readOnlyInput={true}
         monthNavigator={true}
         yearNavigator={true}
@@ -339,6 +338,7 @@ export default class Ipds extends Component {
         <div className="card">
           <div className="card-body">
             <div className="d-flex justify-content-between">
+              <div className="report-header">{panelTitle}</div>
               <div>
                 {!isArchive && (
                   <button
@@ -353,18 +353,7 @@ export default class Ipds extends Component {
                   </button>
                 )}
               </div>
-              <div className="report-header">{panelTitle}</div>
-              <div>
-                <NavLink to={linkUrl}>
-                  <Button
-                    className="btn-archive p-btn-sm mb-2"
-                    icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`}
-                    tooltip={`Show ${buttonText}`}
-                  />
-                </NavLink>
-              </div>
             </div>
-
             <DataTable
               value={ipds}
               loading={loading}

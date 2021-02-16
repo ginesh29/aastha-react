@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import LeftMenu from "../left-menu";
+import jwt_decode from "jwt-decode";
 
 const MainLayout = ({ children }) => (
   <section id="container">
@@ -16,7 +17,6 @@ const MainLayout = ({ children }) => (
       <section className="wrapper">
         <div className="row">
           <div className="col-sm-12">
-            <div id="toast"></div>
             <div id="messages"></div>
             {children}
           </div>
@@ -26,12 +26,22 @@ const MainLayout = ({ children }) => (
   </section>
 );
 const MainLayoutRoute = ({ component: Component, ...rest }) => {
+  const token = localStorage.getItem("aastha-auth-token");
+  var expiration_date = null;
+  if (token != null && token.length > 0) {
+    var decoded_token = jwt_decode(token);
+    expiration_date = new Date(decoded_token.exp * 1000);
+  }
   return (
     <Route
       {...rest}
       render={(matchProps) => (
         <MainLayout>
-          {true ? <Component {...matchProps} /> : <Redirect to="/login" />}
+          {token != null && token.length > 0 && expiration_date > new Date() ? (
+            <Component {...matchProps} />
+          ) : (
+            <Redirect to="/login" />
+          )}
         </MainLayout>
       )}
     />

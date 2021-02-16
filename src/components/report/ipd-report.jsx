@@ -6,6 +6,8 @@ import _ from "lodash";
 import ReportFilter from "./report-filter";
 import { TODAY_DATE } from "../../common/constants";
 import { TabView, TabPanel } from "primereact/tabview";
+import { roleEnum } from "../../common/enums";
+import jwt_decode from "jwt-decode";
 
 let chargeTotal = 0;
 export default class IpdReport extends Component {
@@ -135,6 +137,11 @@ export default class IpdReport extends Component {
       });
   };
   render() {
+    const token = localStorage.getItem("aastha-auth-token");
+    if (token != null && token.length > 0) {
+      var decoded_token = jwt_decode(token);
+      var role = Number(decoded_token.Role);
+    }
     const {
       ipds,
       chargesLength,
@@ -201,16 +208,22 @@ export default class IpdReport extends Component {
       <>
         <div className="card">
           <div className="card-body">
-            <ReportFilter
-              {...this.state}
-              onDateSelection={this.onDateSelection}
-              onReportTypeChange={(e) => this.setState({ reportType: e.value })}
-              onShowSummary={(e) => this.op.toggle(e)}
-              data={ipdData}
-              exportReport={this.exportReport}
-              activeIndex={activeIndex}
-            />
-            <hr />
+            {role === roleEnum["ADMIN"].value && (
+              <>
+                <ReportFilter
+                  {...this.state}
+                  onDateSelection={this.onDateSelection}
+                  onReportTypeChange={(e) =>
+                    this.setState({ reportType: e.value })
+                  }
+                  onShowSummary={(e) => this.op.toggle(e)}
+                  data={ipdData}
+                  exportReport={this.exportReport}
+                  activeIndex={activeIndex}
+                />
+                <hr />
+              </>
+            )}
             <TabView
               activeIndex={this.state.activeIndex}
               onTabChange={(e) => this.setState({ activeIndex: e.index })}

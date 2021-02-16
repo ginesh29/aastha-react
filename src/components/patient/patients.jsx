@@ -6,7 +6,6 @@ import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
 import { ROWS } from "../../common/constants";
 import { Dialog } from "primereact/dialog";
-import { NavLink } from "react-router-dom";
 import PatientForm from "./patient-form";
 import { lookupTypeEnum } from "../../common/enums";
 import { Dropdown } from "primereact/dropdown";
@@ -270,9 +269,7 @@ export default class Patients extends Component {
         showClear={true}
       />
     );
-    let linkUrl = isArchive ? "/patients" : "/archive-patients";
     let panelTitle = isArchive ? "Archived Patients" : "Patients";
-    let buttonText = !isArchive ? "Archived Patients" : "Patients";
     let action = isArchive ? "restore" : "delete";
     const deleteDialogFooter = (
       <div>
@@ -297,6 +294,7 @@ export default class Patients extends Component {
         <div className="card">
           <div className="card-body">
             <div className="d-flex justify-content-between">
+              <div className="report-header">{panelTitle}</div>
               <div>
                 {!isArchive && (
                   <button
@@ -310,16 +308,6 @@ export default class Patients extends Component {
                     Add
                   </button>
                 )}
-              </div>
-              <div className="report-header">{panelTitle}</div>
-              <div>
-                <NavLink to={linkUrl}>
-                  <Button
-                    className="btn-archive p-btn-sm mb-2"
-                    icon={`fa fa-${!isArchive ? "archive" : "file-text-o"}`}
-                    tooltip={`Show ${buttonText}`}
-                  />
-                </NavLink>
               </div>
             </div>
             <DataTable
