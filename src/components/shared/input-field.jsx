@@ -44,6 +44,9 @@ export default class InputField extends Component {
       onInputChange,
       elRef,
       onInputButtonClick,
+      tabIndex,
+      autoFocus,
+      onKeyDown,
     } = this.props;
     let errorClass = validationErrors[name] ? "error" : "";
     let propClassName = className ? className : "";
@@ -64,6 +67,9 @@ export default class InputField extends Component {
               keyfilter={keyfilter}
               maxLength={maxLength}
               ref={ref}
+              tabIndex={tabIndex}
+              autoFocus={autoFocus}
+              onKeyDown={onKeyDown}
             />
             <Button
               icon={"fa " + groupIcon}
@@ -88,6 +94,7 @@ export default class InputField extends Component {
             filterBy={filterBy}
             showClear={true}
             ref={elRef}
+            tabIndex={tabIndex}
           />
         )}
         {controlType === "select2" && (
@@ -103,6 +110,7 @@ export default class InputField extends Component {
             onChange={onChange}
             onInputChange={onInputChange}
             placeholder={"Select " + title}
+            tabIndex={tabIndex}
           />
         )}
         {controlType === "datepicker" && (
@@ -126,6 +134,7 @@ export default class InputField extends Component {
               disabled={disabled}
               readOnly={readOnly}
               showButtonBar={true}
+              tabIndex={tabIndex}
             />
             <span className="p-inputgroup-addon">
               <i className={"fa " + groupIcon}></i>
@@ -145,6 +154,7 @@ export default class InputField extends Component {
             onFocus={onFocus}
             minLength={minLength}
             ref={ref}
+            tabIndex={tabIndex}
           />
         )}
         {controlType === "multiselect" && (
@@ -156,6 +166,7 @@ export default class InputField extends Component {
             onChange={onChange}
             filter={filter}
             placeholder={"Select " + title}
+            tabIndex={tabIndex}
           />
         )}
         {controlType === "textarea" && (
@@ -173,6 +184,7 @@ export default class InputField extends Component {
             onFocus={this.onFocus}
             autoFocus={this.autoFocus}
             ref={ref}
+            tabIndex={tabIndex}
           />
         )}
         {!controlType && (
@@ -188,9 +200,10 @@ export default class InputField extends Component {
             keyfilter={keyfilter}
             maxLength={maxLength}
             onFocus={this.onFocus}
-            autoFocus={this.autoFocus}
+            autoFocus={autoFocus}
             ref={ref}
             autoComplete="off"
+            tabIndex={tabIndex}
           />
         )}
         {validationErrors[name] && (

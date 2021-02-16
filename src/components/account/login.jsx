@@ -89,6 +89,12 @@ export default class Login extends Component {
     e.preventDefault();
     this.setState({ passwordHidden: !this.state.passwordHidden });
   };
+  onEnterPress = (e) => {
+    if (e.keyCode === 13 && e.shiftKey === false) {
+      e.preventDefault();
+      this.myFormRef.click();
+    }
+  };
   render() {
     return (
       <div className="container">
@@ -100,10 +106,13 @@ export default class Login extends Component {
             <div className="user-login-info">
               <div id="msg-container"></div>
               <InputField
+                id="username"
                 name="username"
                 title="Username"
                 onChange={this.handleChange}
                 {...this.state}
+                tabIndex="1"
+                autoFocus={true}
               />
               <InputField
                 name="password"
@@ -115,7 +124,9 @@ export default class Login extends Component {
                 type={this.state.passwordHidden ? "password" : "text"}
                 onChange={this.handleChange}
                 onInputButtonClick={this.showPassword}
+                onKeyDown={this.onEnterPress}
                 {...this.state}
+                tabIndex="2"
               />
             </div>
             <label className="checkbox">
@@ -123,6 +134,7 @@ export default class Login extends Component {
                 inputId="rememberme"
                 onChange={(e) => this.setState({ rememberme: e.checked })}
                 checked={this.state.rememberme}
+                tabIndex="3"
               ></Checkbox>
               <label htmlFor="rememberme" className="p-checkbox-label">
                 Remember me
@@ -131,6 +143,8 @@ export default class Login extends Component {
             <button
               className="btn btn-lg btn-login btn-block"
               disabled={this.state.loading}
+              tabIndex="4"
+              ref={(el) => (this.myFormRef = el)}
             >
               {this.state.loading ? "Loading " : "Sign in"}
               <i

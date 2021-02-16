@@ -106,7 +106,7 @@ export default class Prescription extends React.Component {
         fields.followupDate = "";
         if (e.target.value === 1)
           followup = `ફરી ......... ના રોજ બતાવવા આવવું`;
-        else if (e.target.value <= 4 && e.target.value !==0)
+        else if (e.target.value <= 4 && e.target.value !== 0)
           followup = `ફરી ......... ના રોજ સોનોગ્રાફી માટે આવવું`;
         else if (e.target.value === 5)
           followup = `માસિકના બીજા/ત્રીજા/પાંચમા દિવસે બતાવવા આવવું`;
@@ -388,7 +388,9 @@ export default class Prescription extends React.Component {
     const { date, patient } = this.state.formFields;
     if (this.handleValidation()) {
       window.open(
-        `add-opd?patientId=${patient.value}&patientName=${patient.label}&date=${date}`,
+        `add-opd?patientId=${patient.value}&patientName=${
+          patient.label
+        }&date=${this.helper.formatDate(date, "en-US")}`,
         "_blank"
       );
     }

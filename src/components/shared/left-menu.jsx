@@ -9,7 +9,10 @@ export default class LeftMenu extends React.Component {
     const currentLink = jquery("ul.sidebar-menu a.active")
       .filter(function () {
         // eslint-disable-next-line
-        return this.href == window.location;
+        return (
+          this.href === window.location ||
+          window.location.href.includes(this.href)
+        );
       })
       .closest(".sub");
     currentLink.css("display", "block");
