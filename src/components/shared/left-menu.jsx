@@ -54,25 +54,25 @@ export default class LeftMenu extends React.Component {
                   </li>
                 </ul>
               </li>
+              <li className="sub-menu">
+                <a href="{}">
+                  <i className="fa fa-book"></i>
+                  <span>Manage Entry</span>
+                </a>
+                <ul className="sub">
+                  <li>
+                    <NavLink to="/patients">Manage Patient</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/opds">Manage Opd</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/ipds">Manage Ipd</NavLink>
+                  </li>
+                </ul>
+              </li>
               {role === roleEnum["ADMIN"].value && (
                 <>
-                  <li className="sub-menu">
-                    <a href="{}">
-                      <i className="fa fa-book"></i>
-                      <span>Manage Entry</span>
-                    </a>
-                    <ul className="sub">
-                      <li>
-                        <NavLink to="/patients">Manage Patient</NavLink>
-                      </li>
-                      <li>
-                        <NavLink to="/opds">Manage Opd</NavLink>
-                      </li>
-                      <li>
-                        <NavLink to="/ipds">Manage Ipd</NavLink>
-                      </li>
-                    </ul>
-                  </li>
                   {/* <li>
                     <NavLink to="users">
                       <i className="fa fa-bullhorn"></i>

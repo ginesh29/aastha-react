@@ -4,6 +4,8 @@ import { helper } from "../../common/helpers";
 import InputField from "../shared/input-field";
 import { Checkbox } from "primereact/checkbox";
 import { Messages } from "primereact/messages";
+import { roleEnum } from "../../common/enums";
+import jwt_decode from "jwt-decode";
 export default class Login extends Component {
   constructor(props) {
     super(props);
@@ -73,7 +75,13 @@ export default class Login extends Component {
             closable: false,
           });
           localStorage.setItem("aastha-auth-token", res.token);
-          window.location.href = "dashboard";
+          if (res.token != null && res.token.length > 0) {
+            var decoded_token = jwt_decode(res.token);
+            var role = Number(decoded_token.Role);
+          }
+          if (role === roleEnum["ADMIN"].value)
+            window.location.href = "dashboard";
+          else window.location.href = "appointments";
         } else {
           this.messages.show({
             severity: "error",
