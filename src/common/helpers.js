@@ -202,7 +202,7 @@ export class helper {
     );
   };
   formatStringToDate = (date) => {
-    var parts = date.split("/");
+    var parts = date.split(/[.\-_]/);
     var newDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
     return this.formatDate(newDate, "en-US");
   };
