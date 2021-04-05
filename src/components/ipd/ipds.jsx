@@ -12,6 +12,7 @@ import { departmentTypeEnum } from "../../common/enums";
 import IpdForm from "./ipd-form";
 import IpdInvoice from "./ipd-invoice";
 import jquery from "jquery";
+import { InputText } from "primereact/inputtext";
 window.$ = window.jQuery = jquery;
 require("jQuery.print/jQuery.print");
 export default class Ipds extends Component {
@@ -210,6 +211,13 @@ export default class Ipds extends Component {
     this.dt.filter(event.value, event.target.name, "eq");
     this.setState({ [event.target.id]: event.value });
   };
+  onFilterChangeContains = (event) => {
+    if (event.key === "Enter") {
+      var type = event.target.name === "uniqueId" ? "eq" : "contains";
+      this.dt.filter(event.target.value, event.target.name, type);
+      this.setState({ [event.target.id]: event.value });
+    }
+  };
   saveIpd = (updatedIpd, id) => {
     const { ipds, totalRecords } = this.state;
 
@@ -271,6 +279,8 @@ export default class Ipds extends Component {
       invoiceDialog,
       startNo,
       endNo,
+      idFilter,
+      fullnameFilter,
     } = this.state;
     const departmentTypeOptions = [
       { value: null, label: "[All]" },
@@ -383,14 +393,28 @@ export default class Ipds extends Component {
                 style={{ width: "90px" }}
                 sortable={true}
                 filter={true}
-                filterMatchMode="eq"
+                filterElement={
+                  <InputText
+                    id="idFilter"
+                    name="uniqueId"
+                    value={idFilter}
+                    onKeyDown={this.onFilterChangeContains}
+                  />
+                }
               />
               <Column
                 field="patient.fullname"
                 header="Patient's Name"
                 sortable={true}
                 filter={true}
-                filterMatchMode="contains"
+                filterElement={
+                  <InputText
+                    id="fullnameFilter"
+                    name="patient.fullname"
+                    value={fullnameFilter}
+                    onKeyDown={this.onFilterChangeContains}
+                  />
+                }
               />
               <Column
                 field="ipdType"

@@ -13,6 +13,7 @@ import { Calendar } from "primereact/calendar";
 import invoice_header from "../../assets/images/invoice_header.jpg";
 import numberToWords from "number-to-words";
 import jquery from "jquery";
+import { InputText } from "primereact/inputtext";
 window.$ = window.jQuery = jquery;
 require("jQuery.print/jQuery.print");
 
@@ -249,6 +250,13 @@ export default class Opds extends Component {
     this.dt.filter(event.value, event.target.name, "eq");
     this.setState({ [event.target.id]: event.value });
   };
+  onFilterChangeContains = (event) => {
+    if (event.key === "Enter") {
+      var type = event.target.name === "id" ? "eq" : "contains";
+      this.dt.filter(event.target.value, event.target.name, type);
+      this.setState({ [event.target.id]: event.value });
+    }
+  };
   render() {
     const {
       opds,
@@ -268,6 +276,9 @@ export default class Opds extends Component {
       invoiceDialog,
       startNo,
       endNo,
+      idFilter,
+      invoiceNoFilter,
+      fullnameFilter,
     } = this.state;
 
     let panelTitle = isArchive ? "Archived Opds" : "Opds";
@@ -369,7 +380,14 @@ export default class Opds extends Component {
                 header="Invoice Id"
                 sortable={true}
                 filter={true}
-                filterMatchMode="eq"
+                filterElement={
+                  <InputText
+                    id="idFilter"
+                    name="id"
+                    value={idFilter}
+                    onKeyDown={this.onFilterChangeContains}
+                  />
+                }
               />
               <Column
                 style={{ width: "110px" }}
@@ -377,14 +395,28 @@ export default class Opds extends Component {
                 header="Outdoor No."
                 sortable={true}
                 filter={true}
-                filterMatchMode="eq"
+                filterElement={
+                  <InputText
+                    id="invoiceNoFilter"
+                    name="invoiceNo"
+                    value={invoiceNoFilter}
+                    onKeyDown={this.onFilterChangeContains}
+                  />
+                }
               />
               <Column
                 field="patient.fullname"
                 header="Patient's Name"
                 sortable={true}
                 filter={true}
-                filterMatchMode="contains"
+                filterElement={
+                  <InputText
+                    id="fullnameFilter"
+                    name="patient.fullname"
+                    value={fullnameFilter}
+                    onKeyDown={this.onFilterChangeContains}
+                  />
+                }
               />
               <Column
                 style={{ width: "100px" }}

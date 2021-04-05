@@ -18,6 +18,7 @@ import MonthlyIpdReport from "./components/report/monthly-ipd-report";
 import Appointments from "./components/appointment/appointments";
 import Statistics from "./components/statistics";
 import Login from "./components/account/login";
+import DueDateCalculator from "./components/due-date-calculator";
 
 export default class App extends Component {
   render() {
@@ -49,6 +50,10 @@ export default class App extends Component {
           <MainLayoutRoute path="/statistics" component={Statistics} />
           <MainLayoutRoute path="/opd-report" component={OpdReport} />
           <MainLayoutRoute path="/ipd-report" component={IpdReport} />
+          <MainLayoutRoute
+            path="/due-date-calculator"
+            component={DueDateCalculator}
+          />
           <MainLayoutRoute
             path="/monthly-ipd-report"
             component={MonthlyIpdReport}

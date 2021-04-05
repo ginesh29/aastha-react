@@ -100,12 +100,20 @@ export default class LeftMenu extends React.Component {
                 </NavLink>
               </li>
               {role === roleEnum["ADMIN"].value && (
-                <li>
-                  <NavLink to="/statistics">
-                    <i className="fa fa-tasks"></i>
-                    <span>Statistics</span>
-                  </NavLink>
-                </li>
+                <>
+                  {/* <li>
+                    <NavLink to="/due-date-calculator">
+                      <i className="fa fa-tasks"></i>
+                      <span>Due Date Calculator</span>
+                    </NavLink>
+                  </li> */}
+                  <li>
+                    <NavLink to="/statistics">
+                      <i className="fa fa-tasks"></i>
+                      <span>Statistics</span>
+                    </NavLink>
+                  </li>
+                </>
               )}
               <li className="sub-menu">
                 <a href="{}">
