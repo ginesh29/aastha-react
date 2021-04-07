@@ -9,7 +9,6 @@ import { Dialog } from "primereact/dialog";
 import PatientForm from "./patient-form";
 import { lookupTypeEnum } from "../../common/enums";
 import { Dropdown } from "primereact/dropdown";
-import { InputText } from "primereact/inputtext";
 
 export default class Patients extends Component {
   constructor(props) {
@@ -240,14 +239,6 @@ export default class Patients extends Component {
     this.dt.filter(event.value, event.target.name, "eq");
     this.setState({ [event.target.id]: event.value });
   };
-  onFilterChangeContains = (event) => {
-    if (event.key === "Enter") {
-      var type = event.target.name === "id" ? "eq" : "contains";
-      this.dt.filter(event.target.value, event.target.name, type);
-      this.setState({ [event.target.id]: event.value });
-    }
-  };
-
   render() {
     let {
       patients,
@@ -266,9 +257,6 @@ export default class Patients extends Component {
       addressOptions,
       startNo,
       endNo,
-      idFilter,
-      fullNameFilter,
-      mobileFilter,
     } = this.state;
 
     let addressFilter = (
@@ -354,14 +342,7 @@ export default class Patients extends Component {
                 style={{ width: "100px" }}
                 sortable={true}
                 filter={true}
-                filterElement={
-                  <InputText
-                    id="idFilter"
-                    name="id"
-                    value={idFilter}
-                    onKeyDown={this.onFilterChangeContains}
-                  />
-                }
+                filterMatchMode="eq"
               />
               <Column
                 field="fullname"
@@ -369,14 +350,6 @@ export default class Patients extends Component {
                 sortable={true}
                 filter={true}
                 filterMatchMode="contains"
-                filterElement={
-                  <InputText
-                    id="fullnameFilter"
-                    name="fullname"
-                    value={fullNameFilter}
-                    onKeyDown={this.onFilterChangeContains}
-                  />
-                }
               />
               <Column field="age" style={{ width: "100px" }} header="Age" />
               <Column
@@ -384,14 +357,7 @@ export default class Patients extends Component {
                 style={{ width: "150px" }}
                 header="Mobile"
                 filter={true}
-                filterElement={
-                  <InputText
-                    id="mobileFilter"
-                    name="mobile"
-                    value={mobileFilter}
-                    onKeyDown={this.onFilterChangeContains}
-                  />
-                }
+                filterMatchMode="contains"
               />
               <Column
                 field="address.name"
