@@ -14,8 +14,8 @@ import "./assets/styles/index.css";
 import "bootstrap/dist/js/bootstrap.js";
 
 ReactDOM.render(
-	<BrowserRouter>
-		<App />
-	</BrowserRouter>,
-	document.getElementById("root"),
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
+  document.getElementById("root")
 );

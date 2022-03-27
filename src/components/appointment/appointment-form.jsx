@@ -17,15 +17,15 @@ export default class AppointmentForm extends Component {
     formFields: {
       date: "",
       patientId: null,
-      type: ""
+      type: "",
     },
     appointments: [],
     controller: "appointments",
     isValidationFired: false,
     validationErrors: {},
-    loading:false
+    loading: false,
   });
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     const { controller } = this.state;
     const { id, date, patientId, type } = this.state.formFields;
     const { includeProperties, hideEditDialog, saveAppointment } = this.props;
@@ -35,29 +35,29 @@ export default class AppointmentForm extends Component {
         id: id,
         date: this.helper.formatDate(date, "en-US"),
         patientId: patientId.value,
-        type: type
+        type: type,
       };
       this.repository
         .post(
           `${controller}?includeProperties=${includeProperties}`,
           appointment
         )
-        .then(res => {
+        .then((res) => {
           if (res && !res.errors) {
-            this.setState({loading:true});
-					  setTimeout(() => {
+            this.setState({ loading: true });
+            setTimeout(() => {
               hideEditDialog && hideEditDialog();
               saveAppointment && saveAppointment(res, appointment.id);
               !hideEditDialog && this.handleReset();
-            },1000);
+            }, 1000);
           }
         });
     }
   };
-  handleReset = e => {
+  handleReset = (e) => {
     this.setState(this.getInitialState());
   };
-  handleValidation = e => {
+  handleValidation = (e) => {
     const { patientId, type } = this.state.formFields;
     let errors = {};
     let isValid = true;
@@ -71,7 +71,7 @@ export default class AppointmentForm extends Component {
     }
     this.setState({
       validationErrors: errors,
-      isValidationFired: true
+      isValidationFired: true,
     });
     return isValid;
   };
@@ -86,7 +86,7 @@ export default class AppointmentForm extends Component {
     else fields[e.target.name] = e.target.value;
 
     this.setState({
-      formFields: fields
+      formFields: fields,
     });
     if (isValidationFired) this.handleValidation();
   };
@@ -95,13 +95,13 @@ export default class AppointmentForm extends Component {
     const { selectedAppointment } = this.props;
     if (selectedAppointment)
       this.setState({
-        formFields: selectedAppointment
+        formFields: selectedAppointment,
       });
   };
   render() {
     const { id, date, patientId, type } = this.state.formFields;
     const { appointmentTypeOptions } = this.props;
-    const{loading}=this.state;
+    const { loading } = this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -121,7 +121,7 @@ export default class AppointmentForm extends Component {
             onChange={this.handleChange}
             {...this.state}
             onCreateOption={() => this.setState({ patienteditDialog: true })}
-            onInputChange={e => {
+            onInputChange={(e) => {
               e && this.setState({ patientName: e });
             }}
             controlType="select2"
@@ -138,7 +138,7 @@ export default class AppointmentForm extends Component {
             controlType="dropdown"
             options={appointmentTypeOptions}
           />
-          <FormFooterButton showReset={!id} loading={loading}/>
+          <FormFooterButton showReset={!id} loading={loading} />
         </form>
       </>
     );

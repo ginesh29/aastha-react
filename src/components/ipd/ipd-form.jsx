@@ -47,7 +47,7 @@ export default class IpdForm extends React.Component {
     amountPaid: "",
     chargeFormFields: [],
     validationErrors: {},
-    loading : false
+    loading: false,
   });
   handleChange = (e, action) => {
     const { isValidationFired, formFields } = this.state;
@@ -138,7 +138,7 @@ export default class IpdForm extends React.Component {
     const { chargeFormFields } = this.state;
     const { hideEditDialog, includeProperties, saveIpd } = this.props;
     e.preventDefault();
-    if (this.handleValidation()) {      
+    if (this.handleValidation()) {
       let lookupArray = null;
       if (departmentType === departmentTypeEnum.DELIVERY.value) {
         lookupArray = [...typesOfDelivery, deliveryDiagnosis];
@@ -203,12 +203,12 @@ export default class IpdForm extends React.Component {
         )
         .then((res) => {
           if (res && !res.errors) {
-            this.setState({loading:true});
+            this.setState({ loading: true });
             setTimeout(() => {
               hideEditDialog && hideEditDialog();
               saveIpd && saveIpd(res, ipd.id);
               !hideEditDialog && this.handleReset();
-              }, 1000); 
+            }, 1000);
           }
         });
     }
@@ -770,7 +770,7 @@ export default class IpdForm extends React.Component {
               </tr>
             </tfoot>
           </table>
-          <FormFooterButton showReset={!id} loading={loading}/>
+          <FormFooterButton showReset={!id} loading={loading} />
         </form>
         <Dialog
           header={Constants.PATIENT_REGISTRATION_TITLE}

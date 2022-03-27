@@ -19,7 +19,7 @@ export default class AdminPanel extends Component {
       first: 0,
       rows: ROWS,
       loadingGrid: true,
-      loading:false,
+      loading: false,
       filterString: "",
       sortString: "name asc",
       includeProperties: "Parent",
@@ -276,11 +276,11 @@ export default class AdminPanel extends Component {
         .post(`${"lookups"}?includeProperties=${includeProperties} `, lookup)
         .then((res) => {
           if (res && !res.errors) {
-            this.setState({loading:true});
-					  setTimeout(() => {
-              this.setState({ editDialog: false,loading:false });
+            this.setState({ loading: true });
+            setTimeout(() => {
+              this.setState({ editDialog: false, loading: false });
               this.savelookup(res, lookup.id);
-            },1000);
+            }, 1000);
           }
         });
     }
@@ -483,7 +483,10 @@ export default class AdminPanel extends Component {
                   />
                 )}
               </div>
-              <FormFooterButton showReset={!selectedLookup.id} loading={loading}/>
+              <FormFooterButton
+                showReset={!selectedLookup.id}
+                loading={loading}
+              />
             </form>
           )}
         </Dialog>

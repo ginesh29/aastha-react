@@ -124,10 +124,8 @@ export default class Prescription extends React.Component {
 
   handleMedicineChange = (e, weight) => {
     const { isValidationFired, medicineFormFields, medicineData } = this.state;
-    const {
-      medicineInstructions,
-      medicineInstructionsValue,
-    } = this.state.medicineFormFields;
+    const { medicineInstructions, medicineInstructionsValue } =
+      this.state.medicineFormFields;
     let fields = medicineFormFields;
     fields[e.target.name] = e.target.value;
     if (e.target.name === "medicineType") {
@@ -387,7 +385,9 @@ export default class Prescription extends React.Component {
   gotoOpdEntry = () => {
     const { date, patient } = this.state.formFields;
     if (this.handleValidation()) {
-      var url = `/add-opd?patientId=${patient.value}&patientName=${patient.label}&date=${this.helper.formatDate(date, "en-US")}`;
+      var url = `/add-opd?patientId=${patient.value}&patientName=${
+        patient.label
+      }&date=${this.helper.formatDate(date, "en-US")}`;
       this.props.history.push(url);
     }
   };
@@ -403,13 +403,8 @@ export default class Prescription extends React.Component {
       followupInstruction,
       followupDate,
     } = this.state.formFields;
-    const {
-      id,
-      medicineType,
-      days,
-      medicineName,
-      medicineInstructions,
-    } = this.state.medicineFormFields;
+    const { id, medicineType, days, medicineName, medicineInstructions } =
+      this.state.medicineFormFields;
     const {
       medicineTypeOptions,
       medicineNameOptions,
@@ -421,9 +416,8 @@ export default class Prescription extends React.Component {
       appointments,
     } = this.state;
     const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
-    const appointmentTypeOptions = this.helper.enumToObject(
-      appointmentTypeEnum
-    );
+    const appointmentTypeOptions =
+      this.helper.enumToObject(appointmentTypeEnum);
 
     const header = (
       <>

@@ -226,13 +226,8 @@ export default class Opds extends Component {
     });
   };
   deleteRow = () => {
-    const {
-      opds,
-      selectedOpd,
-      isArchive,
-      controller,
-      totalRecords,
-    } = this.state;
+    const { opds, selectedOpd, isArchive, controller, totalRecords } =
+      this.state;
     let flag = isArchive ? false : true;
     this.repository
       .delete(controller, `${selectedOpd.id}?isDeleted=${flag}`)

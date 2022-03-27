@@ -142,13 +142,8 @@ export default class IpdReport extends Component {
       var decoded_token = jwt_decode(token);
       var role = Number(decoded_token.Role);
     }
-    const {
-      ipds,
-      chargesLength,
-      chargeNames,
-      reportTitle,
-      activeIndex,
-    } = this.state;
+    const { ipds, chargesLength, chargeNames, reportTitle, activeIndex } =
+      this.state;
     let ipdData;
     let chargesColumns;
     let amount = 0;

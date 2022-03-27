@@ -55,9 +55,8 @@ export default class AppointmentCalendar extends Component {
       });
   };
   componentDidMount = () => {
-    const appointmentTypeOptions = this.helper.enumToObject(
-      appointmentTypeEnum
-    );
+    const appointmentTypeOptions =
+      this.helper.enumToObject(appointmentTypeEnum);
     this.setState({ appointmentTypeOptions: appointmentTypeOptions });
   };
   saveAppointment = (updatedAppointment, id) => {
@@ -154,9 +153,8 @@ export default class AppointmentCalendar extends Component {
     this.options.eventClick = (eventClickInfo) => {
       const { controller } = this.state;
       let event = eventClickInfo.event;
-      let hasDeleteClass = eventClickInfo.jsEvent.target.classList.contains(
-        "pi-times"
-      );
+      let hasDeleteClass =
+        eventClickInfo.jsEvent.target.classList.contains("pi-times");
       if (!hasDeleteClass) {
         let selectedAppointment = {
           id: event.id,

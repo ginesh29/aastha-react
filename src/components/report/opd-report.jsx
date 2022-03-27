@@ -30,12 +30,8 @@ export default class OpdReport extends Component {
     this.helper = new helper();
   }
   getOpds = () => {
-    const {
-      filterString,
-      sortString,
-      includeProperties,
-      controller,
-    } = this.state;
+    const { filterString, sortString, includeProperties, controller } =
+      this.state;
     this.repository
       .get(
         controller,

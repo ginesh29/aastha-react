@@ -80,24 +80,23 @@ export default class Login extends Component {
             var role = Number(decoded_token.Role);
           }
           if (role === roleEnum["ADMIN"].value)
-          setTimeout(() => {
-            this.setState({loading:false});
-            window.location.href = "dashboard";
-            }, 1000);            
+            setTimeout(() => {
+              this.setState({ loading: false });
+              window.location.href = "dashboard";
+            }, 1000);
           else {
             setTimeout(() => {
-              this.setState({loading:false});
+              this.setState({ loading: false });
               window.location.href = "appointments";
-              }, 1000);  
-            }  
-        } 
-        else {
+            }, 1000);
+          }
+        } else {
           this.messages.show({
             severity: "error",
             detail: "Enter valid Username & Password",
             sticky: true,
           });
-        }        
+        }
       });
     }
   };
@@ -163,9 +162,9 @@ export default class Login extends Component {
               ref={(el) => (this.myFormRef = el)}
             >
               {this.state.loading ? "Please wait " : "Sign in"}
-              {this.state.loading &&
-                (<i className="fa fa-spinner fa-spin ml-2"></i>)
-              }    
+              {this.state.loading && (
+                <i className="fa fa-spinner fa-spin ml-2"></i>
+              )}
             </button>
           </div>
         </form>

@@ -5,7 +5,7 @@ export default class FormFooterButton extends Component {
     this.state = {};
   }
   render() {
-    const { showReset,loading } = this.props;
+    const { showReset, loading } = this.props;
     return (
       <div className="modal-footer">
         {showReset && (
@@ -13,11 +13,14 @@ export default class FormFooterButton extends Component {
             Reset
           </button>
         )}
-        <button type="submit" className="btn btn-info" iconPos="right" disabled={loading}>
-        {loading ? "Please wait" : "Save"}
-        {loading &&
-          (<i className="fa fa-spinner fa-spin ml-2"></i>)
-        }         
+        <button
+          type="submit"
+          className="btn btn-info"
+          iconPos="right"
+          disabled={loading}
+        >
+          {loading ? "Please wait" : "Save"}
+          {loading && <i className="fa fa-spinner fa-spin ml-2"></i>}
         </button>
       </div>
     );
