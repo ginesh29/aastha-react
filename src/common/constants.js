@@ -2,7 +2,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 export const BASE_API_URL = {
   development: "http://localhost:8082/api",
-  production: "http://192.168.0.10:8082/api",
+  production: "http://aastha2.api/api",
 };
 export const ROWS = 10;
 export const TODAY_DATE = new Date();

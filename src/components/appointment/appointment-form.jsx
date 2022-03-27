@@ -22,7 +22,8 @@ export default class AppointmentForm extends Component {
     appointments: [],
     controller: "appointments",
     isValidationFired: false,
-    validationErrors: {}
+    validationErrors: {},
+    loading:false
   });
   handleSubmit = e => {
     const { controller } = this.state;
@@ -43,9 +44,12 @@ export default class AppointmentForm extends Component {
         )
         .then(res => {
           if (res && !res.errors) {
-            hideEditDialog && hideEditDialog();
-            saveAppointment && saveAppointment(res, appointment.id);
-            !hideEditDialog && this.handleReset();
+            this.setState({loading:true});
+					  setTimeout(() => {
+              hideEditDialog && hideEditDialog();
+              saveAppointment && saveAppointment(res, appointment.id);
+              !hideEditDialog && this.handleReset();
+            },1000);
           }
         });
     }
@@ -97,6 +101,7 @@ export default class AppointmentForm extends Component {
   render() {
     const { id, date, patientId, type } = this.state.formFields;
     const { appointmentTypeOptions } = this.props;
+    const{loading}=this.state;
     return (
       <>
         <form onSubmit={this.handleSubmit}>
@@ -133,7 +138,7 @@ export default class AppointmentForm extends Component {
             controlType="dropdown"
             options={appointmentTypeOptions}
           />
-          <FormFooterButton showReset={!id} />
+          <FormFooterButton showReset={!id} loading={loading}/>
         </form>
       </>
     );

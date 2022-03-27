@@ -167,6 +167,7 @@ export default class Patients extends Component {
   };
 
   savePatient = (updatedPatient, id) => {
+    console.log(updatedPatient);
     const { patients, totalRecords } = this.state;
     let patientData = [...patients];
     updatedPatient.address = {
@@ -188,13 +189,8 @@ export default class Patients extends Component {
   };
 
   deleteRow = () => {
-    const {
-      patients,
-      selectedPatient,
-      isArchive,
-      controller,
-      totalRecords,
-    } = this.state;
+    const { patients, selectedPatient, isArchive, controller, totalRecords } =
+      this.state;
     this.repository
       .delete(controller, `${selectedPatient.id}?isDeleted=${!isArchive}`)
       .then((res) => {

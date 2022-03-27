@@ -37,11 +37,13 @@ export class repository {
             });
             return res.data;
           } else {
+            setTimeout(() => {
             this.growl.show({
               severity: "success",
               summary: "Success Message",
               detail: res.data.Message,
             });
+          },1000);
             return res.data.Result;
           }
         })
@@ -50,11 +52,13 @@ export class repository {
       return axios
         .put(`${BASE_API_URL[env]}/${controller}`, model, config)
         .then((res) => {
+          setTimeout(() => {
           this.growl.show({
             severity: "success",
             summary: "Success Message",
             detail: res.data.Message,
           });
+        },1000);
           return res.data.Result;
         })
         .catch((error) => this.handleError(error));

@@ -387,12 +387,8 @@ export default class Prescription extends React.Component {
   gotoOpdEntry = () => {
     const { date, patient } = this.state.formFields;
     if (this.handleValidation()) {
-      window.open(
-        `add-opd?patientId=${patient.value}&patientName=${
-          patient.label
-        }&date=${this.helper.formatDate(date, "en-US")}`,
-        "_blank"
-      );
+      var url = `/add-opd?patientId=${patient.value}&patientName=${patient.label}&date=${this.helper.formatDate(date, "en-US")}`;
+      this.props.history.push(url);
     }
   };
 

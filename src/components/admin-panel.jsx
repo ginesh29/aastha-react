@@ -18,7 +18,8 @@ export default class AdminPanel extends Component {
       lookups: [],
       first: 0,
       rows: ROWS,
-      loading: true,
+      loadingGrid: true,
+      loading:false,
       filterString: "",
       sortString: "name asc",
       includeProperties: "Parent",
@@ -86,7 +87,7 @@ export default class AdminPanel extends Component {
             lookups: res && res.data,
             startNo: res && res.startPage,
             endNo: res && res.endPage,
-            loading: false,
+            loadingGrid: false,
           },
           () => {
             this.getMedicineTypes();
@@ -118,7 +119,7 @@ export default class AdminPanel extends Component {
       {
         rows: e.rows,
         first: e.first,
-        loading: true,
+        loadingGrid: true,
       },
       () => {
         this.getLookups();
@@ -133,7 +134,7 @@ export default class AdminPanel extends Component {
     this.setState(
       {
         multiSortMeta: [e.multiSortMeta[0], ...SortMetaOld],
-        loading: true,
+        loadingGrid: true,
       },
       () => {
         const { multiSortMeta } = this.state;
@@ -147,7 +148,7 @@ export default class AdminPanel extends Component {
     );
   };
   onFilter = (e) => {
-    this.setState({ filters: e.filters, loading: true });
+    this.setState({ filters: e.filters, loadingGrid: true });
     const { isArchive } = this.state;
     const deleteFilter = !isArchive
       ? `isDeleted-neq-{${!isArchive}}`
@@ -222,13 +223,13 @@ export default class AdminPanel extends Component {
     this.setState({ deleteDialog: false });
   };
   onChangeLookup = (e) => {
-    this.setState({ first: 0, lookupType: e.value, loading: true }, () => {
+    this.setState({ first: 0, lookupType: e.value, loadingGrid: true }, () => {
       this.getLookups();
     });
   };
   onFilterChange = (event) => {
     this.dt.filter(event.value, event.target.name, "eq");
-    this.setState({ [event.target.id]: event.value, loading: true });
+    this.setState({ [event.target.id]: event.value, loadingGrid: true });
   };
   handleChange = (e, action) => {
     const { isValidationFired, selectedLookup } = this.state;
@@ -275,8 +276,11 @@ export default class AdminPanel extends Component {
         .post(`${"lookups"}?includeProperties=${includeProperties} `, lookup)
         .then((res) => {
           if (res && !res.errors) {
-            this.setState({ editDialog: false });
-            this.savelookup(res, lookup.id);
+            this.setState({loading:true});
+					  setTimeout(() => {
+              this.setState({ editDialog: false,loading:false });
+              this.savelookup(res, lookup.id);
+            },1000);
           }
         });
     }
@@ -307,6 +311,7 @@ export default class AdminPanel extends Component {
       totalRecords,
       rows,
       first,
+      loadingGrid,
       loading,
       multiSortMeta,
       filters,
@@ -389,7 +394,7 @@ export default class AdminPanel extends Component {
                 </div>
                 <DataTable
                   value={lookups}
-                  loading={loading}
+                  loading={loadingGrid}
                   responsive={true}
                   emptyMessage="No records found"
                   ref={(el) => (this.dt = el)}
@@ -478,7 +483,7 @@ export default class AdminPanel extends Component {
                   />
                 )}
               </div>
-              <FormFooterButton showReset={!selectedLookup.id} />
+              <FormFooterButton showReset={!selectedLookup.id} loading={loading}/>
             </form>
           )}
         </Dialog>

@@ -67,7 +67,7 @@ export default class Login extends Component {
       };
       this.repository.post(`auth/generatetoken`, patient).then((res) => {
         this.messages.clear();
-        if (res) {
+        if (res && res.token) {
           this.messages.show({
             severity: "success",
             summary: "Successfully logged in",
@@ -80,16 +80,24 @@ export default class Login extends Component {
             var role = Number(decoded_token.Role);
           }
           if (role === roleEnum["ADMIN"].value)
+          setTimeout(() => {
+            this.setState({loading:false});
             window.location.href = "dashboard";
-          else window.location.href = "appointments";
-        } else {
+            }, 1000);            
+          else {
+            setTimeout(() => {
+              this.setState({loading:false});
+              window.location.href = "appointments";
+              }, 1000);  
+            }  
+        } 
+        else {
           this.messages.show({
             severity: "error",
             detail: "Enter valid Username & Password",
             sticky: true,
           });
-        }
-        this.setState({ loading: false });
+        }        
       });
     }
   };
@@ -154,12 +162,10 @@ export default class Login extends Component {
               tabIndex="4"
               ref={(el) => (this.myFormRef = el)}
             >
-              {this.state.loading ? "Loading " : "Sign in"}
-              <i
-                className={`${
-                  this.state.loading ? "fa fa-spinner fa-spin" : ""
-                }`}
-              ></i>
+              {this.state.loading ? "Please wait " : "Sign in"}
+              {this.state.loading &&
+                (<i className="fa fa-spinner fa-spin ml-2"></i>)
+              }    
             </button>
           </div>
         </form>

@@ -4,7 +4,6 @@ import { helper } from "../../common/helpers";
 import { repository } from "../../common/repository";
 import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
 import * as Constants from "../../common/constants";
 import { lookupTypeEnum } from "../../common/enums";
 import jquery from "jquery";
@@ -33,6 +32,8 @@ export default class PatientForm extends Component {
 		isValidationFired: false,
 		validationErrors: {},
 		isExist: false,
+		loading: false,
+		loadingAddress : false
 	});
 	handleChange = (e, action) => {
 		const { isValidationFired, formFields } = this.state;
@@ -51,7 +52,7 @@ export default class PatientForm extends Component {
 		e.preventDefault();
 		const { id, firstname, middlename, fathername, lastname, age, address, mobile } = this.state.formFields;
 		const { hideEditDialog, savePatient, includeProperties, onHidePatientDialog } = this.props;
-		if (this.handleValidation()) {
+		if (this.handleValidation()) {			
 			const patient = {
 				id: id,
 				firstname: firstname,
@@ -64,10 +65,13 @@ export default class PatientForm extends Component {
 			};
 			this.repository.post(`${controller}?includeProperties=${includeProperties ? includeProperties : ""}`, patient).then((res) => {
 				if (res && !res.errors) {
-					hideEditDialog && hideEditDialog();
-					onHidePatientDialog && onHidePatientDialog();
-					savePatient && savePatient(res, patient.id);
-					!hideEditDialog && this.handleReset();
+					this.setState({loading:true});
+					setTimeout(() => {						
+						hideEditDialog && hideEditDialog();
+						onHidePatientDialog && onHidePatientDialog();
+						savePatient && savePatient(res, patient.id);
+						!hideEditDialog && this.handleReset();
+					},1000);
 				}
 				res.errors &&
 					this.setState({
@@ -122,15 +126,18 @@ export default class PatientForm extends Component {
 
 		this.setState({
 			addressError: addressError,
-		});
+		});		
 		if (isValid) {
 			const lookup = {
 				name: addressText,
 				type: lookupTypeEnum.ADDRESS.code,
 			};
+			this.setState({loadingAddress:true});			
 			this.repository.post("lookups", lookup).then((res) => {
-				res && this.setState({ addressText: "", addressDialog: false });
-			});
+				setTimeout(() => {
+					res && this.setState({ addressText: "", addressDialog: false,loadingAddress:false });
+				},1000);
+			});		
 		}
 	};
 	componentDidMount = () => {
@@ -143,11 +150,16 @@ export default class PatientForm extends Component {
 	};
 	render() {
 		const { id, firstname, middlename, fathername, lastname, age, address, mobile } = this.state.formFields;
-		const { addressDialog, addressText, addressError } = this.state;
+		const { addressDialog, addressText, addressError,loading,loadingAddress } = this.state;
 		let addressDialogFooter = (
 			<div className="ui-dialog-buttonpane p-clearfix">
-				<Button label="Close" icon="pi pi-times" className="p-button-secondary" onClick={(e) => this.setState({ addressDialog: false })} />
-				<Button label="Save" icon="pi pi-check" onClick={this.saveAddress} />
+				<button className="btn btn-secondary" onClick={(e) => this.setState({ addressDialog: false })}>Close</button>
+				<button className="btn btn-info" onClick={this.saveAddress} disabled={loadingAddress}>
+				{loadingAddress ? "Please wait" : "Save"}
+        		{loadingAddress &&
+          			(<i className="fa fa-spinner fa-spin ml-2"></i>)
+        		}         
+				</button>
 			</div>
 		);
 		return (
@@ -202,7 +214,7 @@ export default class PatientForm extends Component {
 							/>
 						</div>
 					</div>
-					<FormFooterButton showReset={!id} />
+					<FormFooterButton showReset={!id} loading={loading}/>
 				</form>
 				<Dialog header={Constants.ADD_ADDRESS_TITLE} footer={addressDialogFooter} visible={addressDialog} onHide={() => this.setState({ addressDialog: false })} baseZIndex={0} dismissableMask={true}>
 					{addressText && (

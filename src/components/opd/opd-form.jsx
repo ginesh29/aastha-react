@@ -9,6 +9,7 @@ import PatientForm from "../patient/patient-form";
 import jquery from "jquery";
 import FormFooterButton from "../shared/form-footer-button";
 
+
 const controller = "opds";
 export default class OpdForm extends React.Component {
   constructor(props) {
@@ -31,6 +32,8 @@ export default class OpdForm extends React.Component {
       otherCharge: "",
       totalCharge: "",
     },
+    loading: false,
+    fromPrescription: false,
     patientName: "",
     isValidationFired: false,
     validationErrors: {},
@@ -91,7 +94,7 @@ export default class OpdForm extends React.Component {
         uptCharge: uptCharge,
         injectionCharge: injectionCharge,
         otherCharge: otherCharge,
-      };
+      };      
       this.repository
         .post(
           `${controller}?includeProperties=${
@@ -101,9 +104,14 @@ export default class OpdForm extends React.Component {
         )
         .then((res) => {
           if (res && !res.errors) {
-            hideEditDialog && hideEditDialog();
-            saveOpd && saveOpd(res, opd.id);
-            !hideEditDialog && this.handleReset();
+            this.setState({loading:true});
+            setTimeout(() => {
+              hideEditDialog && hideEditDialog();
+              if(this.state.fromPrescription)
+                window.location.href = "/prescription";
+              saveOpd && saveOpd(res, opd.id);
+              !hideEditDialog && this.handleReset();
+              }, 1000);	
           }
         });
     }
@@ -141,8 +149,9 @@ export default class OpdForm extends React.Component {
     const patientId = query.get("patientId");
     const patientName = query.get("patientName");
     const date = query.get("date");
-    if (patientId) {
-      this.setState({
+    if (patientId) {   
+      this.setState({ 
+        fromPrescription: true,       
         formFields: {
           patient: { value: patientId, label: patientName },
           opdDate: new Date(date),
@@ -169,7 +178,7 @@ export default class OpdForm extends React.Component {
       otherCharge,
       totalCharge,
     } = this.state.formFields;
-    const { patientDialog } = this.state;
+    const { patientDialog,loading } = this.state;
     const defaultCharge = "";
     return (
       <>
@@ -294,7 +303,7 @@ export default class OpdForm extends React.Component {
               />
             </div>
           </div>
-          <FormFooterButton showReset={!id} />
+          <FormFooterButton showReset={!id} loading={loading}/>
         </form>
         <Dialog
           header={Constants.PATIENT_REGISTRATION_TITLE}

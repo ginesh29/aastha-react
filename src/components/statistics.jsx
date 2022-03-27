@@ -80,7 +80,7 @@ export default class Statistics extends Component {
 												</div>
 												<h5>
 													Total Collection of {year}
-													<span class="badge badge-secondary">
+													<span className="badge badge-secondary ml-2">
 														{totalOpdCollection} + {totalIpdCollection} = {this.helper.formatCurrency(totalOpdCollection + totalIpdCollection)}
 													</span>
 												</h5>
