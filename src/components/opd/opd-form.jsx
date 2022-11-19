@@ -94,6 +94,7 @@ export default class OpdForm extends React.Component {
         injectionCharge: injectionCharge,
         otherCharge: otherCharge,
       };
+      this.setState({ loading: true });
       this.repository
         .post(
           `${controller}?includeProperties=${
@@ -103,15 +104,11 @@ export default class OpdForm extends React.Component {
         )
         .then((res) => {
           if (res && !res.errors) {
-            this.setState({ loading: true });
-            setTimeout(() => {
-              hideEditDialog && hideEditDialog();
-              if (this.state.fromPrescription)
-                window.location.href = "/prescription";
-              saveOpd && saveOpd(res, opd.id);
-              !hideEditDialog && this.handleReset();
-            }, 1000);
-          }
+            hideEditDialog && hideEditDialog();
+            if (this.state.fromPrescription) window.location.href = "/add-opd";
+            saveOpd && saveOpd(res, opd.id);
+            !hideEditDialog && this.handleReset();
+          } else this.setState({ loading: false });
         });
     }
   };

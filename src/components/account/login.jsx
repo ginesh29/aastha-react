@@ -96,6 +96,7 @@ export default class Login extends Component {
             detail: "Enter valid Username & Password",
             sticky: true,
           });
+          this.setState({ loading: false });
         }
       });
     }

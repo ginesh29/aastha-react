@@ -194,6 +194,7 @@ export default class IpdForm extends React.Component {
         charges: charges,
         discount: discount,
       };
+      this.setState({ loading: true });
       this.repository
         .post(
           `${controller}?includeProperties=${
@@ -203,13 +204,12 @@ export default class IpdForm extends React.Component {
         )
         .then((res) => {
           if (res && !res.errors) {
-            this.setState({ loading: true });
             setTimeout(() => {
               hideEditDialog && hideEditDialog();
               saveIpd && saveIpd(res, ipd.id);
               !hideEditDialog && this.handleReset();
             }, 1000);
-          }
+          } else this.setState({ loading: false });
         });
     }
   };

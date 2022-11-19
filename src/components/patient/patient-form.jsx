@@ -81,6 +81,7 @@ export default class PatientForm extends Component {
         mobile: mobile,
         addressId: address.value,
       };
+      this.setState({ loading: true });
       this.repository
         .post(
           `${controller}?includeProperties=${
@@ -90,7 +91,6 @@ export default class PatientForm extends Component {
         )
         .then((res) => {
           if (res && !res.errors) {
-            this.setState({ loading: true });
             setTimeout(() => {
               hideEditDialog && hideEditDialog();
               onHidePatientDialog && onHidePatientDialog();
@@ -100,6 +100,7 @@ export default class PatientForm extends Component {
           }
           res.errors &&
             this.setState({
+              loading: false,
               isExist: true,
             });
         });
