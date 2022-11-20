@@ -13,12 +13,7 @@ export default class FormFooterButton extends Component {
             Reset
           </button>
         )}
-        <button
-          type="submit"
-          className="btn btn-info"
-          iconPos="right"
-          disabled={loading}
-        >
+        <button type="submit" className="btn btn-info" disabled={loading}>
           {loading ? "Please wait" : "Save"}
           {loading && <i className="fa fa-spinner fa-spin ml-2"></i>}
         </button>
