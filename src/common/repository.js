@@ -7,14 +7,21 @@ import { Messages } from "primereact/messages";
 import jquery from "jquery";
 
 const env = process.env.NODE_ENV;
+const token = localStorage.getItem("aastha-auth-token");
+let headers = {
+  Authorization: `Bearer ${token}`,
+};
 export class repository {
   get(controller, querystring) {
     ReactDOM.render(
       <Growl ref={(el) => (this.growl = el)} />,
       document.getElementById("toast")
     );
+    let config = {
+      headers: headers,
+    };
     return axios
-      .get(`${BASE_API_URL[env]}/${controller}?${querystring}`)
+      .get(`${BASE_API_URL[env]}/${controller}?${querystring}`, config)
       .then((res) => res.data.Result)
       .catch((error) => this.handleError(error));
   }
@@ -25,6 +32,8 @@ export class repository {
       <Growl ref={(el) => (this.growl = el)} />,
       document.getElementById("toast")
     );
+    config = !config && {};
+    config.headers = headers;
     if (!model.id)
       return axios
         .post(`${BASE_API_URL[env]}/${controller}`, model, config)
@@ -69,8 +78,11 @@ export class repository {
       <Growl ref={(el) => (this.growl = el)} />,
       document.getElementById("toast")
     );
+    let config = {
+      headers: headers,
+    };
     return axios
-      .delete(`${BASE_API_URL[env]}/${controller}/${querystring}`)
+      .delete(`${BASE_API_URL[env]}/${controller}/${querystring}`, config)
       .then((res) => {
         this.growl.show({
           severity: "success",

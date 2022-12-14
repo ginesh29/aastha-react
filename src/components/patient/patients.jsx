@@ -167,7 +167,6 @@ export default class Patients extends Component {
   };
 
   savePatient = (updatedPatient, id) => {
-    console.log(updatedPatient);
     const { patients, totalRecords } = this.state;
     let patientData = [...patients];
     updatedPatient.address = {

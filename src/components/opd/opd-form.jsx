@@ -8,6 +8,7 @@ import { repository } from "../../common/repository";
 import PatientForm from "../patient/patient-form";
 import jquery from "jquery";
 import FormFooterButton from "../shared/form-footer-button";
+import { Button } from "primereact/button";
 
 const controller = "opds";
 export default class OpdForm extends React.Component {
@@ -35,6 +36,8 @@ export default class OpdForm extends React.Component {
     fromPrescription: false,
     patientName: "",
     isValidationFired: false,
+    checkExist: true,
+    confirmDialog: false,
     validationErrors: {},
   });
 
@@ -68,7 +71,7 @@ export default class OpdForm extends React.Component {
     });
     if (isValidationFired) this.handleValidation();
   };
-  handleSubmit = (e) => {
+  submitOpd = () => {
     const {
       id,
       opdDate,
@@ -81,7 +84,6 @@ export default class OpdForm extends React.Component {
       otherCharge,
     } = this.state.formFields;
     const { hideEditDialog, saveOpd, includeProperties } = this.props;
-    e.preventDefault();
     if (this.handleValidation()) {
       const opd = {
         id: id,
@@ -93,6 +95,7 @@ export default class OpdForm extends React.Component {
         uptCharge: uptCharge,
         injectionCharge: injectionCharge,
         otherCharge: otherCharge,
+        checkExist: this.state.checkExist,
       };
       this.setState({ loading: true });
       this.repository
@@ -109,8 +112,20 @@ export default class OpdForm extends React.Component {
             saveOpd && saveOpd(res, opd.id);
             !hideEditDialog && this.handleReset();
           } else this.setState({ loading: false });
+          if (res && res.errors && res.errors[""].toString().includes("exist"))
+            this.setState({ confirmDialog: true });
         });
     }
+  };
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.submitOpd();
+  };
+  submitForcefully = (e) => {
+    this.setState({ checkExist: false });
+    setTimeout(() => {
+      this.submitOpd();
+    }, 0);
   };
   handleValidation = (e) => {
     const { opdDate, caseType, patient } = this.state.formFields;
@@ -161,6 +176,7 @@ export default class OpdForm extends React.Component {
       });
     }
   };
+
   render() {
     const {
       id,
@@ -174,8 +190,23 @@ export default class OpdForm extends React.Component {
       otherCharge,
       totalCharge,
     } = this.state.formFields;
-    const { patientDialog, loading } = this.state;
+    const { patientDialog, loading, confirmDialog } = this.state;
     const defaultCharge = "";
+    const confirmDialogFooter = (
+      <div>
+        <Button
+          label="Yes"
+          icon="pi pi-check"
+          onClick={this.submitForcefully}
+        />
+        <Button
+          label="No"
+          icon="pi pi-times"
+          onClick={() => this.setState({ confirmDialog: false })}
+          className="p-button-secondary"
+        />
+      </div>
+    );
     return (
       <>
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
@@ -316,6 +347,16 @@ export default class OpdForm extends React.Component {
               {...this.state}
             />
           )}
+        </Dialog>
+
+        <Dialog
+          header="Confirmation"
+          visible={confirmDialog}
+          footer={confirmDialogFooter}
+          onHide={() => this.setState({ confirmDialog: false })}
+          dismissableMask={true}
+        >
+          Are you sure you want to Save again this item?
         </Dialog>
       </>
     );
