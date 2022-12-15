@@ -32,7 +32,7 @@ export class repository {
       <Growl ref={(el) => (this.growl = el)} />,
       document.getElementById("toast")
     );
-    config = !config && {};
+    config = config !== undefined ? config : {};
     config.headers = headers;
     if (!model.id)
       return axios

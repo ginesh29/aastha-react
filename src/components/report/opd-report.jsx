@@ -30,6 +30,7 @@ export default class OpdReport extends Component {
     this.helper = new helper();
   }
   getOpds = () => {
+    this.setState({ loading: true });
     const { filterString, sortString, includeProperties, controller } =
       this.state;
     this.repository
@@ -112,7 +113,7 @@ export default class OpdReport extends Component {
       var decoded_token = jwt_decode(token);
       var role = Number(decoded_token.Role);
     }
-    const { opds, reportTitle, activeIndex } = this.state;
+    const { opds, reportTitle, activeIndex, loading } = this.state;
     let opdGroupByDate = _.groupBy(opds, "formatedOpdDate");
     let opdData = _.map(opdGroupByDate, (items, key) => {
       let result = {};
@@ -187,6 +188,7 @@ export default class OpdReport extends Component {
                   }
                   data={opdData}
                   exportReport={this.exportReport}
+                  loading={loading}
                 />
                 <hr />
               </>

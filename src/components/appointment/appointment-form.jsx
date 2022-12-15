@@ -33,7 +33,7 @@ export default class AppointmentForm extends Component {
     if (this.handleValidation()) {
       const appointment = {
         id: id,
-        date: this.helper.formatDate(date, "en-US"),
+        date: this.helper.formatFormDate(date),
         patientId: patientId.value,
         type: type,
       };

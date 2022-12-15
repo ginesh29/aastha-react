@@ -26,10 +26,14 @@ export default class ReportFilter extends Component {
       data,
       showSummary,
       exportReport,
+      loading,
     } = this.props;
     return (
       <>
-        <div className="p-panel-title">Report Type</div>
+        <div className="p-panel-title">
+          Report Type{" "}
+          {loading && <i className="fa fa-spinner fa-spin ml-2"></i>}
+        </div>
         <div className="row">
           <div className="col-md-5">
             <div className="d-flex">

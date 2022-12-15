@@ -25,6 +25,7 @@ export default class MonthlyIpdReport extends Component {
     this.helper = new helper();
   }
   getIpds = () => {
+    this.setState({ loading: true });
     const {
       first,
       rows,
@@ -93,7 +94,7 @@ export default class MonthlyIpdReport extends Component {
     });
   };
   render() {
-    const { ipds } = this.state;
+    const { ipds, loading } = this.state;
     return (
       <>
         <div className="card">
@@ -104,6 +105,7 @@ export default class MonthlyIpdReport extends Component {
               onReportTypeChange={(e) => this.setState({ reportType: e.value })}
               data={ipds}
               showSummary={false}
+              loading={loading}
             />
             <hr />
             <div id="print-div">

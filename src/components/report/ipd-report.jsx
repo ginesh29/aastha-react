@@ -30,6 +30,7 @@ export default class IpdReport extends Component {
     this.helper = new helper();
   }
   getIpds = () => {
+    this.setState({ loading: true });
     const {
       first,
       rows,
@@ -142,8 +143,14 @@ export default class IpdReport extends Component {
       var decoded_token = jwt_decode(token);
       var role = Number(decoded_token.Role);
     }
-    const { ipds, chargesLength, chargeNames, reportTitle, activeIndex } =
-      this.state;
+    const {
+      ipds,
+      chargesLength,
+      chargeNames,
+      reportTitle,
+      activeIndex,
+      loading,
+    } = this.state;
     let ipdData;
     let chargesColumns;
     let amount = 0;
@@ -215,6 +222,7 @@ export default class IpdReport extends Component {
                   data={ipdData}
                   exportReport={this.exportReport}
                   activeIndex={activeIndex}
+                  loading={loading}
                 />
                 <hr />
               </>

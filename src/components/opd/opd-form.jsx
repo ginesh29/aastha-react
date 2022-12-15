@@ -87,7 +87,7 @@ export default class OpdForm extends React.Component {
     if (this.handleValidation()) {
       const opd = {
         id: id,
-        date: this.helper.formatDate(opdDate, "en-US"),
+        date: this.helper.formatFormDate(opdDate),
         caseType: caseType,
         patientId: patient.value,
         consultCharge: consultCharge,
@@ -112,7 +112,12 @@ export default class OpdForm extends React.Component {
             saveOpd && saveOpd(res, opd.id);
             !hideEditDialog && this.handleReset();
           } else this.setState({ loading: false });
-          if (res && res.errors && res.errors[""].toString().includes("exist"))
+          if (
+            res &&
+            res.errors &&
+            res.errors[""] &&
+            res.errors[""].toString().includes("exist")
+          )
             this.setState({ confirmDialog: true });
         });
     }
