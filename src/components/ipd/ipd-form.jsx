@@ -160,7 +160,7 @@ export default class IpdForm extends React.Component {
       const deliveryDetail = {
         id: deliveryId ? deliveryId : null,
         ipdId: id,
-        date: this.helper.formatFormDate(deliveryDate),
+        date: this.helper.formatDate(deliveryDate, "en-US"),
         time: this.helper.formatTime(deliveryTime),
         gender: babyGender,
         babyWeight: babyWeight,
@@ -169,7 +169,7 @@ export default class IpdForm extends React.Component {
       const operationDetail = {
         id: operationId ? operationId : null,
         ipdId: id,
-        date: this.helper.formatFormDate(operationDate),
+        date: this.helper.formatDate(operationDate, "en-US"),
       };
       const charges =
         chargeFormFields &&
@@ -180,8 +180,8 @@ export default class IpdForm extends React.Component {
         type: departmentType,
         roomType: roomType,
         patientId: patient.value,
-        addmissionDate: this.helper.formatFormDate(addmissionDate),
-        dischargeDate: this.helper.formatFormDate(dischargeDate),
+        addmissionDate: this.helper.formatDate(addmissionDate, "en-US"),
+        dischargeDate: this.helper.formatDate(dischargeDate, "en-US"),
         deliveryDetail:
           departmentType === departmentTypeEnum.DELIVERY.value
             ? deliveryDetail

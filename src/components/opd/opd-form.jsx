@@ -87,7 +87,7 @@ export default class OpdForm extends React.Component {
     if (this.handleValidation()) {
       const opd = {
         id: id,
-        date: this.helper.formatFormDate(opdDate),
+        date: this.helper.formatDate(opdDate, "en-Us"),
         caseType: caseType,
         patientId: patient.value,
         consultCharge: consultCharge,
