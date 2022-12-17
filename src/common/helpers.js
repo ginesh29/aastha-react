@@ -212,7 +212,7 @@ export class helper {
   formatStringToDate = (date) => {
     var parts = date.split(/[.\-_]/);
     var newDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    return this.formatFormDate(newDate);
+    return this.formatDate(newDate);
   };
   onFilterChange = (event, dt) => {
     dt.filter(event.value, event.target.name, "eq");

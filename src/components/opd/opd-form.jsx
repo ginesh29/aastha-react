@@ -51,13 +51,13 @@ export default class OpdForm extends React.Component {
           ? e && { value: e.value, label: e.label }
           : null;
     else fields[e.target.name] = e.target.value;
-    fields.consultCharge = fields.consultCharge ? fields.consultCharge : "";
-    fields.usgCharge = fields.usgCharge ? fields.usgCharge : "";
-    fields.uptCharge = fields.uptCharge ? fields.uptCharge : "";
+    fields.consultCharge = fields.consultCharge ? fields.consultCharge : null;
+    fields.usgCharge = fields.usgCharge ? fields.usgCharge : null;
+    fields.uptCharge = fields.uptCharge ? fields.uptCharge : null;
     fields.injectionCharge = fields.injectionCharge
       ? fields.injectionCharge
-      : "";
-    fields.otherCharge = fields.otherCharge ? fields.otherCharge : "";
+      : null;
+    fields.otherCharge = fields.otherCharge ? fields.otherCharge : null;
 
     let total =
       Number(fields.consultCharge) +
@@ -87,7 +87,7 @@ export default class OpdForm extends React.Component {
     if (this.handleValidation()) {
       const opd = {
         id: id,
-        date: this.helper.formatDate(opdDate, "en-Us"),
+        date: this.helper.formatDate(opdDate),
         caseType: caseType,
         patientId: patient.value,
         consultCharge: consultCharge,

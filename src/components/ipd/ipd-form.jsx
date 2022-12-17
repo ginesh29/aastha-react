@@ -21,13 +21,13 @@ export default class IpdForm extends React.Component {
   }
   getInitialState = () => ({
     formFields: {
-      id: null,
+      id: 0,
       uniqueId: "",
       patient: null,
       roomType: null,
       departmentType: null,
       addmissionDate: "",
-      dischargeDate: "",
+      dischargeDate: null,
       deliveryDate: "",
       deliveryTime: "",
       typesOfDelivery: [],
@@ -38,7 +38,7 @@ export default class IpdForm extends React.Component {
       operationDiagnosis: [],
       typesOfOperation: [],
       generalDiagnosis: [],
-      discount: "",
+      discount: null,
     },
     patientName: "",
     patientInput: "",
@@ -158,18 +158,18 @@ export default class IpdForm extends React.Component {
         } else return { lookupId: item };
       });
       const deliveryDetail = {
-        id: deliveryId ? deliveryId : null,
+        id: deliveryId ? deliveryId : 0,
         ipdId: id,
-        date: this.helper.formatDate(deliveryDate, "en-US"),
+        date: this.helper.formatDate(deliveryDate),
         time: this.helper.formatTime(deliveryTime),
         gender: babyGender,
         babyWeight: babyWeight,
       };
 
       const operationDetail = {
-        id: operationId ? operationId : null,
+        id: operationId ? operationId : 0,
         ipdId: id,
-        date: this.helper.formatDate(operationDate, "en-US"),
+        date: this.helper.formatDate(operationDate),
       };
       const charges =
         chargeFormFields &&
@@ -180,8 +180,8 @@ export default class IpdForm extends React.Component {
         type: departmentType,
         roomType: roomType,
         patientId: patient.value,
-        addmissionDate: this.helper.formatDate(addmissionDate, "en-US"),
-        dischargeDate: this.helper.formatDate(dischargeDate, "en-US"),
+        addmissionDate: this.helper.formatDate(addmissionDate),
+        dischargeDate: this.helper.formatDate(dischargeDate),
         deliveryDetail:
           departmentType === departmentTypeEnum.DELIVERY.value
             ? deliveryDetail

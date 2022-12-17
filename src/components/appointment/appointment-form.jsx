@@ -32,8 +32,8 @@ export default class AppointmentForm extends Component {
     e.preventDefault();
     if (this.handleValidation()) {
       const appointment = {
-        id: id,
-        date: this.helper.formatDate(date, "en-US"),
+        id: id || 0,
+        date: this.helper.formatDate(date),
         patientId: patientId.value,
         type: type,
       };
