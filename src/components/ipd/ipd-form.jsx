@@ -159,9 +159,9 @@ export default class IpdForm extends React.Component {
       });
       const deliveryDetail = {
         id: deliveryId ? deliveryId : 0,
-        ipdId: id,
-        date: this.helper.formatDate(deliveryDate),
-        time: this.helper.formatTime(deliveryTime),
+        ipdId: id || 0,
+        date: deliveryDate ? this.helper.formatDate(deliveryDate) : null,
+        time: deliveryTime ? this.helper.formatTime(deliveryTime) : null,
         gender: babyGender,
         babyWeight: babyWeight,
       };
@@ -169,7 +169,7 @@ export default class IpdForm extends React.Component {
       const operationDetail = {
         id: operationId ? operationId : 0,
         ipdId: id,
-        date: this.helper.formatDate(operationDate),
+        date: operationDate ? this.helper.formatDate(operationDate) : null,
       };
       const charges =
         chargeFormFields &&

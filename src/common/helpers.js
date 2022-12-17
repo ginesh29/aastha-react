@@ -162,7 +162,8 @@ export class helper {
     );
   };
   formatDate = (date, format) => {
-    return new Date(date)
+    let d = date ? new Date(date) : new Date();
+    return d
       .toLocaleDateString(format ? format : "en-GB", {
         year: "numeric",
         month: "numeric",
@@ -174,7 +175,7 @@ export class helper {
     let d = date ? new Date(date) : new Date();
     var hour = d.getHours();
     var minute = d.getMinutes();
-    return `${hour}:${minute}`;
+    return `${hour}:${minute}:00`;
   };
   getMonthFromDate = (date) => {
     let d = date ? new Date(date) : new Date();
