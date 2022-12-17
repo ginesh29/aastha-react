@@ -161,14 +161,6 @@ export class helper {
       (day < 10 ? "0" + day : day)
     );
   };
-  formatFormDate = (date) => {
-    let d = date ? new Date(date) : new Date();
-    var year = d.getFullYear();
-    var month = d.getMonth();
-    var dt = d.getDate();
-    return `${year}-${month}-${dt}`;
-  };
-
   formatDate = (date, format) => {
     return new Date(date)
       .toLocaleDateString(format ? format : "en-GB", {
@@ -212,7 +204,7 @@ export class helper {
   formatStringToDate = (date) => {
     var parts = date.split(/[.\-_]/);
     var newDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    return this.formatFormDate(newDate);
+    return this.formatDate(newDate, "en-US");
   };
   onFilterChange = (event, dt) => {
     dt.filter(event.value, event.target.name, "eq");

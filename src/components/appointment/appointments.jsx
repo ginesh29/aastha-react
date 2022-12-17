@@ -129,9 +129,9 @@ export default class AppointmentCalendar extends Component {
     );
     this.options.datesRender = (info) => {
       const startDate = this.helper.formatFullcalendarDate(
-        info.view.currentStart
+        info.view.activeStart
       );
-      const endDate = this.helper.formatFullcalendarDate(info.view.currentEnd);
+      const endDate = this.helper.formatFullcalendarDate(info.view.activeEnd);
       const filter = `Date-gte-{${startDate}} and Date-lte-{${endDate}}`;
       this.setState({ filterString: filter }, () => {
         this.getAppointments();
