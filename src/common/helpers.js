@@ -162,7 +162,8 @@ export class helper {
     );
   };
   formatDate = (date, format) => {
-    return new Date(date)
+    let d = date ? new Date(date) : new Date();
+    return d
       .toLocaleDateString(format ? format : "en-GB", {
         year: "numeric",
         month: "numeric",

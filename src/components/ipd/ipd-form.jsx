@@ -27,7 +27,7 @@ export default class IpdForm extends React.Component {
       roomType: null,
       departmentType: null,
       addmissionDate: "",
-      dischargeDate: "",
+      dischargeDate: null,
       deliveryDate: "",
       deliveryTime: "",
       typesOfDelivery: [],
@@ -181,7 +181,9 @@ export default class IpdForm extends React.Component {
         roomType: roomType,
         patientId: patient.value,
         addmissionDate: this.helper.formatDate(addmissionDate, "en-US"),
-        dischargeDate: this.helper.formatDate(dischargeDate, "en-US"),
+        dischargeDate: dischargeDate
+          ? this.helper.formatDate(dischargeDate, "en-US")
+          : null,
         deliveryDetail:
           departmentType === departmentTypeEnum.DELIVERY.value
             ? deliveryDetail
