@@ -161,14 +161,6 @@ export class helper {
       (day < 10 ? "0" + day : day)
     );
   };
-  formatFormDate = (date) => {
-    let d = date ? new Date(date) : new Date();
-    var year = d.getFullYear();
-    var month = d.getMonth();
-    var dt = d.getDate();
-    return `${year}-${month}-${dt}`;
-  };
-
   formatDate = (date, format) => {
     return new Date(date)
       .toLocaleDateString(format ? format : "en-GB", {
