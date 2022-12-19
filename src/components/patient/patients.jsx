@@ -272,7 +272,7 @@ export default class Patients extends Component {
         <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
         <Button
           label="No"
-          icon="pi pi-trash"
+          icon="pi pi-times"
           onClick={() => this.setState({ deleteDialog: false })}
           className="p-button-secondary"
         />

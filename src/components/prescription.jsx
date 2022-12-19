@@ -943,7 +943,7 @@ export default class Prescription extends React.Component {
         <Dialog
           header="Appointment Calendar"
           visible={appointmentCalendarDialog}
-          className="p-scroll-dialog w-50"
+          className="p-scroll-dialog w-75"
           onHide={() => this.setState({ appointmentCalendarDialog: false })}
           dismissableMask={true}
         >

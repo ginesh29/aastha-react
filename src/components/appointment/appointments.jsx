@@ -10,6 +10,7 @@ import { FULLCALENDAR_OPTION } from "../../common/constants";
 import { Button } from "primereact/button";
 import AppointmentTypeIndicator from "./appointment-indicator";
 import AppointmentForm from "./appointment-form";
+import ReactDOM from "react-dom";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 
@@ -84,13 +85,75 @@ export default class AppointmentCalendar extends Component {
     } else this.fullcalendar.calendar.addEvent(event);
     this.setState({ editDialog: false });
   };
-
+  eventEdit = (id) => {
+    let event = this.fullcalendar.calendar.getEventById(id);
+    let selectedAppointment = {
+      id: event.id,
+      patientId: {
+        value: event.extendedProps.patientId,
+        label: event.title,
+      },
+      date: event.start,
+      type: event.extendedProps.type,
+    };
+    this.setState({
+      editDialog: true,
+      selectedAppointment: selectedAppointment,
+      validationErrors: {},
+    });
+  };
+  eventDelete = (id) => {
+    const { controller } = this.state;
+    let event = this.fullcalendar.calendar.getEventById(id);
+    this.setState({
+      deleteDialog: true,
+      deleteCallback: () => {
+        let flag = true;
+        this.repository
+          .delete(controller, `${event.id}?isDeleted=${flag}`)
+          .then((res) => {
+            event.remove();
+            this.setState({ deleteDialog: false });
+          });
+      },
+    });
+  };
   render() {
     this.options.eventMouseEnter = (info) => {
       tippy(info.el, {
         content: info.event.title,
       });
+      const content = (
+        <div className="fc-content">
+          <span className="fc-title">{info.event.title}</span>
+          <div className="float-right" style={{ marginTop: "2px" }}>
+            <button
+              className="icon-button"
+              onClick={() => this.eventEdit(info.event.id)}
+            >
+              <i className="pi pi-pencil" />
+            </button>
+            <button
+              className="icon-button"
+              onClick={() => this.eventDelete(info.event.id)}
+            >
+              <i className="pi pi-trash" />
+            </button>
+          </div>
+        </div>
+      );
+      ReactDOM.render(content, info.el);
     };
+
+    this.options.eventMouseLeave = (info) => {
+      const content = (
+        <div className="fc-content">
+          <span className="fc-title">{info.event.title}</span>
+        </div>
+      );
+      ReactDOM.render(content, info.el);
+    };
+
     const {
       appointments,
       editDialog,
@@ -110,7 +173,7 @@ export default class AppointmentCalendar extends Component {
         />
         <Button
           label="No"
-          icon="pi pi-trash"
+          icon="pi pi-times"
           onClick={() => this.setState({ deleteDialog: false })}
           className="p-button-secondary"
         />
@@ -139,51 +202,16 @@ export default class AppointmentCalendar extends Component {
         validationErrors: {},
       });
     };
-    this.options.eventClick = (eventClickInfo) => {
-      const { controller } = this.state;
-      let event = eventClickInfo.event;
-      let hasDeleteClass = eventClickInfo.jsEvent.target.classList.contains(
-        "pi-trash"
-      );
-      if (!hasDeleteClass) {
-        let selectedAppointment = {
-          id: event.id,
-          patientId: {
-            value: event.extendedProps.patientId,
-            label: event.title,
-          },
-          date: event.start,
-          type: event.extendedProps.type,
-        };
-        this.setState({
-          editDialog: true,
-          selectedAppointment: selectedAppointment,
-          validationErrors: {},
-        });
-      } else {
-        this.setState({
-          deleteDialog: true,
-          deleteCallback: () => {
-            let flag = true;
-            this.repository
-              .delete(controller, `${event.id}?isDeleted=${flag}`)
-              .then((res) => {
-                event.remove();
-                this.setState({ deleteDialog: false });
-              });
-          },
-        });
-      }
-    };
-    const dialogHeader = (
-      <div className="p-panel-title">
-        Appoinment Calendar
-        {loading && <i className="fa fa-spinner fa-spin ml-2"></i>}
-      </div>
-    );
     return (
       <>
-        <Panel header={dialogHeader}>
+        <Panel
+          header={
+            <div className="p-panel-title">
+              Appoinment Calendar
+              {loading && <i className="fa fa-spinner fa-spin ml-2"></i>}
+            </div>
+          }
+        >
           <div className="row">
             <div className="col-md-12">
               <AppointmentTypeIndicator options={appointmentTypeOptions} />
@@ -202,7 +230,7 @@ export default class AppointmentCalendar extends Component {
           visible={editDialog}
           onHide={() => this.setState({ editDialog: false })}
           className="w-25"
-          dismissableMask={true}
+          dismissableMask={false}
         >
           {editDialog && (
             <AppointmentForm
