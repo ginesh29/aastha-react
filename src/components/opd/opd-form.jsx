@@ -206,7 +206,7 @@ export default class OpdForm extends React.Component {
         />
         <Button
           label="No"
-          icon="pi pi-times"
+          icon="pi pi-trash"
           onClick={() => this.setState({ confirmDialog: false })}
           className="p-button-secondary"
         />

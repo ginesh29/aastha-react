@@ -7,11 +7,11 @@ import { Dialog } from "primereact/dialog";
 import { Panel } from "primereact/panel";
 import { appointmentTypeEnum } from "../../common/enums";
 import { FULLCALENDAR_OPTION } from "../../common/constants";
-import ReactDOM from "react-dom";
 import { Button } from "primereact/button";
 import AppointmentTypeIndicator from "./appointment-indicator";
 import AppointmentForm from "./appointment-form";
-import ReactTooltip from "react-tooltip";
+import tippy from "tippy.js";
+import "tippy.js/dist/tippy.css";
 
 const title = "Appointment";
 export default class AppointmentCalendar extends Component {
@@ -19,7 +19,7 @@ export default class AppointmentCalendar extends Component {
     super(props);
     this.state = {
       appointments: [],
-      loading: true,
+      loading: false,
       selectedAppointment: null,
       controller: "appointments",
       includeProperties: "Patient",
@@ -31,6 +31,7 @@ export default class AppointmentCalendar extends Component {
   }
   getAppointments = () => {
     const { controller, includeProperties, filterString } = this.state;
+    this.setState({ loading: true });
     this.repository
       .get(
         controller,
@@ -50,13 +51,14 @@ export default class AppointmentCalendar extends Component {
             };
             return item;
           });
-        this.setState({ appointments: res && res.data });
+        this.setState({ appointments: res && res.data, loading: false });
         window.dispatchEvent(new Event("resize"));
       });
   };
   componentDidMount = () => {
-    const appointmentTypeOptions =
-      this.helper.enumToObject(appointmentTypeEnum);
+    const appointmentTypeOptions = this.helper.enumToObject(
+      appointmentTypeEnum
+    );
     this.setState({ appointmentTypeOptions: appointmentTypeOptions });
   };
   saveAppointment = (updatedAppointment, id) => {
@@ -84,24 +86,10 @@ export default class AppointmentCalendar extends Component {
   };
 
   render() {
-    this.options.eventRender = (info) => {
-      const content = (
-        <>
-          <div className="fc-content" data-tip={info.event.title}>
-            <span className="fc-title">{info.event.title}</span>
-            <div className="float-right" style={{ marginTop: "2px" }}>
-              <button className="icon-button">
-                <i className="pi pi-pencil" />
-              </button>
-              <button className="icon-button">
-                <i className="pi pi-times" />
-              </button>
-            </div>
-          </div>
-          <ReactTooltip />
-        </>
-      );
-      ReactDOM.render(content, info.el);
+    this.options.eventMouseEnter = (info) => {
+      tippy(info.el, {
+        content: info.event.title,
+      });
     };
     const {
       appointments,
@@ -111,6 +99,7 @@ export default class AppointmentCalendar extends Component {
       appointmentTypeOptions,
       selectedAppointment,
       includeProperties,
+      loading,
     } = this.state;
     const deleteDialogFooter = (
       <div>
@@ -121,7 +110,7 @@ export default class AppointmentCalendar extends Component {
         />
         <Button
           label="No"
-          icon="pi pi-times"
+          icon="pi pi-trash"
           onClick={() => this.setState({ deleteDialog: false })}
           className="p-button-secondary"
         />
@@ -153,8 +142,9 @@ export default class AppointmentCalendar extends Component {
     this.options.eventClick = (eventClickInfo) => {
       const { controller } = this.state;
       let event = eventClickInfo.event;
-      let hasDeleteClass =
-        eventClickInfo.jsEvent.target.classList.contains("pi-times");
+      let hasDeleteClass = eventClickInfo.jsEvent.target.classList.contains(
+        "pi-trash"
+      );
       if (!hasDeleteClass) {
         let selectedAppointment = {
           id: event.id,
@@ -185,9 +175,15 @@ export default class AppointmentCalendar extends Component {
         });
       }
     };
+    const dialogHeader = (
+      <div className="p-panel-title">
+        Appoinment Calendar
+        {loading && <i className="fa fa-spinner fa-spin ml-2"></i>}
+      </div>
+    );
     return (
       <>
-        <Panel header="Appoinment Calendar" toggleable={true}>
+        <Panel header={dialogHeader}>
           <div className="row">
             <div className="col-md-12">
               <AppointmentTypeIndicator options={appointmentTypeOptions} />

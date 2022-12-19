@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { Panel } from "primereact/panel";
 import InputField from "./shared/input-field";
 import { helper } from "./../common/helpers";
@@ -20,9 +19,10 @@ import "@fullcalendar/core/main.css";
 import AppointmentTypeIndicator from "./appointment/appointment-indicator";
 import _ from "lodash";
 import jquery from "jquery";
-import ReactTooltip from "react-tooltip";
 import * as Constants from "./../common/constants";
 import PatientForm from "./patient/patient-form";
+import tippy from "tippy.js";
+import "tippy.js/dist/tippy.css";
 window.$ = window.jQuery = jquery;
 require("jQuery.print/jQuery.print");
 
@@ -440,16 +440,10 @@ export default class Prescription extends React.Component {
         </div>
       </>
     );
-    this.options.eventRender = (info) => {
-      const content = (
-        <>
-          <div className="fc-content" data-tip={info.event.title}>
-            <span className="fc-title">{info.event.title}</span>
-          </div>
-          <ReactTooltip />
-        </>
-      );
-      ReactDOM.render(content, info.el);
+    this.options.eventMouseEnter = (info) => {
+      tippy(info.el, {
+        content: info.event.title,
+      });
     };
     this.options.datesRender = (info) => {
       const startDate = this.helper.formatFullcalendarDate(

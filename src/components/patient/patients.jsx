@@ -223,7 +223,7 @@ export default class Patients extends Component {
           onClick={() => this.onRowDelete(rowData)}
         >
           <span className="btn-label">
-            <i className="fa fa-times"></i>
+            <i className="fa fa-trash"></i>
           </span>
           Delete
         </button>
@@ -272,7 +272,7 @@ export default class Patients extends Component {
         <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
         <Button
           label="No"
-          icon="pi pi-times"
+          icon="pi pi-trash"
           onClick={() => this.setState({ deleteDialog: false })}
           className="p-button-secondary"
         />

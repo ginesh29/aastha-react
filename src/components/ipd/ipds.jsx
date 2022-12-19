@@ -174,7 +174,7 @@ export default class Ipds extends Component {
           className="btn btn-danger btn-grid"
           onClick={() => this.onRowDelete(rowData)}
         >
-          <i className="fa fa-times"></i>
+          <i className="fa fa-trash"></i>
         </button>
       </div>
     );
@@ -283,7 +283,7 @@ export default class Ipds extends Component {
         <Button label="Yes" icon="pi pi-check" onClick={this.deleteRow} />
         <Button
           label="No"
-          icon="pi pi-times"
+          icon="pi pi-trash"
           onClick={() => this.setState({ deleteDialog: false })}
           className="p-button-secondary"
         />
