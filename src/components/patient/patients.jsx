@@ -223,7 +223,7 @@ export default class Patients extends Component {
           onClick={() => this.onRowDelete(rowData)}
         >
           <span className="btn-label">
-            <i className="fa fa-times"></i>
+            <i className="fa fa-trash"></i>
           </span>
           Delete
         </button>

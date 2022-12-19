@@ -7,11 +7,12 @@ import { Dialog } from "primereact/dialog";
 import { Panel } from "primereact/panel";
 import { appointmentTypeEnum } from "../../common/enums";
 import { FULLCALENDAR_OPTION } from "../../common/constants";
-import ReactDOM from "react-dom";
 import { Button } from "primereact/button";
 import AppointmentTypeIndicator from "./appointment-indicator";
 import AppointmentForm from "./appointment-form";
-import ReactTooltip from "react-tooltip";
+import ReactDOM from "react-dom";
+import tippy from "tippy.js";
+import "tippy.js/dist/tippy.css";
 
 const title = "Appointment";
 export default class AppointmentCalendar extends Component {
@@ -19,7 +20,7 @@ export default class AppointmentCalendar extends Component {
     super(props);
     this.state = {
       appointments: [],
-      loading: true,
+      loading: false,
       selectedAppointment: null,
       controller: "appointments",
       includeProperties: "Patient",
@@ -31,6 +32,7 @@ export default class AppointmentCalendar extends Component {
   }
   getAppointments = () => {
     const { controller, includeProperties, filterString } = this.state;
+    this.setState({ loading: true });
     this.repository
       .get(
         controller,
@@ -50,13 +52,14 @@ export default class AppointmentCalendar extends Component {
             };
             return item;
           });
-        this.setState({ appointments: res && res.data });
+        this.setState({ appointments: res && res.data, loading: false });
         window.dispatchEvent(new Event("resize"));
       });
   };
   componentDidMount = () => {
-    const appointmentTypeOptions =
-      this.helper.enumToObject(appointmentTypeEnum);
+    const appointmentTypeOptions = this.helper.enumToObject(
+      appointmentTypeEnum
+    );
     this.setState({ appointmentTypeOptions: appointmentTypeOptions });
   };
   saveAppointment = (updatedAppointment, id) => {
@@ -82,27 +85,75 @@ export default class AppointmentCalendar extends Component {
     } else this.fullcalendar.calendar.addEvent(event);
     this.setState({ editDialog: false });
   };
-
+  eventEdit = (id) => {
+    let event = this.fullcalendar.calendar.getEventById(id);
+    let selectedAppointment = {
+      id: event.id,
+      patientId: {
+        value: event.extendedProps.patientId,
+        label: event.title,
+      },
+      date: event.start,
+      type: event.extendedProps.type,
+    };
+    this.setState({
+      editDialog: true,
+      selectedAppointment: selectedAppointment,
+      validationErrors: {},
+    });
+  };
+  eventDelete = (id) => {
+    const { controller } = this.state;
+    let event = this.fullcalendar.calendar.getEventById(id);
+    this.setState({
+      deleteDialog: true,
+      deleteCallback: () => {
+        let flag = true;
+        this.repository
+          .delete(controller, `${event.id}?isDeleted=${flag}`)
+          .then((res) => {
+            event.remove();
+            this.setState({ deleteDialog: false });
+          });
+      },
+    });
+  };
   render() {
-    this.options.eventRender = (info) => {
+    this.options.eventMouseEnter = (info) => {
+      tippy(info.el, {
+        content: info.event.title,
+      });
       const content = (
-        <>
-          <div className="fc-content" data-tip={info.event.title}>
-            <span className="fc-title">{info.event.title}</span>
-            <div className="float-right" style={{ marginTop: "2px" }}>
-              <button className="icon-button">
-                <i className="pi pi-pencil" />
-              </button>
-              <button className="icon-button">
-                <i className="pi pi-times" />
-              </button>
-            </div>
+        <div className="fc-content">
+          <span className="fc-title">{info.event.title}</span>
+          <div className="float-right" style={{ marginTop: "2px" }}>
+            <button
+              className="icon-button"
+              onClick={() => this.eventEdit(info.event.id)}
+            >
+              <i className="pi pi-pencil" />
+            </button>
+            <button
+              className="icon-button"
+              onClick={() => this.eventDelete(info.event.id)}
+            >
+              <i className="pi pi-trash" />
+            </button>
           </div>
-          <ReactTooltip />
-        </>
+        </div>
       );
       ReactDOM.render(content, info.el);
     };
+
+    this.options.eventMouseLeave = (info) => {
+      const content = (
+        <div className="fc-content">
+          <span className="fc-title">{info.event.title}</span>
+        </div>
+      );
+      ReactDOM.render(content, info.el);
+    };
+
     const {
       appointments,
       editDialog,
@@ -111,6 +162,7 @@ export default class AppointmentCalendar extends Component {
       appointmentTypeOptions,
       selectedAppointment,
       includeProperties,
+      loading,
     } = this.state;
     const deleteDialogFooter = (
       <div>
@@ -150,44 +202,16 @@ export default class AppointmentCalendar extends Component {
         validationErrors: {},
       });
     };
-    this.options.eventClick = (eventClickInfo) => {
-      const { controller } = this.state;
-      let event = eventClickInfo.event;
-      let hasDeleteClass =
-        eventClickInfo.jsEvent.target.classList.contains("pi-times");
-      if (!hasDeleteClass) {
-        let selectedAppointment = {
-          id: event.id,
-          patientId: {
-            value: event.extendedProps.patientId,
-            label: event.title,
-          },
-          date: event.start,
-          type: event.extendedProps.type,
-        };
-        this.setState({
-          editDialog: true,
-          selectedAppointment: selectedAppointment,
-          validationErrors: {},
-        });
-      } else {
-        this.setState({
-          deleteDialog: true,
-          deleteCallback: () => {
-            let flag = true;
-            this.repository
-              .delete(controller, `${event.id}?isDeleted=${flag}`)
-              .then((res) => {
-                event.remove();
-                this.setState({ deleteDialog: false });
-              });
-          },
-        });
-      }
-    };
     return (
       <>
-        <Panel header="Appoinment Calendar" toggleable={true}>
+        <Panel
+          header={
+            <div className="p-panel-title">
+              Appoinment Calendar
+              {loading && <i className="fa fa-spinner fa-spin ml-2"></i>}
+            </div>
+          }
+        >
           <div className="row">
             <div className="col-md-12">
               <AppointmentTypeIndicator options={appointmentTypeOptions} />
@@ -206,7 +230,7 @@ export default class AppointmentCalendar extends Component {
           visible={editDialog}
           onHide={() => this.setState({ editDialog: false })}
           className="w-25"
-          dismissableMask={true}
+          dismissableMask={false}
         >
           {editDialog && (
             <AppointmentForm

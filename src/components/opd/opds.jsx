@@ -176,7 +176,7 @@ export default class Opds extends Component {
           className="btn btn-danger btn-grid"
           onClick={() => this.onRowDelete(rowData)}
         >
-          <i className="fa fa-times"></i>
+          <i className="fa fa-trash"></i>
         </button>
       </div>
     );

@@ -54,9 +54,9 @@ export default class Ipds extends Component {
             item.formatedAddmissionDate = this.helper.formatDate(
               item.addmissionDate
             );
-            item.formatedDischargeDate = this.helper.formatDate(
-              item.dischargeDate
-            );
+            item.formatedDischargeDate = item.dischargeDate
+              ? this.helper.formatDate(item.dischargeDate)
+              : null;
             item.address = item.patient.address && item.patient.address.name;
             item.patient = {
               value: item.patient.id,
@@ -174,7 +174,7 @@ export default class Ipds extends Component {
           className="btn btn-danger btn-grid"
           onClick={() => this.onRowDelete(rowData)}
         >
-          <i className="fa fa-times"></i>
+          <i className="fa fa-trash"></i>
         </button>
       </div>
     );
