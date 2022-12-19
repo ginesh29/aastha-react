@@ -84,7 +84,7 @@ export default class IpdReport extends Component {
   componentDidMount = (e) => {
     const date = this.helper.formatDate(TODAY_DATE, "en-US");
     const title = this.helper.formatDate(TODAY_DATE);
-    const filter = `DischargeDate-eq-{${date}} and isDeleted-neq-{true}`;
+    const filter = `DischargeDate.value-neq-null and DischargeDate.Value-eq-{${date}} and isDeleted-neq-{true}`;
     this.setState({ filterString: filter, reportTitle: title }, () => {
       this.getIpds();
     });
@@ -101,19 +101,19 @@ export default class IpdReport extends Component {
     if (reportType === reportTypeEnum.DAILY.value) {
       let date = this.helper.formatDate(value, "en-US");
       let dateTitle = this.helper.formatDate(value);
-      filter = `DischargeDate-eq-{${date}} and isDeleted-neq-{true}`;
+      filter = `DischargeDate.Value-neq-null and DischargeDate.Value-eq-{${date}} and isDeleted-neq-{true}`;
       title = dateTitle;
     } else if (reportType === reportTypeEnum.DATERANGE.value) {
       let startDate = this.helper.formatDate(value[0], "en-US");
       let endDate = this.helper.formatDate(value[1], "en-US");
       let startDateTitle = this.helper.formatDate(value[0]);
       let endDateTitle = this.helper.formatDate(value[1]);
-      filter = `DischargeDate-gte-{${startDate}} and DischargeDate-lte-{${endDate}} and isDeleted-neq-{true}`;
+      filter = `DischargeDate.Value-neq-null and DischargeDate.Value-gte-{${startDate}} and DischargeDate.Value-lte-{${endDate}} and isDeleted-neq-{true}`;
       title = `${startDateTitle} - ${endDateTitle}`;
     } else if (reportType === reportTypeEnum.MONTHLY.value) {
       let month = this.helper.getMonthFromDate(value);
       let year = this.helper.getYearFromDate(value);
-      filter = `DischargeDate.Month-eq-{${month}} and DischargeDate.Year-eq-{${year}} and isDeleted-neq-{true}`;
+      filter = `DischargeDate.Value-neq-null and DischargeDate.Value.Month-eq-{${month}} and DischargeDate.Value.Year-eq-{${year}} and isDeleted-neq-{true}`;
       title = `${month}/${year}`;
     }
     this.setState({ filterString: filter, reportTitle: title }, () => {
