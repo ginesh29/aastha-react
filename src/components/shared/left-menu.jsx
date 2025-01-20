@@ -1,8 +1,8 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import jquery from "jquery";
 import { roleEnum } from "../../common/enums";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 export default class LeftMenu extends React.Component {
   componentDidMount = () => {
@@ -21,7 +21,7 @@ export default class LeftMenu extends React.Component {
   render() {
     const token = localStorage.getItem("aastha-auth-token");
     if (token != null && token.length > 0) {
-      var decoded_token = jwt_decode(token);
+      var decoded_token = jwtDecode(token);
       var role = Number(decoded_token.Role);
     }
     return (
@@ -31,10 +31,10 @@ export default class LeftMenu extends React.Component {
             <ul className="sidebar-menu" id="nav-accordion">
               {role === roleEnum["ADMIN"].value && (
                 <li>
-                  <NavLink to="/dashboard">
+                  <Link to="/dashboard">
                     <i className="fa fa-dashboard"></i>
                     <span>Dashboard</span>
-                  </NavLink>
+                  </Link>
                 </li>
               )}
               <li className="sub-menu">
@@ -44,13 +44,16 @@ export default class LeftMenu extends React.Component {
                 </a>
                 <ul className="sub">
                   <li>
-                    <NavLink to="/add-patient">Patient Registration</NavLink>
+                    <Link to="/add-patient">Patient Registration</Link>
                   </li>
                   <li>
-                    <NavLink to="/add-opd">Opd Entry</NavLink>
+                    <Link to="/add-opd">Opd Entry</Link>
                   </li>
                   <li>
-                    <NavLink to="/add-ipd">Ipd Entry</NavLink>
+                    <Link to="/add-ipd">Ipd Entry</Link>
+                  </li>
+                  <li>
+                    <Link to="/add-formf">Form F Entry</Link>
                   </li>
                 </ul>
               </li>
@@ -61,57 +64,60 @@ export default class LeftMenu extends React.Component {
                 </a>
                 <ul className="sub">
                   <li>
-                    <NavLink to="/patients">Manage Patient</NavLink>
+                    <Link to="/patients">Manage Patient</Link>
                   </li>
                   <li>
-                    <NavLink to="/opds">Manage Opd</NavLink>
+                    <Link to="/opds">Manage Opd</Link>
                   </li>
                   <li>
-                    <NavLink to="/ipds">Manage Ipd</NavLink>
+                    <Link to="/ipds">Manage Ipd</Link>
+                  </li>
+                  <li>
+                    <Link to="/formfs">Manage Form F</Link>
                   </li>
                 </ul>
               </li>
               {role === roleEnum["ADMIN"].value && (
                 <>
                   {/* <li>
-                    <NavLink to="users">
+                    <Link to="users">
                       <i className="fa fa-bullhorn"></i>
                       <span>Manage User</span>
-                    </NavLink>
+                    </Link>
                   </li> */}
                   <li className="sub-menu">
-                    <NavLink to="/admin-panel">
+                    <Link to="/admin-panel">
                       <i className="fa fa-th"></i>
                       <span>Admin Panel</span>
-                    </NavLink>
+                    </Link>
                   </li>
                   <li>
-                    <NavLink to="/prescription">
+                    <Link to="/prescription">
                       <i className="fa fa-tasks"></i>
                       <span>Prescription</span>
-                    </NavLink>
+                    </Link>
                   </li>
                 </>
               )}
               <li>
-                <NavLink to="/appointments">
+                <Link to="/appointments">
                   <i className="fa fa-tasks"></i>
                   <span>Appointments</span>
-                </NavLink>
+                </Link>
               </li>
               {role === roleEnum["ADMIN"].value && (
                 <>
                   {/* <li>
-                    <NavLink to="/due-date-calculator">
+                    <Link to="/due-date-calculator">
                       <i className="fa fa-tasks"></i>
                       <span>Due Date Calculator</span>
-                    </NavLink>
+                    </Link>
                   </li> */}
                   <li>
-                    <NavLink to="/statistics">
+                    <Link to="/statistics">
                       <i className="fa fa-tasks"></i>
                       <span>Statistics</span>
-                    </NavLink>
+                    </Link>
                   </li>
                 </>
               )}
@@ -122,16 +128,19 @@ export default class LeftMenu extends React.Component {
                 </a>
                 <ul className="sub">
                   <li>
-                    <NavLink to="/opd-report">Opd Report</NavLink>
+                    <Link to="/patients-history-report">
+                      Patient History Report
+                    </Link>
                   </li>
                   <li>
-                    <NavLink to="/ipd-report">Ipd Report</NavLink>
+                    <Link to="/opd-report">Opd Report</Link>
+                  </li>
+                  <li>
+                    <Link to="/ipd-report">Ipd Report</Link>
                   </li>
                   {role === roleEnum["ADMIN"].value && (
                     <li>
-                      <NavLink to="/monthly-ipd-report">
-                        Monthly Ipd Report
-                      </NavLink>
+                      <Link to="/monthly-ipd-report">Monthly Ipd Report</Link>
                     </li>
                   )}
                 </ul>

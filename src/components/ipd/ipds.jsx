@@ -4,7 +4,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
-import { ROWS, TEN_YEAR_RANGE } from "../../common/constants";
+import { ROWS, HUNDRED_YEAR_RANGE } from "../../common/constants";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
@@ -24,9 +24,8 @@ export default class Ipds extends Component {
       loading: true,
       controller: "ipds",
       includeProperties:
-        "Patient.Address,Charges.ChargeDetail,DeliveryDetail,OperationDetail,IpdLookups.Lookup",
+        "Patient.City,Charges.ChargeDetail,DeliveryDetail,OperationDetail,IpdLookups.Lookup",
       selectedIpd: null,
-      isArchive: props.location.pathname.includes("archive"),
       selectedIpdType: null,
       selectedAddmissionDate: "",
     };
@@ -57,7 +56,7 @@ export default class Ipds extends Component {
             item.formatedDischargeDate = item.dischargeDate
               ? this.helper.formatDate(item.dischargeDate)
               : null;
-            item.address = item.patient.address && item.patient.address.name;
+            item.city = item.patient.city && item.patient.city.name;
             item.patient = {
               value: item.patient.id,
               label: item.patient.fullname,
@@ -197,7 +196,10 @@ export default class Ipds extends Component {
     const { ipds, selectedIpd, isArchive, controller } = this.state;
     let flag = isArchive ? false : true;
     this.repository
-      .delete(controller, `${selectedIpd.id}?isDeleted=${flag}`)
+      .delete(
+        controller,
+        `${selectedIpd.id}?isDeleted=${flag}&removePhysical=true`
+      )
       .then((res) => {
         this.setState({
           ipds: ipds.filter((patient) => patient.id !== selectedIpd.id),
@@ -214,8 +216,7 @@ export default class Ipds extends Component {
     const { ipds, totalRecords } = this.state;
 
     let ipdData = [...ipds];
-    updatedIpd.address =
-      updatedIpd.patient.address && updatedIpd.patient.address.name;
+    updatedIpd.city = updatedIpd.patient.city && updatedIpd.patient.city.name;
     updatedIpd.patient = {
       label: updatedIpd.patient.fullname,
       value: updatedIpd.patientId,
@@ -224,9 +225,9 @@ export default class Ipds extends Component {
     updatedIpd.formatedAddmissionDate = this.helper.formatDate(
       updatedIpd.addmissionDate
     );
-    updatedIpd.formatedDischargeDate = this.helper.formatDate(
-      updatedIpd.dischargeDate
-    );
+    updatedIpd.formatedDischargeDate = updatedIpd.dischargeDate
+      ? this.helper.formatDate(updatedIpd.dischargeDate)
+      : null;
     updatedIpd.bill = updatedIpd.charges.reduce(
       (total, item) => total + (item.amount ? Number(item.amount) : 0),
       0
@@ -295,11 +296,12 @@ export default class Ipds extends Component {
         name="addmissionDate"
         value={selectedAddmissionDate}
         onChange={this.onFilterChange}
-        dateFormat="dd-mm-yy"
+        dateFormat="dd/mm/yy"
         readOnlyInput={true}
         monthNavigator={true}
         yearNavigator={true}
-        yearRange={TEN_YEAR_RANGE}
+        yearRange={HUNDRED_YEAR_RANGE}
+        showButtonBar={true}
       />
     );
     let dischargeDateFilter = (
@@ -308,11 +310,12 @@ export default class Ipds extends Component {
         name="dischargeDate"
         value={selectedDischargeDate}
         onChange={this.onFilterChange}
-        dateFormat="dd-mm-yy"
+        dateFormat="dd/mm/yy"
         readOnlyInput={true}
         monthNavigator={true}
         yearNavigator={true}
-        yearRange={TEN_YEAR_RANGE}
+        yearRange={HUNDRED_YEAR_RANGE}
+        showButtonBar={true}
       />
     );
     let depatmentFilter = (
@@ -463,12 +466,14 @@ export default class Ipds extends Component {
           dismissableMask={true}
         >
           {editDialog && (
-            <IpdForm
-              selectedIpd={selectedIpd}
-              hideEditDialog={() => this.setState({ editDialog: false })}
-              saveIpd={this.saveIpd}
-              includeProperties={includeProperties}
-            />
+            <>
+              <IpdForm
+                selectedIpd={selectedIpd}
+                hideEditDialog={() => this.setState({ editDialog: false })}
+                saveIpd={this.saveIpd}
+                includeProperties={includeProperties}
+              />
+            </>
           )}
         </Dialog>
         <Dialog

@@ -25,11 +25,11 @@ export default class OpdForm extends React.Component {
       opdDate: "",
       caseType: null,
       patient: null,
-      consultCharge: "",
-      usgCharge: "",
-      uptCharge: "",
-      injectionCharge: "",
-      otherCharge: "",
+      consultCharge: 0,
+      usgCharge: 0,
+      uptCharge: 0,
+      injectionCharge: 0,
+      otherCharge: 0,
       totalCharge: "",
     },
     loading: false,
@@ -51,13 +51,13 @@ export default class OpdForm extends React.Component {
           ? e && { value: e.value, label: e.label }
           : null;
     else fields[e.target.name] = e.target.value;
-    fields.consultCharge = fields.consultCharge ? fields.consultCharge : "";
-    fields.usgCharge = fields.usgCharge ? fields.usgCharge : "";
-    fields.uptCharge = fields.uptCharge ? fields.uptCharge : "";
+    fields.consultCharge = fields.consultCharge ? fields.consultCharge : 0;
+    fields.usgCharge = fields.usgCharge ? fields.usgCharge : 0;
+    fields.uptCharge = fields.uptCharge ? fields.uptCharge : 0;
     fields.injectionCharge = fields.injectionCharge
       ? fields.injectionCharge
-      : "";
-    fields.otherCharge = fields.otherCharge ? fields.otherCharge : "";
+      : 0;
+    fields.otherCharge = fields.otherCharge ? fields.otherCharge : 0;
 
     let total =
       Number(fields.consultCharge) +
@@ -86,8 +86,8 @@ export default class OpdForm extends React.Component {
     const { hideEditDialog, saveOpd, includeProperties } = this.props;
     if (this.handleValidation()) {
       const opd = {
-        id: id,
-        date: this.helper.formatDate(opdDate, "en-Us"),
+        id: id || 0,
+        date: this.helper.formatDefaultDate(opdDate),
         caseType: caseType,
         patientId: patient.value,
         consultCharge: consultCharge,
@@ -165,6 +165,7 @@ export default class OpdForm extends React.Component {
     const patientId = query.get("patientId");
     const patientName = query.get("patientName");
     const date = query.get("date");
+    this.getInitalPatientOptions();
     if (patientId) {
       this.setState({
         fromPrescription: true,
@@ -181,7 +182,20 @@ export default class OpdForm extends React.Component {
       });
     }
   };
-
+  getInitalPatientOptions = () => {
+    this.repository
+      .get("patients", `take=15&filter=isdeleted-neq-{true}`)
+      .then((res) => {
+        let patients =
+          res &&
+          res.data.map(function (item) {
+            return { value: item.id, label: item.fullname, age: item.age };
+          });
+        this.setState({
+          initialPatientOptions: patients,
+        });
+      });
+  };
   render() {
     const {
       id,
@@ -195,7 +209,8 @@ export default class OpdForm extends React.Component {
       otherCharge,
       totalCharge,
     } = this.state.formFields;
-    const { patientDialog, loading, confirmDialog } = this.state;
+    const { patientDialog, loading, confirmDialog, initialPatientOptions } =
+      this.state;
     const defaultCharge = "";
     const confirmDialogFooter = (
       <div>
@@ -214,6 +229,7 @@ export default class OpdForm extends React.Component {
     );
     return (
       <>
+        <div id="validation-message"></div>
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col-md-4">
@@ -252,6 +268,7 @@ export default class OpdForm extends React.Component {
                   e && this.setState({ patientName: e });
                 }}
                 controlType="select2"
+                defaultOptions={initialPatientOptions}
                 loadOptions={(e, callback) =>
                   this.helper.PatientOptions(e, callback)
                 }
@@ -269,6 +286,7 @@ export default class OpdForm extends React.Component {
                 controlType="input-group-addon"
                 groupIcon="fa-inr"
                 keyfilter="pint"
+                className="text-right"
               />
             </div>
             <div className="col">
@@ -281,6 +299,7 @@ export default class OpdForm extends React.Component {
                 controlType="input-group-addon"
                 groupIcon="fa-inr"
                 keyfilter="pint"
+                className="text-right"
               />
             </div>
             <div className="col">
@@ -293,6 +312,7 @@ export default class OpdForm extends React.Component {
                 controlType="input-group-addon"
                 groupIcon="fa-inr"
                 keyfilter="pint"
+                className="text-right"
               />
             </div>
           </div>
@@ -307,6 +327,7 @@ export default class OpdForm extends React.Component {
                 controlType="input-group-addon"
                 groupIcon="fa-inr"
                 keyfilter="pint"
+                className="text-right"
               />
             </div>
             <div className="col">
@@ -319,6 +340,7 @@ export default class OpdForm extends React.Component {
                 controlType="input-group-addon"
                 groupIcon="fa-inr"
                 keyfilter="pint"
+                className="text-right"
               />
             </div>
             <div className="col">
@@ -331,7 +353,7 @@ export default class OpdForm extends React.Component {
                 controlType="input-group-addon"
                 groupIcon="fa-inr"
                 readOnly="readOnly"
-                className="p-readonly"
+                className="p-readonly text-right"
               />
             </div>
           </div>

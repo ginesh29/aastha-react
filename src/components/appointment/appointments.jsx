@@ -24,7 +24,6 @@ export default class AppointmentCalendar extends Component {
       selectedAppointment: null,
       controller: "appointments",
       includeProperties: "Patient",
-      isArchive: props.location.pathname.includes("archive"),
     };
     this.repository = new repository();
     this.helper = new helper();
@@ -43,7 +42,7 @@ export default class AppointmentCalendar extends Component {
           res.data &&
           res.data.map((item) => {
             item.title = item.patient.fullname;
-            item.start = this.helper.formatFullcalendarDate(item.date);
+            item.start = this.helper.formatDefaultDate(item.date);
             item.color =
               appointmentTypeEnum[item.appointmentType.toUpperCase()].color;
             item.extendedProps = {
@@ -57,9 +56,8 @@ export default class AppointmentCalendar extends Component {
       });
   };
   componentDidMount = () => {
-    const appointmentTypeOptions = this.helper.enumToObject(
-      appointmentTypeEnum
-    );
+    const appointmentTypeOptions =
+      this.helper.enumToObject(appointmentTypeEnum);
     this.setState({ appointmentTypeOptions: appointmentTypeOptions });
   };
   saveAppointment = (updatedAppointment, id) => {
@@ -67,7 +65,7 @@ export default class AppointmentCalendar extends Component {
     let event = {
       id: updatedAppointment.id,
       title: updatedAppointment.patient.fullname,
-      start: this.helper.formatFullcalendarDate(updatedAppointment.date),
+      start: this.helper.formatDefaultDate(updatedAppointment.date),
       color: appointmentTypeOptions.filter(
         (m) => m.value === updatedAppointment.type
       )[0].color,
@@ -180,10 +178,8 @@ export default class AppointmentCalendar extends Component {
       </div>
     );
     this.options.datesRender = (info) => {
-      const startDate = this.helper.formatFullcalendarDate(
-        info.view.activeStart
-      );
-      const endDate = this.helper.formatFullcalendarDate(info.view.activeEnd);
+      const startDate = this.helper.formatDefaultDate(info.view.activeStart);
+      const endDate = this.helper.formatDefaultDate(info.view.activeEnd);
       const filter = `Date-gte-{${startDate}} and Date-lte-{${endDate}}`;
       this.setState({ filterString: filter }, () => {
         this.getAppointments();

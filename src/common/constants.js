@@ -1,12 +1,12 @@
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 export const BASE_API_URL = {
-  development: "http://localhost:5000/api",
+  development: "http://localhost:81/api",
   production: "http://aastha2.api/api",
 };
 export const ROWS = 10;
 export const TODAY_DATE = new Date();
-export const TEN_YEAR_RANGE = `${TODAY_DATE.getFullYear() - 10}:${
+export const HUNDRED_YEAR_RANGE = `${TODAY_DATE.getFullYear() - 100}:${
   TODAY_DATE.getFullYear() + 10
 }`;
 
@@ -19,7 +19,7 @@ export const FULLCALENDAR_OPTION = {
 
 //Title
 export const PATIENT_REGISTRATION_TITLE = "Patient Registration";
-export const ADD_ADDRESS_TITLE = "Add Address";
+export const ADD_CITY_TITLE = "Add City/Village";
 export const ADD_OPD_TITLE = "Opd Entry";
 export const ADD_IPD_TITLE = "Ipd Entry";
 
@@ -35,8 +35,12 @@ export const roomTypeOptions = [
   { value: 2, label: "Special" },
   { value: 3, label: "Semi-Special" },
 ];
+export const paymentModeOptions = [
+  { value: 1, label: "Cash" },
+  { value: 2, label: "Non-cash" },
+];
 
-export const genderOptions = [
+export const childGenderOptions = [
   { value: 1, label: "Boy" },
   { value: 2, label: "Girl" },
 ];
@@ -98,4 +102,30 @@ export const medicineInstructionOptions = [
     label:
       "૩ ચમચી(15ml) અડધા ગ્લાસ પાણીમાં નાખીને દિવસમાં બે વાર જમ્યા પછી પીવુ.",
   },
+];
+export const FormFDiagnosisOptions = [
+  { value: 1, label: "(1) To diagnose intra-uterine and/or ectopic pregnancy and confirm viability." },
+  { value: 2, label: "(2) Estimation of gestational age(dating)." },
+  { value: 3, label: "(3) Detection of number of foetuses and their chorionicity." },
+  { value: 4, label: "(4) Suspected pregnancy with IUCD in-situ or suspected pregnancy following contraceptive failure/MTP failure." },
+  { value: 5, label: "(5) Vaginal beeding/leaking." },
+  { value: 6, label: "(6) Follow-up of cases of abortion." },
+  { value: 7, label: "(7) Assessment of cervical canal and diameter of internal os." },
+  { value: 8, label: "(8) Discrepancy between uterine size and period of amenorrhoea." },
+  { value: 9, label: "(9) Any Suspected adenexal or utrine pathalogy/abnormality." },
+  { value: 10, label: "(10) Detection of chromosomal abnormalities,foetal,structural defects and other abnormalities and their follow-.up" },
+  { value: 11, label: "(11) To evaluate foetal presentation and position." },
+  { value: 12, label: "(12) Assessment of liquor amnii." },
+  { value: 13, label: "(13) Preterm labour/preterm premature repture of memberanes." },
+  { value: 14, label: "(14) Evaluation of placental position,thickness grading and abnormalities(placentaPraevia,retroplacental Position,thickness grading and abnormalities(Placenta praevia,retroplacental haemorrhage,abnormal adherence,etc.)." },
+  { value: 15, label: "(15) Evaluation of umbilical cord-presentation,insertion,nuchal encirclement,number of vessels and presence of true knot." },
+  { value: 16, label: "(16) Evaluation of previous Caesarean Section scars." },
+  { value: 17, label: "(17) Evaluation of foetal growth parameters ,foetal weight and foetal well being." },
+  { value: 18, label: "(18) Colour flow mapping and duplex Doppler studies." },
+  { value: 19, label: "(19) Ultrasound guided procedures such as medical termination of pregenancy ,external cephalic version,etc.,and their follow-up." },
+  { value: 20, label: "(20) Adjunct to diagnostic and therapeutic invasive interventions such as chrionic villus sampling(CVS),amniocenteses,foetal blood sampling,foetal skin biopsy,amnio infusion,intrauterine infusion,placement of shunts,etc." },
+  { value: 21, label: "(21) Observation of intra-partum events." },
+  { value: 22, label: "(22) Medical/surgical conditions complicating pregnancy." },
+  { value: 23, label: "(23) Research/scientific studies in recognised institutions." },
+  { value: 24, label: "(24) Any other indication(Specify)" },
 ];

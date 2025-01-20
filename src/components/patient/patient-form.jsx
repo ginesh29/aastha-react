@@ -8,6 +8,7 @@ import * as Constants from "../../common/constants";
 import { lookupTypeEnum } from "../../common/enums";
 import jquery from "jquery";
 import FormFooterButton from "../shared/form-footer-button";
+import { Dropdown } from "primereact/dropdown";
 
 const controller = "patients";
 export default class PatientForm extends Component {
@@ -19,26 +20,50 @@ export default class PatientForm extends Component {
   }
   getInitialState = () => ({
     formFields: {
-      id: null,
+      id: "",
       firstname: "",
       middlename: "",
       fathername: null,
       lastname: "",
       age: "",
-      address: null,
+      city: null,
       mobile: "",
+      birthDate: "",
+      address1: "",
+      address2: "",
+      dist: "",
+      taluka: null,
     },
-    addressText: "",
+    cityText: "",
+    distText: "",
+    talukaText: "",
     isValidationFired: false,
     validationErrors: {},
     isExist: false,
     loading: false,
-    loadingAddress: false,
+    loadingCity: false,
+    distOptions: [],
+    distId: "",
   });
+  getDists = () => {
+    let lookupFilter = `type-eq-{${lookupTypeEnum.DIST.code}}`;
+    this.repository.get("lookups", `filter=${lookupFilter}`).then((res) => {
+      let dists =
+        res &&
+        res.data &&
+        res.data.map(function (item) {
+          return { value: item.id, label: item.name };
+        });
+      this.setState({
+        distOptions: dists,
+      });
+    });
+  };
+
   handleChange = (e, action) => {
     const { isValidationFired, formFields } = this.state;
     jquery("#errors").remove();
-    let fields = formFields;
+    let fields = formFields ?? {};
     if (action)
       fields[action.name] =
         action !== Constants.SELECT2_ACTION_CLEAR_TEXT
@@ -51,7 +76,27 @@ export default class PatientForm extends Component {
     });
     if (isValidationFired) this.handleValidation();
   };
-
+  handleChangeDistrict = (e, action) => {
+    const { isValidationFired, formFields } = this.state;
+    jquery("#errors").remove();
+    let fields = formFields ?? {};
+    if (action)
+      fields[action.name] =
+        action !== Constants.SELECT2_ACTION_CLEAR_TEXT
+          ? e && { value: e.value, label: e.label }
+          : null;
+    else fields[e.target.name] = e.target.value;
+    fields["taluka"] = null;
+    this.setState({
+      formFields: fields,
+    });
+    this.getInitOptions(
+      lookupTypeEnum.TALUKA.code,
+      "taluka",
+      (e && e.value) || 0
+    );
+    if (isValidationFired) this.handleValidation();
+  };
   handleSubmit = (e) => {
     e.preventDefault();
     const {
@@ -61,9 +106,14 @@ export default class PatientForm extends Component {
       fathername,
       lastname,
       age,
-      address,
+      city,
       mobile,
-    } = this.state.formFields;
+      birthDate,
+      address1,
+      address2,
+      dist,
+      taluka,
+    } = this.state.formFields ?? {};
     const {
       hideEditDialog,
       savePatient,
@@ -72,14 +122,19 @@ export default class PatientForm extends Component {
     } = this.props;
     if (this.handleValidation()) {
       const patient = {
-        id: id,
+        id: id || 0,
         firstname: firstname,
         middlename: middlename,
         fathername: fathername,
         lastname: lastname,
-        age: age,
+        age: age || 0,
         mobile: mobile,
-        addressId: address.value,
+        cityId: city.value,
+        birthDate: birthDate ? this.helper.formatDefaultDate(birthDate) : null,
+        address1: address1,
+        address2: address2,
+        distId: dist && dist.value,
+        talukaId: taluka && taluka.value,
       };
       this.setState({ loading: true });
       this.repository
@@ -107,29 +162,34 @@ export default class PatientForm extends Component {
     }
   };
   handleValidation = (e) => {
-    const { firstname, middlename, lastname, age, address } =
-      this.state.formFields;
+    const { firstname, middlename, lastname, age, city, birthDate, mobile } =
+      this.state.formFields ?? {};
     let errors = {};
     let isValid = true;
     if (!firstname) {
       isValid = false;
-      errors.firstname = "Firstname is required";
+      errors.firstname = "First Name is required";
     }
     if (!middlename) {
       isValid = false;
-      errors.middlename = "Middlename is required";
+      errors.middlename = "Middle Name is required";
     }
     if (!lastname) {
       isValid = false;
-      errors.lastname = "Lastname is required";
+      errors.lastname = "Last Name is required";
     }
-    if (!age) {
+    if (mobile && mobile.length !== 10) {
       isValid = false;
+      errors.mobile = "Mobile must be 10 digit";
+    }
+    if (!age && !birthDate) {
+      isValid = false;
+      errors.birthDate = "Birth Date is required";
       errors.age = "Age is required";
     }
-    if (!address) {
+    if (!city) {
       isValid = false;
-      errors.address = "Address is required";
+      errors.city = "City/Village is required";
     }
     this.setState({
       validationErrors: errors,
@@ -142,43 +202,141 @@ export default class PatientForm extends Component {
     this.setState(this.getInitialState());
   };
 
-  saveAddress = () => {
-    const { addressText } = this.state;
-    let addressError = "";
+  saveCity = () => {
+    const { cityText } = this.state;
+    let cityError = "";
     let isValid = true;
-    if (!addressText) {
+    if (!cityText) {
       isValid = false;
-      addressError = "Address is required";
+      cityError = "City/Village is required";
     } else isValid = true;
 
     this.setState({
-      addressError: addressError,
+      cityError: cityError,
     });
     if (isValid) {
       const lookup = {
-        name: addressText,
-        type: lookupTypeEnum.ADDRESS.code,
+        name: cityText,
+        type: lookupTypeEnum.CITY.code,
       };
-      this.setState({ loadingAddress: true });
+      this.setState({ loadingCity: true });
       this.repository.post("lookups", lookup).then((res) => {
         setTimeout(() => {
           res &&
             this.setState({
-              addressText: "",
-              addressDialog: false,
-              loadingAddress: false,
+              cityText: "",
+              cityDialog: false,
+              loadingCity: false,
             });
         }, 1000);
       });
     }
   };
+  saveDist = () => {
+    const { distText } = this.state;
+    let distError = "";
+    let isValid = true;
+    if (!distText) {
+      isValid = false;
+      distError = "District is required";
+    } else isValid = true;
+
+    this.setState({
+      distError: distError,
+    });
+    if (isValid) {
+      const lookup = {
+        name: distText,
+        type: lookupTypeEnum.DIST.code,
+      };
+      this.setState({ loadingCity: true });
+      this.repository.post("lookups", lookup).then((res) => {
+        setTimeout(() => {
+          res &&
+            this.setState({
+              distText: "",
+              distDialog: false,
+              loadingCity: false,
+            });
+        }, 1000);
+      });
+    }
+  };
+  saveTaluka = () => {
+    const { talukaText, distId } = this.state;
+    let talukaError = "";
+    let isValid = true;
+    if (!talukaText) {
+      isValid = false;
+      talukaError = "Taluka is required";
+    }
+    let distIdError = "";
+    if (!distId) {
+      isValid = false;
+      distIdError = "District is required";
+    } else isValid = true;
+
+    this.setState({
+      talukaError: talukaError,
+      distIdError: distIdError,
+    });
+    if (isValid) {
+      const lookup = {
+        name: talukaText,
+        type: lookupTypeEnum.TALUKA.code,
+        parentId: distId,
+      };
+      this.setState({ loadingCity: true });
+      this.repository.post("lookups", lookup).then((res) => {
+        setTimeout(() => {
+          res &&
+            this.setState({
+              talukaText: "",
+              talukaDialog: false,
+              loadingCity: false,
+            });
+        }, 1000);
+      });
+    }
+  };
+  getInitOptions = (type, label, subtype) => {
+    let filter = `type-eq-{${type}} and isdeleted-neq-{true}`;
+    if (subtype || subtype === 0)
+      filter = `parentId-eq-{${subtype}} and ${filter}`;
+    this.repository.get("lookups", `take=15&filter=${filter}`).then((res) => {
+      let lookups =
+        res &&
+        res.data &&
+        res.data.map(function (item) {
+          return { value: item.id, label: item.name };
+        });
+      this.setState({
+        [`${label}InitialOptions`]: lookups,
+      });
+    });
+  };
   componentDidMount = () => {
     jquery("#errors").remove();
     const { selectedPatient } = this.props;
-    if (selectedPatient)
-      this.setState({
-        formFields: selectedPatient,
-      });
+    if (selectedPatient) {
+      selectedPatient.birthDate =
+        selectedPatient.birthDate && new Date(selectedPatient.birthDate);
+      selectedPatient.age = selectedPatient.birthDate
+        ? this.helper.calculateAge(selectedPatient.birthDate)
+        : selectedPatient.age;
+    }
+    this.setState({
+      formFields: selectedPatient,
+    });
+    this.getInitOptions(lookupTypeEnum.CITY.code, "city");
+    setTimeout(() => {
+      this.getInitOptions(lookupTypeEnum.DIST.code, "dist");
+    }, 500);
+    setTimeout(() => {
+      let distId = selectedPatient ? selectedPatient.distId : 0;
+      distId = distId ? distId : 0;
+      this.getInitOptions(lookupTypeEnum.TALUKA.code, "taluka", distId);
+    }, 1000);
   };
   render() {
     const {
@@ -188,42 +346,103 @@ export default class PatientForm extends Component {
       fathername,
       lastname,
       age,
-      address,
+      city,
       mobile,
-    } = this.state.formFields;
+      birthDate,
+      address1,
+      address2,
+      dist,
+      taluka,
+    } = this.state.formFields ?? {};
     const {
-      addressDialog,
-      addressText,
-      addressError,
+      cityDialog,
+      cityText,
+      cityError,
       loading,
-      loadingAddress,
+      loadingCity,
+      distText,
+      talukaText,
+      distId,
+      distIdError,
+      distError,
+      talukaError,
+      distDialog,
+      talukaDialog,
+      distOptions,
+      cityInitialOptions,
+      distInitialOptions,
+      talukaInitialOptions,
     } = this.state;
-    let addressDialogFooter = (
+    let selectedDistId =
+      (this.state &&
+        this.state.formFields &&
+        this.state.formFields.dist &&
+        this.state.formFields.dist.value) ||
+      dist ||
+      0;
+    let cityDialogFooter = (
       <div className="ui-dialog-buttonpane p-clearfix">
         <button
           className="btn btn-secondary"
-          onClick={(e) => this.setState({ addressDialog: false })}
+          onClick={(e) => this.setState({ cityDialog: false })}
         >
           Close
         </button>
         <button
           className="btn btn-info"
-          onClick={this.saveAddress}
-          disabled={loadingAddress}
+          onClick={this.saveCity}
+          disabled={loadingCity}
         >
-          {loadingAddress ? "Please wait" : "Save"}
-          {loadingAddress && <i className="fa fa-spinner fa-spin ml-2"></i>}
+          {loadingCity ? "Please wait" : "Save"}
+          {loadingCity && <i className="fa fa-spinner fa-spin ml-2"></i>}
+        </button>
+      </div>
+    );
+    let distDialogFooter = (
+      <div className="ui-dialog-buttonpane p-clearfix">
+        <button
+          className="btn btn-secondary"
+          onClick={(e) => this.setState({ distDialog: false })}
+        >
+          Close
+        </button>
+        <button
+          className="btn btn-info"
+          onClick={this.saveDist}
+          disabled={loadingCity}
+        >
+          {loadingCity ? "Please wait" : "Save"}
+          {loadingCity && <i className="fa fa-spinner fa-spin ml-2"></i>}
+        </button>
+      </div>
+    );
+    let talukaDialogFooter = (
+      <div className="ui-dialog-buttonpane p-clearfix">
+        <button
+          className="btn btn-secondary"
+          onClick={(e) => this.setState({ talukaDialog: false })}
+        >
+          Close
+        </button>
+        <button
+          className="btn btn-info"
+          onClick={this.saveTaluka}
+          disabled={loadingCity}
+        >
+          {loadingCity ? "Please wait" : "Save"}
+          {loadingCity && <i className="fa fa-spinner fa-spin ml-2"></i>}
         </button>
       </div>
     );
     return (
       <>
+        <div id="validation-message"></div>
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col">
               <InputField
                 name="firstname"
-                title="Firstname"
+                title="First Name"
                 value={firstname || ""}
                 onChange={this.handleChange}
                 onInput={this.helper.toSentenceCase}
@@ -233,7 +452,7 @@ export default class PatientForm extends Component {
             <div className="col">
               <InputField
                 name="middlename"
-                title="Middlename"
+                title="Middle Name"
                 value={middlename || ""}
                 onChange={this.handleChange}
                 onInput={this.helper.toSentenceCase}
@@ -243,7 +462,7 @@ export default class PatientForm extends Component {
             <div className="col">
               <InputField
                 name="fathername"
-                title="Fathername"
+                title="Father Name"
                 value={fathername || ""}
                 onChange={this.handleChange}
                 onInput={this.helper.toSentenceCase}
@@ -253,7 +472,7 @@ export default class PatientForm extends Component {
             <div className="col">
               <InputField
                 name="lastname"
-                title="Lastname"
+                title="Last Name"
                 value={lastname || ""}
                 onChange={this.handleChange}
                 onInput={this.helper.toSentenceCase}
@@ -262,7 +481,7 @@ export default class PatientForm extends Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-4">
               <InputField
                 name="age"
                 title="Age"
@@ -271,9 +490,30 @@ export default class PatientForm extends Component {
                 {...this.state}
                 keyfilter="pint"
                 maxLength="2"
+                className="text-right"
               />
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
+              <InputField
+                name="birthDate"
+                title="Birth Date"
+                value={birthDate || ""}
+                onChange={(e) => {
+                  this.handleChange(e);
+                  var calculatedAge = this.helper.calculateAge(e.value);
+                  var fields = this.state.formFields;
+                  fields.age = calculatedAge;
+                  this.setState({
+                    formFields: fields,
+                  });
+                }}
+                {...this.state}
+                controlType="datepicker"
+                groupIcon="fa-calendar"
+                readOnly={false}
+              />
+            </div>
+            <div className="col-md-4">
               <InputField
                 name="mobile"
                 title="Mobile"
@@ -285,29 +525,121 @@ export default class PatientForm extends Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-12">
+            <div className="col">
               <InputField
-                name="address"
-                title="Address"
-                value={address || ""}
+                name="address1"
+                title="Address Line 1"
+                value={address1 || ""}
+                onChange={this.handleChange}
+                onInput={this.helper.toSentenceCase}
+                {...this.state}
+              />
+            </div>
+            <div className="col">
+              <InputField
+                name="address2"
+                title="Address Line 2"
+                value={address2 || ""}
+                onChange={this.handleChange}
+                onInput={this.helper.toSentenceCase}
+                {...this.state}
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-4">
+              <InputField
+                name="city"
+                title="City/Village"
+                value={city || ""}
                 onChange={this.handleChange}
                 className="p-select2"
                 onCreateOption={() =>
                   this.setState({
-                    addressDialog: true,
-                    addressText: addressText,
-                    addressError: "",
+                    cityDialog: true,
+                    cityText: cityText,
+                    cityError: "",
                   })
                 }
                 {...this.state}
                 controlType="select2"
+                defaultOptions={cityInitialOptions}
                 loadOptions={(e, callback) =>
-                  this.helper.AddressOptions(e, callback)
+                  this.helper.LookupOptions(
+                    e,
+                    callback,
+                    lookupTypeEnum.CITY.code
+                  )
                 }
                 onInputChange={(e) => {
                   e &&
                     this.setState({
-                      addressText: this.helper.toSentenceCase(e),
+                      cityText: this.helper.toSentenceCase(e),
+                    });
+                }}
+              />
+            </div>
+            <div className="col-md-4">
+              <InputField
+                name="dist"
+                title="District"
+                value={dist || ""}
+                onChange={this.handleChangeDistrict}
+                className="p-select2"
+                onCreateOption={() =>
+                  this.setState({
+                    distDialog: true,
+                    distText: distText,
+                    distError: "",
+                  })
+                }
+                {...this.state}
+                controlType="select2"
+                defaultOptions={distInitialOptions}
+                loadOptions={(e, callback) =>
+                  this.helper.LookupOptions(
+                    e,
+                    callback,
+                    lookupTypeEnum.DIST.code
+                  )
+                }
+                onInputChange={(e) => {
+                  e &&
+                    this.setState({
+                      distText: this.helper.toSentenceCase(e),
+                    });
+                }}
+              />
+            </div>
+            <div className="col-md-4">
+              <InputField
+                name="taluka"
+                title="Taluka"
+                value={taluka || ""}
+                onChange={this.handleChange}
+                className="p-select2"
+                onCreateOption={() =>
+                  this.setState({
+                    talukaDialog: true,
+                    talukaText: talukaText,
+                    talukaError: "",
+                  })
+                }
+                {...this.state}
+                controlType="select2"
+                defaultOptions={talukaInitialOptions}
+                loadOptions={(e, callback) =>
+                  this.helper.LookupOptions(
+                    e,
+                    callback,
+                    lookupTypeEnum.TALUKA.code,
+                    selectedDistId
+                  )
+                }
+                onInputChange={(e) => {
+                  e &&
+                    this.setState({
+                      talukaText: this.helper.toSentenceCase(e),
                     });
                 }}
               />
@@ -316,35 +648,118 @@ export default class PatientForm extends Component {
           <FormFooterButton showReset={!id} loading={loading} />
         </form>
         <Dialog
-          header={Constants.ADD_ADDRESS_TITLE}
-          footer={addressDialogFooter}
-          visible={addressDialog}
-          onHide={() => this.setState({ addressDialog: false })}
+          header={Constants.ADD_CITY_TITLE}
+          footer={cityDialogFooter}
+          visible={cityDialog}
+          onHide={() => this.setState({ cityDialog: false })}
           baseZIndex={0}
           dismissableMask={true}
         >
-          {addressText && (
+          {cityDialog && (
             <div className="form-group">
               <div className="row">
                 <div className="col-md-12">
                   <InputText
-                    name="addressText"
-                    value={addressText}
-                    placeholder="Enter Address"
+                    name="cityText"
+                    value={cityText}
+                    placeholder="Enter City/Village"
                     onChange={(e) =>
-                      addressText &&
                       this.setState({
-                        addressText: e.target.value,
-                        addressError: "",
+                        cityText: e.target.value,
+                        cityError: "",
                       })
                     }
-                    className={addressError ? "error" : ""}
+                    className={cityError ? "error" : ""}
                     style={{ width: "100%" }}
                   />
-                  <span className="error">{addressError}</span>
+                  <span className="error">{cityError}</span>
                 </div>
               </div>
             </div>
+          )}
+        </Dialog>
+        <Dialog
+          header="Add District"
+          footer={distDialogFooter}
+          visible={distDialog}
+          onHide={() => this.setState({ distDialog: false })}
+          baseZIndex={0}
+          dismissableMask={true}
+        >
+          {distDialog && (
+            <div className="form-group">
+              <div className="row">
+                <div className="col-md-12">
+                  <InputText
+                    name="distText"
+                    value={distText}
+                    placeholder="Enter District"
+                    onChange={(e) =>
+                      this.setState({
+                        distText: e.target.value,
+                        distError: "",
+                      })
+                    }
+                    className={distError ? "error" : ""}
+                    style={{ width: "100%" }}
+                  />
+                  <span className="error">{distError}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </Dialog>
+        <Dialog
+          header="Add Taluka"
+          footer={talukaDialogFooter}
+          visible={talukaDialog}
+          onHide={() => this.setState({ talukaDialog: false })}
+          onShow={() => {
+            setTimeout(() => {
+              this.getDists();
+            }, 1000);
+          }}
+          baseZIndex={0}
+          dismissableMask={true}
+        >
+          {talukaDialog && (
+            <>
+              <div className="form-group">
+                <Dropdown
+                  name="distId"
+                  title="District"
+                  options={distOptions}
+                  placeholder={"Select District"}
+                  value={distId || null}
+                  onChange={(e) =>
+                    this.setState({
+                      distId: e.target.value,
+                      distIdError: "",
+                    })
+                  }
+                  showClear={true}
+                  style={{ width: "100%" }}
+                />
+                <span className="error">{distIdError}</span>
+              </div>
+              <div className="form-group">
+                <InputText
+                  name="talukaText"
+                  value={talukaText}
+                  placeholder="Enter Taluka"
+                  onChange={(e) =>
+                    talukaText &&
+                    this.setState({
+                      talukaText: e.target.value,
+                      talukaError: "",
+                    })
+                  }
+                  className={talukaError ? "error" : ""}
+                  style={{ width: "100%" }}
+                />
+                <span className="error">{talukaError}</span>
+              </div>
+            </>
           )}
         </Dialog>
       </>

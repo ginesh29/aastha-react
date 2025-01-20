@@ -5,7 +5,7 @@ import InputField from "../shared/input-field";
 import { Checkbox } from "primereact/checkbox";
 import { Messages } from "primereact/messages";
 import { roleEnum } from "../../common/enums";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 export default class Login extends Component {
   constructor(props) {
     super(props);
@@ -76,7 +76,7 @@ export default class Login extends Component {
           });
           localStorage.setItem("aastha-auth-token", res.token);
           if (res.token != null && res.token.length > 0) {
-            var decoded_token = jwt_decode(res.token);
+            var decoded_token = jwtDecode(res.token);
             var role = Number(decoded_token.Role);
           }
           if (role === roleEnum["ADMIN"].value)

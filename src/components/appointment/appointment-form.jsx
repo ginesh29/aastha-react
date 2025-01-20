@@ -32,8 +32,8 @@ export default class AppointmentForm extends Component {
     e.preventDefault();
     if (this.handleValidation()) {
       const appointment = {
-        id: id,
-        date: this.helper.formatDate(date, "en-US"),
+        id: id || 0,
+        date: this.helper.formatDefaultDate(date),
         patientId: patientId.value,
         type: type,
       };
@@ -91,6 +91,7 @@ export default class AppointmentForm extends Component {
     if (isValidationFired) this.handleValidation();
   };
   componentDidMount = () => {
+    this.getInitalPatientOptions();
     jquery("#errors").remove();
     const { selectedAppointment } = this.props;
     if (selectedAppointment)
@@ -98,12 +99,27 @@ export default class AppointmentForm extends Component {
         formFields: selectedAppointment,
       });
   };
+  getInitalPatientOptions = () => {
+    this.repository
+      .get("patients", `take=15&filter=isdeleted-neq-{true}`)
+      .then((res) => {
+        let patients =
+          res &&
+          res.data.map(function (item) {
+            return { value: item.id, label: item.fullname, age: item.age };
+          });
+        this.setState({
+          initialPatientOptions: patients,
+        });
+      });
+  };
   render() {
     const { id, date, patientId, type } = this.state.formFields;
     const { appointmentTypeOptions } = this.props;
-    const { loading } = this.state;
+    const { loading, initialPatientOptions } = this.state;
     return (
       <>
+        <div id="validation-message"></div>
         <form onSubmit={this.handleSubmit}>
           <InputField
             name="date"
@@ -125,6 +141,7 @@ export default class AppointmentForm extends Component {
               e && this.setState({ patientName: e });
             }}
             controlType="select2"
+            defaultOptions={initialPatientOptions}
             loadOptions={(e, callback) =>
               this.helper.PatientOptions(e, callback)
             }

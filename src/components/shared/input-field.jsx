@@ -7,6 +7,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { InputTextarea } from "primereact/inputtextarea";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import { Button } from "primereact/button";
+import { HUNDRED_YEAR_RANGE } from "../../common/constants";
 
 export default class InputField extends Component {
   render() {
@@ -19,6 +20,7 @@ export default class InputField extends Component {
       name,
       value,
       onChange,
+      onBlur,
       onInput,
       hourFormat,
       disabled,
@@ -47,6 +49,8 @@ export default class InputField extends Component {
       tabIndex,
       autoFocus,
       onKeyDown,
+      defaultOptions,
+      showTime,
     } = this.props;
     let errorClass = validationErrors[name] ? "error" : "";
     let propClassName = className ? className : "";
@@ -75,6 +79,7 @@ export default class InputField extends Component {
               icon={"fa " + groupIcon}
               className="p-button-outlined"
               onClick={onInputButtonClick}
+              type="button"
             />
           </div>
         )}
@@ -99,7 +104,7 @@ export default class InputField extends Component {
         )}
         {controlType === "select2" && (
           <AsyncCreatableSelect
-            defaultOptions
+            defaultOptions={defaultOptions}
             name={name}
             value={value}
             onCreateOption={onCreateOption}
@@ -123,8 +128,8 @@ export default class InputField extends Component {
               inputClassName={errorClass}
               placeholder={"Enter " + title}
               onChange={onChange}
-              dateFormat="dd-mm-yy"
-              readOnlyInput={true}
+              onBlur={onBlur}
+              dateFormat="dd/mm/yy"
               timeOnly={timeOnly}
               hourFormat={hourFormat}
               icon={icon}
@@ -135,6 +140,12 @@ export default class InputField extends Component {
               readOnly={readOnly}
               showButtonBar={true}
               tabIndex={tabIndex}
+              dropdownMode="select"
+              showTime={showTime}
+              monthNavigator={true}
+              yearNavigator={true}
+              yearRange={HUNDRED_YEAR_RANGE}
+              readOnlyInput={true}
             />
             <span className="p-inputgroup-addon">
               <i className={"fa " + groupIcon}></i>

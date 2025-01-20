@@ -109,8 +109,12 @@ export class repository {
         jquery(".card").prepend('<div id="errors"></div>');
       else jquery("#msg-container").html('<div id="errors"></div>');
       ReactDOM.render(
-        <Messages ref={(el) => (this.errors = el)} />,
+        <Messages ref={(el) => (this.errors = el)} />, 
         document.getElementById("errors")
+      );
+      ReactDOM.render(
+        <Messages ref={(el) => (this.errors = el)} />, 
+        document.getElementById("validation-message")
       );
       if (error.response.data) {
         let errorResult = error.response.data;
@@ -130,12 +134,18 @@ export class repository {
       }
     } else if (error.request) {
       if (jquery("#messages div").is(":empty"))
+      {
         this.messages.show({
           severity: "error",
           summary: "Server error",
-          detail: "Please check internet connection",
+          detail: "Please check internet connection. You will be logout in 5 seconds",
           sticky: true,
         });
+        localStorage.clear();
+        setTimeout(() => {
+        window.location.href = "/";         
+        }, 5000);
+      }        
     }
   }
 }

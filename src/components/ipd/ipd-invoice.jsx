@@ -3,13 +3,13 @@ import { helper } from "../../common/helpers";
 import { repository } from "../../common/repository";
 import numberToWords from "number-to-words";
 import { lookupTypeEnum } from "../../common/enums";
-import invoice_header from "../../assets/images/invoice_header.jpg";
 import _ from "lodash";
+import InvoiceHeader from "../shared/invoice-header";
 
 export default class IpdInvoice extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { showLogo: true };
     this.helper = new helper();
     this.repository = new repository();
   }
@@ -33,6 +33,8 @@ export default class IpdInvoice extends Component {
       });
   };
   componentDidMount() {
+    const { removeLogoButton } = this.props;
+    if (removeLogoButton === false) this.setState({ removeLogoButton: false });
     this.bindLookups();
   }
   render() {
@@ -40,15 +42,11 @@ export default class IpdInvoice extends Component {
     const { chargeNames } = this.state;
     const totalAmount = _.sumBy(InvoiceData.charges, (x) => x.amount);
     const payableAmount = totalAmount - InvoiceData.discount;
-    const amountInWord = numberToWords.toWords(payableAmount);
+    const amountInWord = numberToWords.toWords(payableAmount).replace(/,/g, "");
     return (
       InvoiceData && (
-        <>
-          <img
-            src={invoice_header}
-            className="img-fluid"
-            alt="Invoice Header"
-          />
+        <div>
+          <InvoiceHeader removeLogoButton={true} />
           <h3 className="invoice-title">Indoor Invoice</h3>
           <div className="invoice-detail">
             <div className="d-flex justify-content-between">
@@ -64,7 +62,7 @@ export default class IpdInvoice extends Component {
                 <label>Invoice No. :</label> {InvoiceData.uniqueId}
               </div>
               <div>
-                <label>Address :</label> {InvoiceData.address}
+                <label>City/Village : </label> {InvoiceData && InvoiceData.city}
               </div>
             </div>
             <div className="d-flex justify-content-between">
@@ -149,7 +147,7 @@ export default class IpdInvoice extends Component {
             <div className="flex-grow-1">Rececived By</div>
             <div className="font-weight-semi-bold">Dr. Bhaumik Tandel</div>
           </div>
-        </>
+        </div>
       )
     );
   }

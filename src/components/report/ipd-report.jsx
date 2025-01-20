@@ -1,13 +1,17 @@
 import React, { Component } from "react";
 import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
-import { lookupTypeEnum, reportTypeEnum } from "../../common/enums";
+import {
+  lookupTypeEnum,
+  reportTypeEnum,
+  paymentModeEnum,
+} from "../../common/enums";
 import _ from "lodash";
 import ReportFilter from "./report-filter";
 import { TODAY_DATE } from "../../common/constants";
 import { TabView, TabPanel } from "primereact/tabview";
 import { roleEnum } from "../../common/enums";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 let chargeTotal = 0;
 export default class IpdReport extends Component {
@@ -23,7 +27,7 @@ export default class IpdReport extends Component {
       monthSelection: TODAY_DATE,
       sortString: "dischargeDate asc",
       controller: "ipds",
-      includeProperties: "Patient,Charges.ChargeDetail",
+      includeProperties: "Patient,Charges.ChargeDetail,Payments",
       config: { responseType: "blob" },
     };
     this.repository = new repository();
@@ -55,6 +59,8 @@ export default class IpdReport extends Component {
               item.dischargeDate
             );
             item.fullname = item.patient.fullname;
+            item.Cash = 0;
+            item.NonCash = 0;
             return item;
           });
         this.setState({
@@ -140,17 +146,11 @@ export default class IpdReport extends Component {
   render() {
     const token = localStorage.getItem("aastha-auth-token");
     if (token != null && token.length > 0) {
-      var decoded_token = jwt_decode(token);
+      var decoded_token = jwtDecode(token);
       var role = Number(decoded_token.Role);
     }
-    const {
-      ipds,
-      chargesLength,
-      chargeNames,
-      reportTitle,
-      activeIndex,
-      loading,
-    } = this.state;
+    const { ipds, chargesLength, chargeNames, reportTitle, loading } =
+      this.state;
     let ipdData;
     let chargesColumns;
     let amount = 0;
@@ -167,6 +167,18 @@ export default class IpdReport extends Component {
             amount = obj && obj.amount;
             hash[chargeName] = amount ? Number(amount) : 0;
             hash.amount = _.sumBy(item.charges, (x) => x.amount);
+            hash.cashPayment = _.sumBy(
+              item.payments.filter(
+                (m) => m.paymentMode === paymentModeEnum.CASH.value
+              ),
+              (x) => x.amount
+            );
+            hash.nonCashPayment = _.sumBy(
+              item.payments.filter(
+                (m) => m.paymentMode === paymentModeEnum.NONCASH.value
+              ),
+              (x) => x.amount
+            );
             return hash;
           },
           item
@@ -192,6 +204,19 @@ export default class IpdReport extends Component {
               (total, item) => total + Number(item.amount),
               0
             );
+            result.discount = items.reduce(
+              (discount, item) => discount + Number(item.discount),
+              0
+            );
+            result.cashPayment = items.reduce(
+              (cashPayment, item) => cashPayment + Number(item.cashPayment),
+              0
+            );
+            result.nonCashPayment = items.reduce(
+              (nonCashPayment, item) =>
+                nonCashPayment + Number(item.nonCashPayment),
+              0
+            );
             return hash;
           },
           items
@@ -206,6 +231,22 @@ export default class IpdReport extends Component {
       ipdData && ipdData.reduce((total, item) => total + Number(item.count), 0);
     let amountTotal =
       ipdData && ipdData.reduce((total, item) => total + Number(item.total), 0);
+    let discountTotal =
+      ipdData &&
+      ipdData.reduce((discount, item) => discount + Number(item.discount), 0);
+    let cashPaymentTotal =
+      ipdData &&
+      ipdData.reduce(
+        (cashPayment, item) => cashPayment + Number(item.cashPayment),
+        0
+      );
+
+    let nonCashPaymentTotal =
+      ipdData &&
+      ipdData.reduce(
+        (nonCashPayment, item) => nonCashPayment + Number(item.nonCashPayment),
+        0
+      );
     return (
       <>
         <div className="card">
@@ -216,13 +257,12 @@ export default class IpdReport extends Component {
                   {...this.state}
                   onDateSelection={this.onDateSelection}
                   onReportTypeChange={(e) =>
-                    this.setState({ reportType: e.value })
+                    this.setState({ reportType: e.value }, () => this.getIpds())
                   }
-                  onShowSummary={(e) => this.op.toggle(e)}
                   data={ipdData}
                   exportReport={this.exportReport}
-                  activeIndex={activeIndex}
                   loading={loading}
+                  visibleReportFilterButton={true}
                 />
                 <hr />
               </>
@@ -249,7 +289,10 @@ export default class IpdReport extends Component {
                               </th>
                             );
                           })}
+                        <th className="text-right">Disc.</th>
                         <th className="text-right">Total</th>
+                        <th className="text-right">Cash</th>
+                        <th className="text-right">Non-cash</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -263,7 +306,7 @@ export default class IpdReport extends Component {
                                   {items.dischargeDate}
                                 </td>
                                 <td
-                                  colSpan={chargesLength}
+                                  colSpan={chargesLength + 3}
                                   className="text-center"
                                 >
                                   {items.count} Patients
@@ -284,7 +327,16 @@ export default class IpdReport extends Component {
                                       );
                                     })}
                                     <td className="text-right">
-                                      {subitem.amount}
+                                      {subitem.discount}
+                                    </td>
+                                    <td className="text-right">
+                                      {subitem.amount - subitem.discount}
+                                    </td>
+                                    <td className="text-right">
+                                      {subitem.cashPayment}
+                                    </td>
+                                    <td className="text-right">
+                                      {subitem.nonCashPayment}
                                     </td>
                                   </tr>
                                 );
@@ -299,7 +351,16 @@ export default class IpdReport extends Component {
                                     </td>
                                   );
                                 })}
-                                <td className="text-right">{items.total}</td>
+                                <td className="text-right">{items.discount}</td>
+                                <td className="text-right">
+                                  {items.total - items.discount}
+                                </td>
+                                <td className="text-right">
+                                  {items.cashPayment}
+                                </td>
+                                <td className="text-right">
+                                  {items.nonCashPayment}
+                                </td>
                               </tr>
                             </React.Fragment>
                           );
@@ -325,7 +386,12 @@ export default class IpdReport extends Component {
                               </td>
                             );
                           })}
-                          <td className="text-right">{amountTotal}</td>
+                          <td className="text-right">{discountTotal}</td>
+                          <td className="text-right">
+                            {amountTotal - discountTotal}
+                          </td>
+                          <td className="text-right">{cashPaymentTotal}</td>
+                          <td className="text-right">{nonCashPaymentTotal}</td>
                         </tr>
                       ) : (
                         <tr>

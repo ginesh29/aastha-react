@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Redirect, Switch, BrowserRouter, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import MainLayoutRoute from "./components/shared/layouts/main-layout";
+import MainLayout from "./components/shared/layouts/main-layout";
 
 import Dashboard from "./components/dashboard";
 import Patients from "./components/patient/patients";
@@ -19,47 +19,43 @@ import Appointments from "./components/appointment/appointments";
 import Statistics from "./components/statistics";
 import Login from "./components/account/login";
 import DueDateCalculator from "./components/due-date-calculator";
+import PatientsHistoryReport from "./components/report/patients-history-report";
+import FormFContainer from "./components/formf/formf-container";
+import FormFs from "./components/formf/formfs";
 
 export default class App extends Component {
   render() {
     return (
-      <BrowserRouter>
-        <Switch>
-          <Route path="/login" component={Login} />
-          <MainLayoutRoute exact path="/">
-            <Redirect to="/dashboard" />
-          </MainLayoutRoute>
-          <MainLayoutRoute path="/dashboard" component={Dashboard} />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<MainLayout />}>
+          <Route exact path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/dashboard" element={<Dashboard />} />
 
-          <MainLayoutRoute path="/add-patient" component={PatientContainer} />
-          <MainLayoutRoute path="/add-opd" component={OpdContainer} />
-          <MainLayoutRoute path="/add-ipd" component={IpdContainer} />
+          <Route path="/add-patient" element={<PatientContainer />} />
+          <Route path="/add-opd" element={<OpdContainer />} />
+          <Route path="/add-ipd" element={<IpdContainer />} />
+          <Route path="/add-formf" element={<FormFContainer />} />
 
-          <MainLayoutRoute path="/patients" component={Patients} />
-          <MainLayoutRoute path="/archive-patients" component={Patients} />
+          <Route path="/patients" element={<Patients />} />
+          <Route path="/opds" element={<Opds />} />
+          <Route path="/ipds" element={<Ipds />} />
+          <Route path="/formfs" element={<FormFs />} />
 
-          <MainLayoutRoute path="/opds" component={Opds} />
-          <MainLayoutRoute path="/archive-opds" component={Opds} />
-
-          <MainLayoutRoute path="/ipds" component={Ipds} />
-          <MainLayoutRoute path="/archive-ipds" component={Ipds} />
-          <MainLayoutRoute path="/admin-panel" component={AdminPanel} />
-          <MainLayoutRoute path="/archive-admin-panel" component={AdminPanel} />
-          <MainLayoutRoute path="/prescription" component={Prescription} />
-          <MainLayoutRoute path="/appointments" component={Appointments} />
-          <MainLayoutRoute path="/statistics" component={Statistics} />
-          <MainLayoutRoute path="/opd-report" component={OpdReport} />
-          <MainLayoutRoute path="/ipd-report" component={IpdReport} />
-          <MainLayoutRoute
-            path="/due-date-calculator"
-            component={DueDateCalculator}
+          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route path="/prescription" element={<Prescription />} />
+          <Route path="/appointments" element={<Appointments />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route
+            path="/patients-history-report"
+            element={<PatientsHistoryReport />}
           />
-          <MainLayoutRoute
-            path="/monthly-ipd-report"
-            component={MonthlyIpdReport}
-          />
-        </Switch>
-      </BrowserRouter>
+          <Route path="/opd-report" element={<OpdReport />} />
+          <Route path="/ipd-report" element={<IpdReport />} />
+          <Route path="/due-date-calculator" element={<DueDateCalculator />} />
+          <Route path="/monthly-ipd-report" element={<MonthlyIpdReport />} />
+        </Route>
+      </Routes>
     );
   }
 }

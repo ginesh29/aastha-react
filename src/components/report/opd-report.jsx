@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
-import { reportTypeEnum } from "../../common/enums";
+import { paymentModeEnum, reportTypeEnum } from "../../common/enums";
 import { TabView, TabPanel } from "primereact/tabview";
 import _ from "lodash";
 import ReportFilter from "./report-filter";
 import { TODAY_DATE } from "../../common/constants";
 import { roleEnum } from "../../common/enums";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 export default class OpdReport extends Component {
   constructor(props) {
@@ -22,7 +22,7 @@ export default class OpdReport extends Component {
       monthSelection: TODAY_DATE,
       sortString: "date asc",
       controller: "opds",
-      includeProperties: "Patient",
+      includeProperties: "Patient,Payments",
       config: { responseType: "blob" },
       activeIndex: 0,
     };
@@ -43,6 +43,18 @@ export default class OpdReport extends Component {
           res.data.map((item) => {
             item.formatedOpdDate = this.helper.formatDate(item.date);
             item.fullname = item.patient.fullname;
+            item.cashPayment = _.sumBy(
+              item.payments.filter(
+                (m) => m.paymentMode === paymentModeEnum.CASH.value
+              ),
+              (x) => x.amount
+            );
+            item.nonCashPayment = _.sumBy(
+              item.payments.filter(
+                (m) => m.paymentMode === paymentModeEnum.NONCASH.value
+              ),
+              (x) => x.amount
+            );
             return item;
           });
         this.setState({
@@ -110,7 +122,7 @@ export default class OpdReport extends Component {
   render() {
     const token = localStorage.getItem("aastha-auth-token");
     if (token != null && token.length > 0) {
-      var decoded_token = jwt_decode(token);
+      var decoded_token = jwtDecode(token);
       var role = Number(decoded_token.Role);
     }
     const { opds, reportTitle, activeIndex, loading } = this.state;
@@ -144,6 +156,14 @@ export default class OpdReport extends Component {
         (total, item) => total + Number(item.totalCharge),
         0
       );
+      result.cashPayment = items.reduce(
+        (total, item) => total + Number(item.cashPayment),
+        0
+      );
+      result.nonCashPayment = items.reduce(
+        (total, item) => total + Number(item.nonCashPayment),
+        0
+      );
       return result;
     });
     const opdCount = opdData.reduce(
@@ -174,6 +194,15 @@ export default class OpdReport extends Component {
       (total, item) => total + Number(item.totalCharge),
       0
     );
+    console.log(opdData);
+    const cashPaymentTotal = opdData.reduce(
+      (total, item) => total + Number(item.cashPayment),
+      0
+    );
+    const nonCashPaymentTotal = opdData.reduce(
+      (total, item) => total + Number(item.nonCashPayment),
+      0
+    );
     return (
       <>
         <div className="card">
@@ -189,6 +218,7 @@ export default class OpdReport extends Component {
                   data={opdData}
                   exportReport={this.exportReport}
                   loading={loading}
+                  visibleReportFilterButton={true}
                 />
                 <hr />
               </>
@@ -213,6 +243,8 @@ export default class OpdReport extends Component {
                         <th className="text-right">Inj</th>
                         <th className="text-right">Other</th>
                         <th className="text-right">Total</th>
+                        <th className="text-right">Cash</th>
+                        <th className="text-right">Non-cash</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -223,7 +255,7 @@ export default class OpdReport extends Component {
                               <td colSpan="4" className="text-center">
                                 Date: {items.opdDate}
                               </td>
-                              <td colSpan="6" className="text-center">
+                              <td colSpan="8" className="text-center">
                                 {items.count} Patients
                               </td>
                             </tr>
@@ -252,6 +284,12 @@ export default class OpdReport extends Component {
                                   <td className="text-right">
                                     {subitem.totalCharge}
                                   </td>
+                                  <td className="text-right">
+                                    {subitem.cashPayment}
+                                  </td>
+                                  <td className="text-right">
+                                    {subitem.nonCashPayment}
+                                  </td>
                                 </tr>
                               );
                             })}
@@ -272,6 +310,12 @@ export default class OpdReport extends Component {
                               <td className="text-right">
                                 {items.totalCharge}
                               </td>
+                              <td className="text-right">
+                                {items.cashPayment}
+                              </td>
+                              <td className="text-right">
+                                {items.nonCashPayment}
+                              </td>
                             </tr>
                           </React.Fragment>
                         );
@@ -288,6 +332,8 @@ export default class OpdReport extends Component {
                           <td className="text-right">{injectionChargeTotal}</td>
                           <td className="text-right">{otherChargeTotal}</td>
                           <td className="text-right">{amountChargeTotal}</td>
+                          <td className="text-right">{cashPaymentTotal}</td>
+                          <td className="text-right">{nonCashPaymentTotal}</td>
                         </tr>
                       ) : (
                         <tr>

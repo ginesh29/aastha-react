@@ -1,6 +1,6 @@
 import React from "react";
 import InputField from "../shared/input-field";
-import { roomTypeOptions, genderOptions } from "../../common/constants";
+import { roomTypeOptions, childGenderOptions } from "../../common/constants";
 import { departmentTypeEnum, lookupTypeEnum } from "../../common/enums";
 import { Dialog } from "primereact/dialog";
 import { helper } from "../../common/helpers";
@@ -10,6 +10,8 @@ import * as Constants from "../../common/constants";
 import PatientForm from "../patient/patient-form";
 import jquery from "jquery";
 import FormFooterButton from "../shared/form-footer-button";
+import Payments from "./payments";
+import { departmentEnum } from "../../common/enums";
 
 const controller = "ipds";
 export default class IpdForm extends React.Component {
@@ -158,31 +160,31 @@ export default class IpdForm extends React.Component {
         } else return { lookupId: item };
       });
       const deliveryDetail = {
-        id: deliveryId ? deliveryId : null,
-        ipdId: id,
-        date: this.helper.formatDate(deliveryDate, "en-US"),
+        id: deliveryId || 0,
+        ipdId: id || 0,
+        date: this.helper.formatDefaultDate(deliveryDate),
         time: this.helper.formatTime(deliveryTime),
         gender: babyGender,
         babyWeight: babyWeight,
       };
 
       const operationDetail = {
-        id: operationId ? operationId : null,
-        ipdId: id,
-        date: this.helper.formatDate(operationDate, "en-US"),
+        id: operationId || 0,
+        ipdId: id || 0,
+        date: this.helper.formatDefaultDate(operationDate),
       };
       const charges =
         chargeFormFields &&
         chargeFormFields.filter((item) => item.rate !== "" && item.day !== "");
       const ipd = {
-        id: id,
+        id: id || 0,
         uniqueId: uniqueId,
         type: departmentType,
         roomType: roomType,
         patientId: patient.value,
-        addmissionDate: this.helper.formatDate(addmissionDate, "en-US"),
+        addmissionDate: this.helper.formatDefaultDate(addmissionDate),
         dischargeDate: dischargeDate
-          ? this.helper.formatDate(dischargeDate, "en-US")
+          ? this.helper.formatDefaultDate(dischargeDate)
           : null,
         deliveryDetail:
           departmentType === departmentTypeEnum.DELIVERY.value
@@ -194,7 +196,7 @@ export default class IpdForm extends React.Component {
             : null,
         ipdLookups: ipdLookupArray,
         charges: charges,
-        discount: discount,
+        discount: discount || 0,
       };
       this.setState({ loading: true });
       this.repository
@@ -268,7 +270,7 @@ export default class IpdForm extends React.Component {
           isValid = false;
           errors.deliveryTime = "Delivery Time is required";
         }
-        if (!typesOfDelivery) {
+        if (!typesOfDelivery.length) {
           isValid = false;
           errors.typesOfDelivery = "Types of Delivery is required";
         }
@@ -293,11 +295,11 @@ export default class IpdForm extends React.Component {
           isValid = false;
           errors.operationDate = "Operation Date is required";
         }
-        if (!operationDiagnosis) {
+        if (!operationDiagnosis.length) {
           isValid = false;
           errors.operationDiagnosis = "Operation Diagnosis is required";
         }
-        if (!typesOfOperation) {
+        if (!typesOfOperation.length) {
           isValid = false;
           errors.typesOfOperation = "Types of Operation is required";
         }
@@ -306,7 +308,7 @@ export default class IpdForm extends React.Component {
         departmentType &&
         departmentType === departmentTypeEnum.GENERAL.value
       ) {
-        if (!generalDiagnosis) {
+        if (!generalDiagnosis.length) {
           isValid = false;
           errors.generalDiagnosis = "General Diagnosis is required";
         }
@@ -363,7 +365,22 @@ export default class IpdForm extends React.Component {
   handleReset = (e) => {
     this.setState(this.getInitialState());
   };
+  getInitalPatientOptions = () => {
+    this.repository
+      .get("patients", `take=15&filter=isdeleted-neq-{true}`)
+      .then((res) => {
+        let patients =
+          res &&
+          res.data.map(function (item) {
+            return { value: item.id, label: item.fullname, age: item.age };
+          });
+        this.setState({
+          initialPatientOptions: patients,
+        });
+      });
+  };
   componentDidMount = () => {
+    this.getInitalPatientOptions();
     jquery("#errors").remove();
     const { selectedIpd } = this.props;
     if (selectedIpd && selectedIpd.id) {
@@ -460,10 +477,12 @@ export default class IpdForm extends React.Component {
       patientDialog,
       patientName,
       loading,
+      initialPatientOptions,
     } = this.state;
     const defaultCharge = id ? 0 : "";
     return (
       <>
+        <div id="validation-message"></div>
         <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
           <div className="row">
             <div className="col-md-4">
@@ -474,7 +493,7 @@ export default class IpdForm extends React.Component {
                 onChange={this.handleChange}
                 {...this.state}
                 keyfilter="pint"
-                className={id ? `p-readonly` : ""}
+                className={id ? `p-readonly text-right` : "text-right"}
               />
             </div>
             <div className="col-md-4">
@@ -495,6 +514,7 @@ export default class IpdForm extends React.Component {
                   this.setState({ patientInput: e });
                 }}
                 controlType="select2"
+                defaultOptions={initialPatientOptions}
                 loadOptions={(e, callback) =>
                   this.helper.PatientOptions(e, callback)
                 }
@@ -522,7 +542,6 @@ export default class IpdForm extends React.Component {
                 {...this.state}
                 controlType="dropdown"
                 options={departmentTypeOptions}
-                className={id ? `p-readonly` : ""}
               />
             </div>
             <div className="col-md-4">
@@ -610,7 +629,7 @@ export default class IpdForm extends React.Component {
                       onChange={this.handleChange}
                       {...this.state}
                       controlType="dropdown"
-                      options={genderOptions}
+                      options={childGenderOptions}
                     />
                   </div>
                   <div className="col-md-4">
@@ -703,9 +722,11 @@ export default class IpdForm extends React.Component {
                     const chargeObj = chargeFormFields.filter(
                       (c) => c.lookupId === item.value
                     )[0];
-                    rate = chargeObj ? chargeObj.rate : defaultCharge;
-                    days = chargeObj ? chargeObj.days : defaultCharge;
-                    amount = chargeObj ? chargeObj.amount : defaultCharge;
+                    rate = chargeObj ? Number(chargeObj.rate) : defaultCharge;
+                    days = chargeObj ? Number(chargeObj.days) : defaultCharge;
+                    amount = chargeObj
+                      ? Number(chargeObj.amount)
+                      : defaultCharge;
                   }
                   return (
                     <tr key={index}>
@@ -715,7 +736,7 @@ export default class IpdForm extends React.Component {
                         <InputText
                           type="text"
                           value={rate}
-                          className="p-inputtext-sm"
+                          className="p-inputtext-sm text-right"
                           keyfilter="pint"
                           name={`rate-${item.value}`}
                           onChange={this.handleChargeChange}
@@ -725,7 +746,7 @@ export default class IpdForm extends React.Component {
                         <InputText
                           type="text"
                           value={days}
-                          className="p-inputtext-sm"
+                          className="p-inputtext-sm text-right"
                           keyfilter="pint"
                           name={`days-${item.value}`}
                           onChange={this.handleChargeChange}
@@ -756,7 +777,7 @@ export default class IpdForm extends React.Component {
                     <div>
                       <InputText
                         name="discount"
-                        className="p-inputtext-sm"
+                        className="p-inputtext-sm text-right"
                         type="text"
                         keyfilter="pint"
                         value={discount || ""}
@@ -774,6 +795,15 @@ export default class IpdForm extends React.Component {
           </table>
           <FormFooterButton showReset={!id} loading={loading} />
         </form>
+        {id && (
+          <Payments
+            id={id}
+            type={departmentEnum.IPD}
+            uniqueId={uniqueId}
+            patientName={patient.fullname}
+            dischargeDate={dischargeDate}
+          />
+        )}
         <Dialog
           header={Constants.PATIENT_REGISTRATION_TITLE}
           visible={patientDialog}

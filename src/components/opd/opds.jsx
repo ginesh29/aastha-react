@@ -7,12 +7,14 @@ import { helper } from "../../common/helpers";
 import { ROWS } from "../../common/constants";
 import { Dialog } from "primereact/dialog";
 import OpdForm from "./opd-form";
-import { caseTypeOptions, TEN_YEAR_RANGE } from "../../common/constants";
+import { caseTypeOptions, HUNDRED_YEAR_RANGE } from "../../common/constants";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
-import invoice_header from "../../assets/images/invoice_header.jpg";
 import numberToWords from "number-to-words";
+import { departmentEnum } from "../../common/enums";
 import jquery from "jquery";
+import InvoiceHeader from "../shared/invoice-header";
+import Payments from "../ipd/payments";
 window.$ = window.jQuery = jquery;
 require("jQuery.print/jQuery.print");
 
@@ -25,9 +27,8 @@ export default class Opds extends Component {
       rows: ROWS,
       loading: true,
       controller: "opds",
-      includeProperties: "Patient.Address",
+      includeProperties: "Patient.City",
       selectedOpd: null,
-      isArchive: props.location.pathname.includes("archive"),
       selectedCaseType: null,
       selectedDate: "",
     };
@@ -59,7 +60,7 @@ export default class Opds extends Component {
               : 0;
             item.otherCharge = item.otherCharge ? item.otherCharge : 0;
             item.formatedDate = this.helper.formatDate(item.date);
-            item.address = item.patient.address && item.patient.address.name;
+            item.city = item.patient.city && item.patient.city.name;
             item.patient = {
               value: item.patient.id,
               label: item.patient.fullname,
@@ -184,8 +185,7 @@ export default class Opds extends Component {
   saveOpd = (updatedOpd, id) => {
     const { opds, totalRecords } = this.state;
     let opdData = [...opds];
-    updatedOpd.address =
-      updatedOpd.patient.address && updatedOpd.patient.address.name;
+    updatedOpd.city = updatedOpd.patient.city && updatedOpd.patient.city.name;
     updatedOpd.patient = updatedOpd.patient && {
       label: updatedOpd.patient.fullname,
       value: updatedOpd.patientId,
@@ -277,11 +277,12 @@ export default class Opds extends Component {
         name="date"
         value={selectedDate}
         onChange={this.onFilterChange}
-        dateFormat="dd-mm-yy"
+        dateFormat="dd/mm/yy"
         readOnlyInput={true}
         monthNavigator={true}
         yearNavigator={true}
-        yearRange={TEN_YEAR_RANGE}
+        yearRange={HUNDRED_YEAR_RANGE}
+        showButtonBar={true}
       />
     );
     let typeFilter = (
@@ -466,6 +467,9 @@ export default class Opds extends Component {
               includeProperties={includeProperties}
             />
           )}
+          {selectedOpd && selectedOpd.id && (
+            <Payments id={selectedOpd.id} type={departmentEnum.OPD} />
+          )}
         </Dialog>
         <Dialog
           header="Opd Invoice"
@@ -477,12 +481,8 @@ export default class Opds extends Component {
         >
           {invoiceDialog && (
             <>
-              <div id="print-div" className="A5">
-                <img
-                  src={invoice_header}
-                  className="img-fluid"
-                  alt="Invoice Header"
-                />
+              <div id="print-div" className="A5 invoice-container">
+                <InvoiceHeader removeLogoButton={true} />
                 <h3 className="invoice-title">Outdoor Invoice</h3>
                 <div className="invoice-detail">
                   <div className="d-flex justify-content-between">
@@ -500,7 +500,7 @@ export default class Opds extends Component {
                       <label>Invoice No. :</label> {selectedOpd.id}
                     </div>
                     <div>
-                      <label>Address :</label> {selectedOpd.address}
+                      <label>City/Village :</label> {selectedOpd.city}
                     </div>
                   </div>
                   <div className="d-flex justify-content-between">
@@ -555,9 +555,9 @@ export default class Opds extends Component {
                     <tr>
                       <td colSpan="2" className="text-capitalize">
                         Grand Total &nbsp;|{" "}
-                        {`${numberToWords.toWords(
-                          selectedOpd.totalCharge
-                        )} Only`}
+                        {`${numberToWords
+                          .toWords(selectedOpd.totalCharge)
+                          .replace(/,/g, "")} Only`}
                       </td>
                       <td className="text-right">
                         {this.helper.formatCurrency(selectedOpd.totalCharge)}

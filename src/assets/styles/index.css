@@ -1,3 +1,9 @@
+.link-button {
+  background: none;
+  border: none;
+  color: #007ad9;
+  cursor: pointer;
+}
 .dcjq-icon {
   background: none !important;
 }
@@ -156,10 +162,49 @@ hr {
 .medicine-table tr {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
+body {
+  counter-reset: item;
+}
+.blank_space {
+  width: 100px;
+  display: inline-block;
+  border-bottom: 1px solid #000;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: -2px;
+}
+.filled_answer {
+  font-weight: bold;
+}
+.formf-print-container ol {
+  padding-left: 25px;
+  margin-bottom: 0;
+}
+.separator {
+  margin-bottom: 0;
+  background-color: #000;
+}
+.watermark {
+  position: relative;
+  line-height: 1;
+}
 
+.watermark::after {
+  content: "Not Applicable";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-35deg);
+  font-size: 70px;
+  color: rgba(0, 0, 0, 0.7);
+  font-weight: bold;
+}
 @page {
   size: auto;
   margin: 20px;
+}
+.p-inputtext::placeholder {
+  text-align: left;
 }
 @media print {
   body {
@@ -170,15 +215,25 @@ hr {
     padding-left: 1in;
     padding-right: 0.75in;
   }
+  .A4 {
+    padding-left: 0.5in;
+    padding-right: 5px;
+  }
 
   #print-div .invoice-detail,
   #print-div .prescription-detail,
   #print-div .invoice-table,
   #print-div .invoice-foot,
-  #print-div .medicine-table {
+  #print-div .medicine-table,
+  #prescription-div .invoice-detail,
+  #prescription-div .prescription-detail,
+  #prescription-div .invoice-table,
+  #prescription-div .invoice-foot,
+  #prescription-div .medicine-table {
     font-size: 18px !important;
   }
-  #print-div .gujarati-text {
+  #print-div .gujarati-text,
+  #prescription-div .gujarati-text {
     font-size: 16px !important;
   }
   .col-md-12 {

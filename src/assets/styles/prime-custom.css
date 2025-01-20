@@ -187,3 +187,21 @@ form .p-multiselect,
   line-height: 1.5 !important;
   border-radius: 2px !important;
 }
+.p-datepicker.p-input-overlay-visible{
+  top:35px !important
+}
+.p-multiselect-panel,
+.p-multiselect-panel.p-input-overlay-visible{
+  max-width: -webkit-fill-available;
+  top: 35px !important;
+  left:0 !important
+}
+.p-multiselect-panel.p-input-overlay-visible .p-multiselect-item label{
+  vertical-align: middle !important;
+    width: 700px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#report-filter-date .p-calendar .p-inputtext{
+width: 200px;
+}

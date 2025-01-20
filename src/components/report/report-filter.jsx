@@ -4,7 +4,7 @@ import { RadioButton } from "primereact/radiobutton";
 import { helper } from "../../common/helpers";
 import { Calendar } from "primereact/calendar";
 import { reportTypeEnum } from "../../common/enums";
-import { TEN_YEAR_RANGE } from "../../common/constants";
+import { HUNDRED_YEAR_RANGE } from "../../common/constants";
 import jquery from "jquery";
 window.$ = window.jQuery = jquery;
 require("jQuery.print/jQuery.print");
@@ -27,6 +27,7 @@ export default class ReportFilter extends Component {
       showSummary,
       exportReport,
       loading,
+      visibleReportFilterButton,
     } = this.props;
     return (
       <>
@@ -60,17 +61,18 @@ export default class ReportFilter extends Component {
           </div>
           <div className="col-md-7">
             <div className="p-inputgroup float-right">
-              <div className="form-group">
+              <div className="form-group" id="report-filter-date">
                 {reportType === reportTypeEnum.DAILY.value && (
                   <Calendar
                     name="dateSelection"
                     value={dateSelection}
                     onChange={onDateSelection}
                     readOnlyInput={true}
-                    dateFormat="dd-mm-yy"
+                    dateFormat="dd/mm/yy"
                     monthNavigator={true}
                     yearNavigator={true}
-                    yearRange={TEN_YEAR_RANGE}
+                    yearRange={HUNDRED_YEAR_RANGE}
+                    showButtonBar={true}
                   />
                 )}
                 {reportType === reportTypeEnum.DATERANGE.value && (
@@ -80,11 +82,11 @@ export default class ReportFilter extends Component {
                     onChange={onDateSelection}
                     selectionMode="range"
                     readonlyInput={true}
-                    readOnlyInput={true}
-                    dateFormat="dd-mm-yy"
+                    dateFormat="dd/mm/yy"
                     monthNavigator={true}
                     yearNavigator={true}
-                    yearRange={TEN_YEAR_RANGE}
+                    yearRange={HUNDRED_YEAR_RANGE}
+                    showButtonBar={true}
                   />
                 )}
                 {reportType === reportTypeEnum.MONTHLY.value && (
@@ -95,11 +97,12 @@ export default class ReportFilter extends Component {
                     view="month"
                     dateFormat="mm/yy"
                     yearNavigator={true}
-                    yearRange={TEN_YEAR_RANGE}
+                    yearRange={HUNDRED_YEAR_RANGE}
                     readOnlyInput={true}
+                    showButtonBar={true}
                   />
                 )}
-                {data && data.length ? (
+                {data && data.length && visibleReportFilterButton ? (
                   <Button
                     icon="pi pi-print"
                     className="p-button-primary"
@@ -110,7 +113,9 @@ export default class ReportFilter extends Component {
                 ) : (
                   ""
                 )}
-                {data && data.length && showSummary !== false ? (
+                {data &&
+                data.length &&
+                (showSummary !== false) & visibleReportFilterButton ? (
                   <Button
                     icon="pi pi-file-excel"
                     className="p-button-primary"

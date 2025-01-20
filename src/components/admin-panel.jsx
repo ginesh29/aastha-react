@@ -23,7 +23,6 @@ export default class AdminPanel extends Component {
       filterString: "",
       sortString: "name asc",
       includeProperties: "Parent",
-      isArchive: props.location.pathname.includes("archive"),
       lookupType: lookupTypeEnum.DELIVERYTYPE,
       selectedLookup: {
         id: null,
@@ -32,33 +31,58 @@ export default class AdminPanel extends Component {
       },
       selectedType: null,
       medicineTypeOptions: [],
+      distOptions: [],
       validationErrors: {},
     };
     this.repository = new repository();
     this.helper = new helper();
   }
   getMedicineTypes = () => {
-    const { sortString } = this.state;
-    let lookupFilter = `type-eq-{${lookupTypeEnum.MEDICINETYPE.code}}`;
-    this.repository
-      .get(
-        "lookups",
-        `filter=${lookupFilter}&sort=${sortString}&isDeleted=${true}`
-      )
-      .then((res) => {
-        let medicineTypes =
-          res &&
-          res.data &&
-          res.data.map(function (item) {
-            return { value: item.id, label: item.name };
+    const { sortString, medicineTypeOptions } = this.state;
+    if (!medicineTypeOptions.length) {
+      let lookupFilter = `type-eq-{${lookupTypeEnum.MEDICINETYPE.code}} and isdeleted-neq-{true}`;
+      this.repository
+        .get(
+          "lookups",
+          `filter=${lookupFilter}&sort=${sortString}&isDeleted=${true}`
+        )
+        .then((res) => {
+          let medicineTypes =
+            res &&
+            res.data &&
+            res.data.map(function (item) {
+              return { value: item.id, label: item.name };
+            });
+          this.setState({
+            medicineTypeOptions: [
+              { value: null, label: "[All]" },
+              ...medicineTypes,
+            ],
           });
-        this.setState({
-          medicineTypeOptions: [
-            { value: null, label: "[All]" },
-            ...medicineTypes,
-          ],
         });
-      });
+    }
+  };
+  getDists = () => {
+    const { sortString, distOptions } = this.state;
+    if (!distOptions.length) {
+      let lookupFilter = `type-eq-{${lookupTypeEnum.DIST.code}} and isdeleted-neq-{true}`;
+      this.repository
+        .get(
+          "lookups",
+          `filter=${lookupFilter}&sort=${sortString}&isDeleted=${true}`
+        )
+        .then((res) => {
+          let dists =
+            res &&
+            res.data &&
+            res.data.map(function (item) {
+              return { value: item.id, label: item.name };
+            });
+          this.setState({
+            distOptions: [{ value: null, label: "[All]" }, ...dists],
+          });
+        });
+    }
   };
   getLookups = () => {
     const {
@@ -79,20 +103,15 @@ export default class AdminPanel extends Component {
         `take=${rows}&skip=${first}&filter=${filter}&sort=${sortString}&includeProperties=${includeProperties}`
       )
       .then((res) => {
-        this.setState(
-          {
-            first: first,
-            rows: rows,
-            totalRecords: res && res.totalCount,
-            lookups: res && res.data,
-            startNo: res && res.startPage,
-            endNo: res && res.endPage,
-            loadingGrid: false,
-          },
-          () => {
-            this.getMedicineTypes();
-          }
-        );
+        this.setState({
+          first: first,
+          rows: rows,
+          totalRecords: res && res.totalCount,
+          lookups: res && res.data,
+          startNo: res && res.startPage,
+          endNo: res && res.endPage,
+          loadingGrid: false,
+        });
       });
   };
   componentDidMount = (e) => {
@@ -225,6 +244,9 @@ export default class AdminPanel extends Component {
   onChangeLookup = (e) => {
     this.setState({ first: 0, lookupType: e.value, loadingGrid: true }, () => {
       this.getLookups();
+      if (e.value.code === lookupTypeEnum.MEDICINENAME.code)
+        this.getMedicineTypes();
+      else if (e.value.code === lookupTypeEnum.TALUKA.code) this.getDists();
     });
   };
   onFilterChange = (event) => {
@@ -246,14 +268,17 @@ export default class AdminPanel extends Component {
     const { name, parentId } = this.state.selectedLookup;
     let errors = {};
     let isValid = true;
-
     if (!name) {
       isValid = false;
       errors.name = `Enter ${lookupType.label}`;
     }
-    if (lookupType.value === lookupTypeEnum.MEDICINENAME.code && !parentId) {
+    if (lookupType.code === lookupTypeEnum.MEDICINENAME.code && !parentId) {
       isValid = false;
-      errors.parentId = "Select Perent Type";
+      errors.parentId = "Select Medicine Type";
+    }
+    if (lookupType.code === lookupTypeEnum.TALUKA.code && !parentId) {
+      isValid = false;
+      errors.parentId = "Select District";
     }
     this.setState({
       validationErrors: errors,
@@ -267,7 +292,7 @@ export default class AdminPanel extends Component {
     const { id, name, parentId } = this.state.selectedLookup;
     if (this.handleValidation()) {
       const lookup = {
-        id: id && id,
+        id: id || 0,
         name: name,
         type: lookupType.code,
         parentId: parentId,
@@ -321,6 +346,7 @@ export default class AdminPanel extends Component {
       lookupType,
       selectedType,
       medicineTypeOptions,
+      distOptions,
       selectedLookup,
       startNo,
       endNo,
@@ -331,7 +357,11 @@ export default class AdminPanel extends Component {
         id="selectedType"
         name="parentId"
         value={selectedType}
-        options={medicineTypeOptions}
+        options={
+          lookupType.code === lookupTypeEnum.MEDICINENAME.code
+            ? medicineTypeOptions
+            : distOptions
+        }
         onChange={this.onFilterChange}
         showClear={true}
       />
@@ -434,6 +464,16 @@ export default class AdminPanel extends Component {
                       style={{ width: "130px" }}
                     />
                   )}
+                  {lookupType === lookupTypeEnum.TALUKA && (
+                    <Column
+                      field="parent.name"
+                      header="Type"
+                      filter={true}
+                      filterElement={typeFilter}
+                      filterMatchMode="eq"
+                      style={{ width: "130px" }}
+                    />
+                  )}
                   <Column
                     body={this.actionTemplate.bind(this)}
                     style={{ textAlign: "center", width: "190px" }}
@@ -462,26 +502,37 @@ export default class AdminPanel extends Component {
         >
           {editDialog && (
             <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
+              <div id="validation-message"></div>
               <div>
-                <InputField
-                  name="name"
-                  title={lookupType.label}
-                  value={selectedLookup.name || ""}
-                  onChange={this.handleChange}
-                  onInput={this.helper.toSentenceCase}
-                  {...this.state}
-                />
                 {lookupType === lookupTypeEnum.MEDICINENAME && (
                   <InputField
                     name="parentId"
                     title="Parent Type"
-                    options={medicineTypeOptions}
+                    options={medicineTypeOptions.filter((m) => m.value != null)}
                     value={selectedLookup.parentId || null}
                     onChange={this.handleChange}
                     {...this.state}
                     controlType="dropdown"
                   />
                 )}
+                {lookupType === lookupTypeEnum.TALUKA && (
+                  <InputField
+                    name="parentId"
+                    title="Parent Type"
+                    options={distOptions.filter((m) => m.value != null)}
+                    value={selectedLookup.parentId || null}
+                    onChange={this.handleChange}
+                    {...this.state}
+                    controlType="dropdown"
+                  />
+                )}
+                <InputField
+                  name="name"
+                  title={lookupType.label}
+                  value={selectedLookup.name || ""}
+                  onChange={this.handleChange}
+                  {...this.state}
+                />
               </div>
               <FormFooterButton
                 showReset={!selectedLookup.id}

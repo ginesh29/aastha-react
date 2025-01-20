@@ -23,6 +23,7 @@ import * as Constants from "./../common/constants";
 import PatientForm from "./patient/patient-form";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
+import InvoiceHeader from "./shared/invoice-header";
 window.$ = window.jQuery = jquery;
 require("jQuery.print/jQuery.print");
 
@@ -73,7 +74,7 @@ export default class Prescription extends React.Component {
           res.data &&
           res.data.map((item) => {
             item.title = item.patient.fullname;
-            item.start = this.helper.formatFullcalendarDate(item.date);
+            item.start = this.helper.formatDefaultDate(item.date);
             item.color =
               appointmentTypeEnum[item.appointmentType.toUpperCase()].color;
             item.extendedProps = {
@@ -168,6 +169,7 @@ export default class Prescription extends React.Component {
   };
 
   componentDidMount = () => {
+    this.getInitalPatientOptions();
     this.bindLookups();
   };
   bindLookups = (e) => {
@@ -365,18 +367,52 @@ export default class Prescription extends React.Component {
       validationErrors: {},
     });
   };
+  savePrescription = () => {
+    const { id, followupDate, patient, followup, date, clinicDetail, advices } =
+      this.state.formFields;
+    var prescriptionMedicines = [];
+    // eslint-disable-next-line
+    this.state.medicineData.map((item) => {
+      prescriptionMedicines.push({
+        days: item.days,
+        qty: item.qty,
+        medicineType: item.medicineType.label,
+        medicineName: item.medicineName.label,
+        medicineInstruction: item.medicineInstructions.join(" --- "),
+      });
+    });
+    var prescription = {
+      id: id || 0,
+      date: date,
+      patientId: patient.value,
+      clinicalDetail: clinicDetail,
+      followupType: followup,
+      followupDate: followupDate
+        ? this.helper.formatStringToDate(followupDate)
+        : null,
+      advices: advices.toString(),
+      prescriptionMedicines: prescriptionMedicines,
+    };
+    this.repository.post(`prescriptions`, prescription).then((res) => {
+      let fields = this.state.formFields;
+      fields.id = res.id;
+      this.setState({ formFields: fields });
+    });
+  };
   saveAppointment = () => {
     const { followupDate, patient, followup } = this.state.formFields;
     const { submitted } = this.state;
 
     if (this.handleValidation()) {
-      const appointment = {
-        date: this.helper.formatStringToDate(followupDate),
-        patientId: patient.value,
-        type: followup,
-      };
+      this.savePrescription();
       jquery("#print-div").print();
+
       if (!submitted && followupDate && this.handleValidation()) {
+        const appointment = {
+          date: this.helper.formatStringToDate(followupDate),
+          patientId: patient.value,
+          type: followup,
+        };
         this.repository.post(`appointments`, appointment);
         this.setState({ submitted: true });
       }
@@ -393,7 +429,20 @@ export default class Prescription extends React.Component {
       );
     }
   };
-
+  getInitalPatientOptions = () => {
+    this.repository
+      .get("patients", `take=15&filter=isdeleted-neq-{true}`)
+      .then((res) => {
+        let patients =
+          res &&
+          res.data.map(function (item) {
+            return { value: item.id, label: item.fullname, age: item.age };
+          });
+        this.setState({
+          initialPatientOptions: patients,
+        });
+      });
+  };
   render() {
     const { patientDialog } = this.state;
     const {
@@ -416,6 +465,7 @@ export default class Prescription extends React.Component {
       adviceOptions,
       appointmentCalendarDialog,
       appointments,
+      initialPatientOptions,
     } = this.state;
     const followupOptions = this.helper.enumToObject(appointmentTypeEnum);
     const appointmentTypeOptions =
@@ -446,10 +496,8 @@ export default class Prescription extends React.Component {
       });
     };
     this.options.datesRender = (info) => {
-      const startDate = this.helper.formatFullcalendarDate(
-        info.view.activeStart
-      );
-      const endDate = this.helper.formatFullcalendarDate(info.view.activeEnd);
+      const startDate = this.helper.formatDefaultDate(info.view.activeStart);
+      const endDate = this.helper.formatDefaultDate(info.view.activeEnd);
       const filter = `Date-gte-{${startDate}} and Date-lte-{${endDate}}`;
       this.setState({ filterString: filter }, () => {
         this.getAppointments();
@@ -477,6 +525,7 @@ export default class Prescription extends React.Component {
         <div className="row">
           <div className="col-md-6">
             <Panel header={title} toggleable={true}>
+              <div id="validation-message"></div>
               <form onSubmit={this.handleSubmit} onReset={this.handleReset}>
                 <div className="row">
                   <div className="col-md-6">
@@ -493,6 +542,7 @@ export default class Prescription extends React.Component {
                         e && this.setState({ patientName: e });
                       }}
                       controlType="select2"
+                      defaultOptions={initialPatientOptions}
                       loadOptions={(e, callback) =>
                         this.helper.PatientOptions(e, callback)
                       }
@@ -653,8 +703,9 @@ export default class Prescription extends React.Component {
             </Panel>
           </div>
           <div className="col-md-6">
-            <Panel header={header} className="prescription-preview">
+            <Panel header={header} className="">
               <div id="print-div" className="A5">
+                <InvoiceHeader removeLogoButton={true} />
                 <div className="invoice-detail">
                   <div className="d-flex justify-content-between">
                     <div>
@@ -814,6 +865,7 @@ export default class Prescription extends React.Component {
                             onChange={this.handleMedicineChange}
                             {...this.state}
                             keyfilter="pint"
+                            className="text-right"
                           />
                         </div>
                         <div>

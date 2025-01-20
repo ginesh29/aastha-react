@@ -6,7 +6,7 @@
 // import { helper } from "./../common/helpers";
 // import { ROWS } from "./../common/constants";
 // import { Dialog } from 'primereact/dialog';
-// import { NavLink } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 // import { lookupTypeEnum } from "./../common/enums";
 // import { Dropdown } from 'primereact/dropdown';
 
@@ -23,7 +23,6 @@
 //       includeProperties: "",
 //       selectedUser: null,
 //       controller: "users",
-//       isArchive: props.location.pathname.includes("archive"),
 //       addressOptions: [],
 //       selectedAddress: null
 //     };
@@ -231,7 +230,7 @@
 //               <Column field="fullname" header="User's Name" sortable={true} filter={true} filterMatchMode="contains" />
 //               <Column field="age" style={{ "width": "100px" }} header="Age" />
 //               <Column field="mobile" style={{ "width": "150px" }} header="Mobile" filter={true} filterMatchMode="contains" />
-//               <Column field="address.name" style={{ "width": "150px" }} header="Address" sortable={true} filter={true} filterElement={addressFilter} />
+//               <Column field="address.name" style={{ "width": "150px" }} header="City" sortable={true} filter={true} filterElement={addressFilter} />
 //               <Column body={this.actionTemplate.bind(this)} style={{ textAlign: 'center', width: '190px' }} />
 //             </DataTable>
 //           </div>

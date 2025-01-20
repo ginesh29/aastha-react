@@ -37,9 +37,10 @@ export default class Statistics extends Component {
     let totalIpdPatient = 0;
     let totalIpdCollection = 0;
     return (
-      <div className="row">
-        <div className="col-md-6">
-          <Panel header="Opd Statistics" toggleable={true}>
+      <Panel header="Statistics" toggleable={true}>
+        <div className="row">
+          <div className="col-md-6">
+            <h3>Opd Statistics</h3>
             <TabView
               activeIndex={opdActiveTab}
               onTabChange={(e) => this.setState({ opdActiveTab: e.index })}
@@ -112,10 +113,9 @@ export default class Statistics extends Component {
                     );
                   })}
             </TabView>
-          </Panel>
-        </div>
-        <div className="col-md-6">
-          <Panel header="Ipd Statistics" toggleable={true}>
+          </div>
+          <div className="col-md-6">
+            <h3>Ipd Statistics</h3>
             <TabView
               activeIndex={ipdActiveTab}
               onTabChange={(e) => this.setState({ ipdActiveTab: e.index })}
@@ -175,9 +175,9 @@ export default class Statistics extends Component {
                     );
                   })}
             </TabView>
-          </Panel>
+          </div>
         </div>
-      </div>
+      </Panel>
     );
   }
 }

@@ -19,7 +19,7 @@ export default class MonthlyIpdReport extends Component {
       monthSelection: TODAY_DATE,
       sortString: "dischargeDate asc",
       controller: "ipds",
-      includeProperties: "Patient.Address,Charges.ChargeDetail",
+      includeProperties: "Patient.City,Charges.ChargeDetail",
     };
     this.repository = new repository();
     this.helper = new helper();
@@ -49,7 +49,7 @@ export default class MonthlyIpdReport extends Component {
               item.dischargeDate
             );
             item.fullname = item.patient.fullname;
-            item.address = item.patient.address && item.patient.address.name;
+            item.city = item.patient.city && item.patient.city.name;
             return item;
           });
         this.setState({
@@ -64,7 +64,7 @@ export default class MonthlyIpdReport extends Component {
   componentDidMount = (e) => {
     const month = this.helper.getMonthFromDate(TODAY_DATE);
     const year = this.helper.getYearFromDate(TODAY_DATE);
-    const filter = `DischargeDate.Month-eq-{${month}} and DischargeDate.Year-eq-{${year}} and isDeleted-neq-{true}`;
+    const filter = `DischargeDate.Value.Month-eq-{${month}} and DischargeDate.Value.Year-eq-{${year}} and isDeleted-neq-{true}`;
     this.setState({ filterString: filter }, () => {
       this.getIpds();
     });
@@ -87,7 +87,7 @@ export default class MonthlyIpdReport extends Component {
     } else if (reportType === reportTypeEnum.MONTHLY.value) {
       let month = this.helper.getMonthFromDate(value);
       let year = this.helper.getYearFromDate(value);
-      filter = `DischargeDate.Month-eq-{${month}} and DischargeDate.Year-eq-{${year}} and isDeleted-neq-{true}`;
+      filter = `DischargeDate.Value.Month-eq-{${month}} and DischargeDate.Value.Year-eq-{${year}} and isDeleted-neq-{true}`;
     }
     this.setState({ filterString: filter }, () => {
       this.getIpds();
@@ -106,6 +106,7 @@ export default class MonthlyIpdReport extends Component {
               data={ipds}
               showSummary={false}
               loading={loading}
+              visibleReportFilterButton={true}
             />
             <hr />
             <div id="print-div">
@@ -119,7 +120,10 @@ export default class MonthlyIpdReport extends Component {
                         } ${i % 2 === 0 ? "invoice-odd" : "invoice-even"}`}
                         key={i}
                       >
-                        <IpdInvoice InvoiceData={items} />
+                        <IpdInvoice
+                          InvoiceData={items}
+                          removeLogoButton={false}
+                        />
                       </div>
                     );
                   })}

@@ -1,5 +1,7 @@
 import { repository } from "./repository";
-import { lookupTypeEnum } from "./enums";
+import moment from "moment";
+import "moment/locale/gu";
+import "moment/locale/hi";
 export class helper {
   constructor() {
     this.repository = new repository();
@@ -36,11 +38,12 @@ export class helper {
       // eslint-disable-next-line
       name.map((item) => {
         filterCondition.push(
-          `(firstname.contains({${item}}) or middlename.contains({${item}}) or lastname.contains({${item}}))`
+          `(firstname.contains({${item}}) or middlename.contains({${item}}) or fathername.contains({${item}}) or lastname.contains({${item}}))`
         );
       });
     let filter = filterCondition.join(" and ");
-    this.repository.get("patients", `take=15&filter=${filter}`).then((res) => {
+    filter= filter?filter:"isdeleted-neq-{true}";
+    this.repository.get("patients", `take=15&filter=${filter} and isdeleted-neq-{true}`).then((res) => {
       let patients =
         res &&
         res.data.map(function (item) {
@@ -49,20 +52,21 @@ export class helper {
       callback(patients);
     });
   };
-  AddressOptions = (inputValue, callback) => {
-    let filter = `type-eq-{${lookupTypeEnum.ADDRESS.code}}`;
+ LookupOptions = (inputValue, callback, type,subtype) => {
+    let filter = `type-eq-{${type}} and isdeleted-neq-{true}`;
+    if(subtype)
+      filter=`parentId-eq-{${subtype}} and ${filter}`
     if (inputValue)
       filter = filter + ` and name.contains({${inputValue.toLowerCase()}})`;
     this.repository.get("lookups", `take=15&filter=${filter}`).then((res) => {
-      let addresses =
+      let lookups =
         res &&
         res.data.map(function (item) {
           return { value: item.id, label: item.name };
         });
-      callback(addresses);
+      callback(lookups);
     });
   };
-
   generateFilterString = (filters) => {
     let operatorCondition = [];
     let filterMatchMode = "";
@@ -78,14 +82,14 @@ export class helper {
           // eslint-disable-next-line
           name.map((item) => {
             operatorCondition.push(
-              `(firstname.${filterMatchMode}({${item}}) or middlename.${filterMatchMode}({${item}}) or lastname.${filterMatchMode}({${item}}))`
+              `(firstname.${filterMatchMode}({${item}}) or middlename.${filterMatchMode}({${item}}) or fathername.${filterMatchMode}({${item}}) or lastname.${filterMatchMode}({${item}}))`
             );
           });
         } else if (field === "patient.fullname") {
           // eslint-disable-next-line
           name.map((item) => {
             operatorCondition.push(
-              `(patient.firstname.${filterMatchMode}({${item}}) or patient.middlename.${filterMatchMode}({${item}}) or patient.lastname.${filterMatchMode}({${item}}))`
+              `(patient.firstname.${filterMatchMode}({${item}}) or patient.middlename.${filterMatchMode}({${item}}) or patient.fathername.${filterMatchMode}({${item}}) or patient.lastname.${filterMatchMode}({${item}}))`
             );
           });
         } else
@@ -97,7 +101,7 @@ export class helper {
           operatorCondition.push(`id-${filterMatchMode}-{${filterValue}}`);
         } else if (field === "date") {
           operatorCondition.push(
-            `date-${filterMatchMode}-{${this.formatDate(filterValue, "en-US")}}`
+            `date.Date-${filterMatchMode}-{${this.formatDate(filterValue, "en-US")}}`
           );
         } else if (field === "addmissionDate") {
           operatorCondition.push(
@@ -148,47 +152,43 @@ export class helper {
     });
     return operatorCondition.join(",");
   };
-  formatFullcalendarDate = (date) => {
+  formatDefaultDate = (date) => {
     let d = date ? new Date(date) : new Date();
-    var month = d.getMonth() + 1;
-    var day = d.getDate();
-    var year = d.getFullYear();
-    return (
-      year +
-      "-" +
-      (month < 10 ? "0" + month : month) +
-      "-" +
-      (day < 10 ? "0" + day : day)
-    );
+   return moment(d).locale('en').format("YYYY-MM-DD")
   };
+
+  formatDefaultDateTime = (date) => {
+    let d = date ? new Date(date) : new Date();
+   return moment(d).locale('en').format("YYYY-MM-DD hh:mm A")
+  };
+
   formatDate = (date, format) => {
     let d = date ? new Date(date) : new Date();
-    return d
-      .toLocaleDateString(format ? format : "en-GB", {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-      })
-      .replace(/\//g, "-");
+    return format?  moment(d).locale('en').format("MM/DD/YYYY") : moment(d).locale('en').format("DD/MM/YYYY")
+  };
+  formatDateWithLanguage = (date, laguage,format,) => {
+    let d = date ? new Date(date) : new Date();
+    return format?  moment(d).locale(laguage).format("MM/DD/YYYY") : moment(d).locale(laguage).format("DD/MM/YYYY")
+  };
+  formatDateTime = (date, format) => {
+    let d = date ? new Date(date) : new Date();
+    return format?  moment(d).locale('en').format("MM/DD/YYYY hh:mm A") : moment(d).locale('en').format("DD/MM/YYYY hh:mm A")
   };
   formatTime = (date) => {
     let d = date ? new Date(date) : new Date();
-    var hour = d.getHours();
-    var minute = d.getMinutes();
-    return `${hour}:${minute}`;
+    return moment(d, "HH:mm:ss").locale('en').format("HH:mm:ss")
   };
   getMonthFromDate = (date) => {
     let d = date ? new Date(date) : new Date();
-    let month = d.getMonth() + 1;
-    return month < 10 ? `0${month}` : month;
+    return moment(d).locale('en').format("MM")
   };
   getYearFromDate = (date) => {
     let d = date ? new Date(date) : new Date();
-    return d.getFullYear();
+    return moment(d).locale('en').format("YYYY")
   };
   getDayFromDate = (date) => {
     let d = date ? new Date(date) : new Date();
-    return d.getDate();
+    return moment(d).locale('en').format("DD")
   };
   formatCurrency = (number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -202,10 +202,8 @@ export class helper {
       number
     );
   };
-  formatStringToDate = (date) => {
-    var parts = date.split(/[.\-_]/);
-    var newDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    return this.formatDate(newDate, "en-US");
+  formatStringToDate = (date) => {  
+    return this.formatDefaultDate(moment(date, 'DD/MM/YYYY'));
   };
   onFilterChange = (event, dt) => {
     dt.filter(event.value, event.target.name, "eq");
@@ -214,4 +212,15 @@ export class helper {
   stringShortning = (name, length) => {
     return name.length > length ? `${name.substr(0, length)}...` : name;
   };
+  calculateAge=(birthdate)=>{ 
+    var currentDate = moment();   
+    var age = currentDate.diff(birthdate, 'years');    
+    return age;
+  }
+   getWeeksBetweenDates=(startDate, endDate)=> {   
+    const startMoment = moment(this.formatDate(startDate), 'DD-MM-YYYY'); 
+    const endMoment = moment(this.formatDate(endDate), 'DD-MM-YYYY');
+    const weeks = endMoment.diff(startMoment, 'weeks');
+    return weeks;
+  }
 }
