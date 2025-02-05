@@ -194,7 +194,6 @@ export default class OpdReport extends Component {
       (total, item) => total + Number(item.totalCharge),
       0
     );
-    console.log(opdData);
     const cashPaymentTotal = opdData.reduce(
       (total, item) => total + Number(item.cashPayment),
       0

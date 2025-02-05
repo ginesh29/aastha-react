@@ -94,7 +94,7 @@ export class repository {
       .catch((error) => this.handleError(error));
   }
 
-  handleError(error) {
+  handleError(error) {    
     ReactDOM.render(
       <Messages ref={(el) => (this.messages = el)} />,
       document.getElementById("messages")
@@ -112,12 +112,16 @@ export class repository {
         <Messages ref={(el) => (this.errors = el)} />, 
         document.getElementById("errors")
       );
-      ReactDOM.render(
-        <Messages ref={(el) => (this.errors = el)} />, 
-        document.getElementById("validation-message")
-      );
       if (error.response.data) {
-        let errorResult = error.response.data;
+      let errorResult = error.response.data;
+      if(errorResult)
+        this.messages.show({
+          severity: "error",
+          summary: "Error",
+          detail: errorResult.Result.message,
+          sticky: true,
+        });
+
         let errors = errorResult.ValidationSummary;
         errors &&
           Object.keys(errors).map(
@@ -132,6 +136,7 @@ export class repository {
           );
         return { errors: errors };
       }
+      
     } else if (error.request) {
       if (jquery("#messages div").is(":empty"))
       {

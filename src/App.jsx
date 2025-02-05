@@ -22,6 +22,7 @@ import DueDateCalculator from "./components/due-date-calculator";
 import PatientsHistoryReport from "./components/report/patients-history-report";
 import FormFContainer from "./components/formf/formf-container";
 import FormFs from "./components/formf/formfs";
+import ChangeFormFPassword from "./components/change-formF-password";
 
 export default class App extends Component {
   render() {
@@ -31,6 +32,7 @@ export default class App extends Component {
         <Route path="/" element={<MainLayout />}>
           <Route exact path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/change-password" element={<ChangeFormFPassword />} />
 
           <Route path="/add-patient" element={<PatientContainer />} />
           <Route path="/add-opd" element={<OpdContainer />} />

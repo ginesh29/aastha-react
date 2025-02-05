@@ -1,7 +1,8 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, Link } from "react-router-dom";
 import React, { Component } from "react";
 import LeftMenu from "../left-menu";
 import { jwtDecode } from "jwt-decode";
+import { roleEnum } from "../../../common/enums";
 
 const token = localStorage.getItem("aastha-auth-token");
 var expiration_date = null;
@@ -29,6 +30,16 @@ export default class MainLayout extends Component {
           </div>
           <div className="top-nav clearfix">
             <ul className="nav pull-right top-menu">
+              {decoded_token &&
+                Number(decoded_token.Role) === roleEnum["ADMIN"].value && (
+                  <li>
+                    <div>
+                      <Link to="/change-password" className="btn btn-secondary">
+                        Change Form F Password
+                      </Link>
+                    </div>
+                  </li>
+                )}
               <li>
                 <div>
                   <button className="btn btn-info" onClick={this.logout}>
