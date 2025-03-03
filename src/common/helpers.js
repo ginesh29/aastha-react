@@ -42,20 +42,21 @@ export class helper {
         );
       });
     let filter = filterCondition.join(" and ");
-    filter= filter?filter:"isdeleted-neq-{true}";
-    this.repository.get("patients", `take=15&filter=${filter} and isdeleted-neq-{true}`).then((res) => {
-      let patients =
-        res &&
-        res.data.map(function (item) {
-          return { value: item.id, label: item.fullname, age: item.age };
-        });
-      callback(patients);
-    });
+    filter = filter ? filter : "isdeleted-neq-{true}";
+    this.repository
+      .get("patients", `take=15&filter=${filter} and isdeleted-neq-{true}`)
+      .then((res) => {
+        let patients =
+          res &&
+          res.data.map(function (item) {
+            return { value: item.id, label: item.fullname, age: item.age };
+          });
+        callback(patients);
+      });
   };
- LookupOptions = (inputValue, callback, type,subtype) => {
+  LookupOptions = (inputValue, callback, type, subtype) => {
     let filter = `type-eq-{${type}} and isdeleted-neq-{true}`;
-    if(subtype)
-      filter=`parentId-eq-{${subtype}} and ${filter}`
+    if (subtype) filter = `parentId-eq-{${subtype}} and ${filter}`;
     if (inputValue)
       filter = filter + ` and name.contains({${inputValue.toLowerCase()}})`;
     this.repository.get("lookups", `take=15&filter=${filter}`).then((res) => {
@@ -101,7 +102,10 @@ export class helper {
           operatorCondition.push(`id-${filterMatchMode}-{${filterValue}}`);
         } else if (field === "date") {
           operatorCondition.push(
-            `date.Date-${filterMatchMode}-{${this.formatDate(filterValue, "en-US")}}`
+            `date.Date-${filterMatchMode}-{${this.formatDate(
+              filterValue,
+              "en-US"
+            )}}`
           );
         } else if (field === "addmissionDate") {
           operatorCondition.push(
@@ -154,41 +158,47 @@ export class helper {
   };
   formatDefaultDate = (date) => {
     let d = date ? new Date(date) : new Date();
-   return moment(d).locale('en').format("YYYY-MM-DD")
+    return moment(d).locale("en").format("YYYY-MM-DD");
   };
 
   formatDefaultDateTime = (date) => {
     let d = date ? new Date(date) : new Date();
-   return moment(d).locale('en').format("YYYY-MM-DD hh:mm A")
+    return moment(d).locale("en").toISOString();
   };
 
   formatDate = (date, format) => {
     let d = date ? new Date(date) : new Date();
-    return format?  moment(d).locale('en').format("MM/DD/YYYY") : moment(d).locale('en').format("DD/MM/YYYY")
+    return format
+      ? moment(d).locale("en").format("MM/DD/YYYY")
+      : moment(d).locale("en").format("DD/MM/YYYY");
   };
-  formatDateWithLanguage = (date, laguage,format,) => {
+  formatDateWithLanguage = (date, laguage, format) => {
     let d = date ? new Date(date) : new Date();
-    return format?  moment(d).locale(laguage).format("MM/DD/YYYY") : moment(d).locale(laguage).format("DD/MM/YYYY")
+    return format
+      ? moment(d).locale(laguage).format("MM/DD/YYYY")
+      : moment(d).locale(laguage).format("DD/MM/YYYY");
   };
   formatDateTime = (date, format) => {
     let d = date ? new Date(date) : new Date();
-    return format?  moment(d).locale('en').format("MM/DD/YYYY hh:mm A") : moment(d).locale('en').format("DD/MM/YYYY hh:mm A")
+    return format
+      ? moment(d).locale("en").format("MM/DD/YYYY hh:mm A")
+      : moment(d).locale("en").format("DD/MM/YYYY hh:mm A");
   };
   formatTime = (date) => {
     let d = date ? new Date(date) : new Date();
-    return moment(d, "HH:mm:ss").locale('en').format("HH:mm:ss")
+    return moment(d, "HH:mm:ss").locale("en").format("HH:mm:ss");
   };
   getMonthFromDate = (date) => {
     let d = date ? new Date(date) : new Date();
-    return moment(d).locale('en').format("MM")
+    return moment(d).locale("en").format("MM");
   };
   getYearFromDate = (date) => {
     let d = date ? new Date(date) : new Date();
-    return moment(d).locale('en').format("YYYY")
+    return moment(d).locale("en").format("YYYY");
   };
   getDayFromDate = (date) => {
     let d = date ? new Date(date) : new Date();
-    return moment(d).locale('en').format("DD")
+    return moment(d).locale("en").format("DD");
   };
   formatCurrency = (number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -202,8 +212,8 @@ export class helper {
       number
     );
   };
-  formatStringToDate = (date) => {  
-    return this.formatDefaultDate(moment(date, 'DD/MM/YYYY'));
+  formatStringToDate = (date) => {
+    return this.formatDefaultDate(moment(date, "DD/MM/YYYY"));
   };
   onFilterChange = (event, dt) => {
     dt.filter(event.value, event.target.name, "eq");
@@ -212,15 +222,15 @@ export class helper {
   stringShortning = (name, length) => {
     return name.length > length ? `${name.substr(0, length)}...` : name;
   };
-  calculateAge=(birthdate)=>{ 
-    var currentDate = moment();   
-    var age = currentDate.diff(birthdate, 'years');    
+  calculateAge = (birthdate) => {
+    var currentDate = moment();
+    var age = currentDate.diff(birthdate, "years");
     return age;
-  }
-   getWeeksBetweenDates=(startDate, endDate)=> {   
-    const startMoment = moment(this.formatDate(startDate), 'DD-MM-YYYY'); 
-    const endMoment = moment(this.formatDate(endDate), 'DD-MM-YYYY');
-    const weeks = endMoment.diff(startMoment, 'weeks');
+  };
+  getWeeksBetweenDates = (startDate, endDate) => {
+    const startMoment = moment(this.formatDate(startDate), "DD-MM-YYYY");
+    const endMoment = moment(this.formatDate(endDate), "DD-MM-YYYY");
+    const weeks = endMoment.diff(startMoment, "weeks");
     return weeks;
-  }
+  };
 }

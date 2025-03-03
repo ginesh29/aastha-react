@@ -850,8 +850,8 @@ export default class FormFs extends Component {
                     <div>Place: {selectedFormF.doctorDetail.place}</div>
                   </div>
                   <div>
-                    <div>M.S (OBS & GYN)</div>
                     <div>{selectedFormF.doctorDetail.name}</div>
+                    <div>M.S (OBS & GYN)</div>
                     <div>Reg. No. G-17879</div>
                   </div>
                 </div>
@@ -1045,8 +1045,8 @@ export default class FormFs extends Component {
                     <div>Place: {selectedFormF.doctorDetail.place}</div>
                   </div>
                   <div>
-                    <div>M.S (OBS & GYN)</div>
                     <div>{selectedFormF.doctorDetail.name}</div>
+                    <div>M.S (OBS & GYN)</div>
                     <div>Reg. No. G-17879</div>
                   </div>
                 </div>
