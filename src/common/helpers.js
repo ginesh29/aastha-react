@@ -163,7 +163,7 @@ export class helper {
 
   formatDefaultDateTime = (date) => {
     let d = date ? new Date(date) : new Date();
-    return moment(d).locale("en").toISOString();
+    return moment(d).locale("en").format("YYYY-MM-DDTHH:mm:ss");
   };
 
   formatDate = (date, format) => {
