@@ -106,19 +106,22 @@ export default class OpdForm extends React.Component {
           opd
         )
         .then((res) => {
-          if (res && !res.errors) {
-            hideEditDialog && hideEditDialog();
-            if (this.state.fromPrescription) window.location.href = "/add-opd";
-            saveOpd && saveOpd(res, opd.id);
-            !hideEditDialog && this.handleReset();
-          } else this.setState({ loading: false });
-          if (
-            res &&
-            res.errors &&
-            res.errors[""] &&
-            res.errors[""].toString().includes("exist")
-          )
-            this.setState({ confirmDialog: true });
+          setTimeout(() => {
+            if (res && !res.errors) {
+              hideEditDialog && hideEditDialog();
+              if (this.state.fromPrescription)
+                window.location.href = "/add-opd";
+              saveOpd && saveOpd(res, opd.id);
+              !hideEditDialog && this.handleReset();
+            } else this.setState({ loading: false });
+            if (
+              res &&
+              res.errors &&
+              res.errors[""] &&
+              res.errors[""].toString().includes("exist")
+            )
+              this.setState({ confirmDialog: true });
+          }, 1000);
         });
     }
   };

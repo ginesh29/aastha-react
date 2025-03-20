@@ -5855,14 +5855,7 @@ div.tagsinput span.tag {
   -o-transition: none;
   transition: none;
 }
-::-webkit-scrollbar {
-  width: 10px;
-}
 
-::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-color: #545b62;
-}
 .sidebar-menu::-webkit-scrollbar {
   margin-top: 100px;
   width: 5px;

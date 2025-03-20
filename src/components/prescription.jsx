@@ -383,7 +383,7 @@ export default class Prescription extends React.Component {
     });
     var prescription = {
       id: id || 0,
-      date: date,
+      date: this.helper.formatDefaultDate(date),
       patientId: patient.value,
       clinicalDetail: clinicDetail,
       followupType: followup,

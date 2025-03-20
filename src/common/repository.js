@@ -94,7 +94,7 @@ export class repository {
       .catch((error) => this.handleError(error));
   }
 
-  handleError(error) {    
+  handleError(error) {
     ReactDOM.render(
       <Messages ref={(el) => (this.messages = el)} />,
       document.getElementById("messages")
@@ -109,18 +109,18 @@ export class repository {
         jquery(".card").prepend('<div id="errors"></div>');
       else jquery("#msg-container").html('<div id="errors"></div>');
       ReactDOM.render(
-        <Messages ref={(el) => (this.errors = el)} />, 
+        <Messages ref={(el) => (this.errors = el)} />,
         document.getElementById("errors")
       );
       if (error.response.data) {
-      let errorResult = error.response.data;
-      if(errorResult)
-        this.messages.show({
-          severity: "error",
-          summary: "Error",
-          detail: errorResult.Result.message,
-          sticky: true,
-        });
+        let errorResult = error.response.data;
+        // if (errorResult)
+        //   this.messages.show({
+        //     severity: "error",
+        //     summary: "Error",
+        //     detail: errorResult.Result.message,
+        //     sticky: true,
+        //   });
 
         let errors = errorResult.ValidationSummary;
         errors &&
@@ -136,21 +136,20 @@ export class repository {
           );
         return { errors: errors };
       }
-      
     } else if (error.request) {
-      if (jquery("#messages div").is(":empty"))
-      {
+      if (jquery("#messages div").is(":empty")) {
         this.messages.show({
           severity: "error",
           summary: "Server error",
-          detail: "Please check internet connection. You will be logout in 5 seconds",
+          detail:
+            "Please check internet connection. You will be logout in 5 seconds",
           sticky: true,
         });
         localStorage.clear();
         setTimeout(() => {
-        window.location.href = "/";         
+          window.location.href = "/";
         }, 5000);
-      }        
+      }
     }
   }
 }
