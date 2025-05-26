@@ -164,6 +164,13 @@ export default class FormFs extends Component {
           className="btn btn-info btn-grid mr-2"
           onClick={() => this.onShowFormFPrint(rowData)}
         >
+          <i className="fa fa-print"></i>
+        </button>
+        <button
+          type="button"
+          className="btn btn-warning btn-grid mr-2"
+          onClick={() => this.onShowFormFAutoFill(rowData)}
+        >
           <i className="fa fa-file-text-o"></i>
         </button>
         <button
@@ -242,6 +249,9 @@ export default class FormFs extends Component {
       pdfDialog: true,
       selectedFormF: Object.assign({}, row),
     });
+  };
+  onShowFormFAutoFill = (row) => {
+    this.repository.get(`autofill/${row.id}`, "").then((res) => {});
   };
   deleteRow = () => {
     const { formfDetails, selectedFormF, isArchive, controller, totalRecords } =
@@ -511,7 +521,7 @@ export default class FormFs extends Component {
               />
               <Column
                 body={this.actionTemplate.bind(this)}
-                style={{ textAlign: "center", width: "100px" }}
+                style={{ textAlign: "center", width: "120px" }}
               />
             </DataTable>
           </div>

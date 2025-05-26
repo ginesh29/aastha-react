@@ -142,7 +142,7 @@ export default class Payments extends Component {
                             className="btn btn-info btn-grid mr-2"
                             onClick={() => this.onShowInvoice(item)}
                           >
-                            <i className="fa fa-file-text-o"></i>
+                            <i className="fa fa-print"></i>
                           </button>
                         )}
                         <button
