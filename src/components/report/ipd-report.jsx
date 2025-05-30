@@ -10,8 +10,6 @@ import _ from "lodash";
 import ReportFilter from "./report-filter";
 import { TODAY_DATE } from "../../common/constants";
 import { TabView, TabPanel } from "primereact/tabview";
-import { roleEnum } from "../../common/enums";
-import { jwtDecode } from "jwt-decode";
 
 let chargeTotal = 0;
 export default class IpdReport extends Component {
@@ -144,11 +142,6 @@ export default class IpdReport extends Component {
       });
   };
   render() {
-    const token = localStorage.getItem("aastha-auth-token");
-    if (token != null && token.length > 0) {
-      var decoded_token = jwtDecode(token);
-      var role = Number(decoded_token.Role);
-    }
     const { ipds, chargesLength, chargeNames, reportTitle, loading } =
       this.state;
     let ipdData;
@@ -251,22 +244,18 @@ export default class IpdReport extends Component {
       <>
         <div className="card">
           <div className="card-body">
-            {role === roleEnum["ADMIN"].value && (
-              <>
-                <ReportFilter
-                  {...this.state}
-                  onDateSelection={this.onDateSelection}
-                  onReportTypeChange={(e) =>
-                    this.setState({ reportType: e.value }, () => this.getIpds())
-                  }
-                  data={ipdData}
-                  exportReport={this.exportReport}
-                  loading={loading}
-                  visibleReportFilterButton={true}
-                />
-                <hr />
-              </>
-            )}
+            <ReportFilter
+              {...this.state}
+              onDateSelection={this.onDateSelection}
+              onReportTypeChange={(e) =>
+                this.setState({ reportType: e.value }, () => this.getIpds())
+              }
+              data={ipdData}
+              exportReport={this.exportReport}
+              loading={loading}
+              visibleReportFilterButton={true}
+            />
+            <hr />
             <TabView
               activeIndex={this.state.activeIndex}
               onTabChange={(e) => this.setState({ activeIndex: e.index })}

@@ -6,8 +6,6 @@ import { TabView, TabPanel } from "primereact/tabview";
 import _ from "lodash";
 import ReportFilter from "./report-filter";
 import { TODAY_DATE } from "../../common/constants";
-import { roleEnum } from "../../common/enums";
-import { jwtDecode } from "jwt-decode";
 
 export default class OpdReport extends Component {
   constructor(props) {
@@ -120,11 +118,6 @@ export default class OpdReport extends Component {
     });
   };
   render() {
-    const token = localStorage.getItem("aastha-auth-token");
-    if (token != null && token.length > 0) {
-      var decoded_token = jwtDecode(token);
-      var role = Number(decoded_token.Role);
-    }
     const { opds, reportTitle, activeIndex, loading } = this.state;
     let opdGroupByDate = _.groupBy(opds, "formatedOpdDate");
     let opdData = _.map(opdGroupByDate, (items, key) => {
@@ -206,22 +199,18 @@ export default class OpdReport extends Component {
       <>
         <div className="card">
           <div className="card-body">
-            {role === roleEnum["ADMIN"].value && (
-              <>
-                <ReportFilter
-                  {...this.state}
-                  onDateSelection={this.onDateSelection}
-                  onReportTypeChange={(e) =>
-                    this.setState({ reportType: e.value }, () => this.getOpds())
-                  }
-                  data={opdData}
-                  exportReport={this.exportReport}
-                  loading={loading}
-                  visibleReportFilterButton={true}
-                />
-                <hr />
-              </>
-            )}
+            <ReportFilter
+              {...this.state}
+              onDateSelection={this.onDateSelection}
+              onReportTypeChange={(e) =>
+                this.setState({ reportType: e.value }, () => this.getOpds())
+              }
+              data={opdData}
+              exportReport={this.exportReport}
+              loading={loading}
+              visibleReportFilterButton={true}
+            />
+            <hr />
             <TabView
               activeIndex={activeIndex}
               onTabChange={(e) => this.setState({ activeIndex: e.index })}

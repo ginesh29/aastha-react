@@ -5,8 +5,6 @@ import { reportTypeEnum, patientHistoryOptionsEnum } from "../../common/enums";
 import _ from "lodash";
 import ReportFilter from "./report-filter";
 import { TODAY_DATE } from "../../common/constants";
-import { roleEnum } from "../../common/enums";
-import { jwtDecode } from "jwt-decode";
 import { Dialog } from "primereact/dialog";
 import numberToWords from "number-to-words";
 import IpdInvoice from "./../ipd/ipd-invoice";
@@ -142,11 +140,6 @@ export default class PatientsHistoryReport extends Component {
     }
   }
   render() {
-    const token = localStorage.getItem("aastha-auth-token");
-    if (token != null && token.length > 0) {
-      var decoded_token = jwtDecode(token);
-      var role = Number(decoded_token.Role);
-    }
     const {
       patients,
       reportTitle,
@@ -170,23 +163,19 @@ export default class PatientsHistoryReport extends Component {
       <>
         <div className="card">
           <div className="card-body">
-            {role === roleEnum["ADMIN"].value && (
-              <>
-                <ReportFilter
-                  {...this.state}
-                  onDateSelection={this.onDateSelection}
-                  onReportTypeChange={(e) =>
-                    this.setState({ reportType: e.value }, () =>
-                      this.getPatientsHistories()
-                    )
-                  }
-                  data={patientsData}
-                  loading={loading}
-                  visibleReportFilterButton={false}
-                />
-                <hr />
-              </>
-            )}
+            <ReportFilter
+              {...this.state}
+              onDateSelection={this.onDateSelection}
+              onReportTypeChange={(e) =>
+                this.setState({ reportType: e.value }, () =>
+                  this.getPatientsHistories()
+                )
+              }
+              data={patientsData}
+              loading={loading}
+              visibleReportFilterButton={false}
+            />
+            <hr />
             <div id="print-div" className="col-md-6">
               <h3 className="report-header">
                 Patients History Report {reportTitle}

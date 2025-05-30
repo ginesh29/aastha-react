@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -12,6 +12,7 @@ import { Calendar } from "primereact/calendar";
 import jquery from "jquery";
 import FormFForm from "./formf-form";
 import { languageEnum } from "../../common/enums";
+import axios from "axios";
 window.$ = window.jQuery = jquery;
 require("jQuery.print/jQuery.print");
 
@@ -251,7 +252,7 @@ export default class FormFs extends Component {
     });
   };
   onShowFormFAutoFill = (row) => {
-    this.repository.get(`autofill/${row.id}`, "").then((res) => {});
+    axios.get(`http://localhost:5004/formf-autofill?id=${row.id}`);
   };
   deleteRow = () => {
     const { formfDetails, selectedFormF, isArchive, controller, totalRecords } =
