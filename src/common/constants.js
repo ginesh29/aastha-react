@@ -4,6 +4,10 @@ export const BASE_API_URL = {
   development: "http://localhost:5050/api",
   production: "http://aastha2.api/api",
 };
+export const FORMF_API_URL = {
+  development: "http://localhost:5004",
+  production: "http://localhost:5004",
+};
 export const ROWS = 10;
 export const TODAY_DATE = new Date();
 export const HUNDRED_YEAR_RANGE = `${TODAY_DATE.getFullYear() - 100}:${

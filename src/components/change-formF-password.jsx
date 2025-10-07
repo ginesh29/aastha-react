@@ -59,7 +59,6 @@ export default class ChangeFormFPassword extends Component {
       this.repository
         .post(`${controller}/ChangeFormFPassword`, user)
         .then((res) => {
-          debugger;
           setTimeout(() => {
             this.setState({
               loading: false,

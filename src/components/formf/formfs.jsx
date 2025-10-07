@@ -5,7 +5,11 @@ import { Button } from "primereact/button";
 import { repository } from "../../common/repository";
 import { helper } from "../../common/helpers";
 import { RadioButton } from "primereact/radiobutton";
-import { ROWS, FormFDiagnosisOptions } from "../../common/constants";
+import {
+  ROWS,
+  FormFDiagnosisOptions,
+  FORMF_API_URL,
+} from "../../common/constants";
 import { Dialog } from "primereact/dialog";
 import { HUNDRED_YEAR_RANGE } from "../../common/constants";
 import { Calendar } from "primereact/calendar";
@@ -251,8 +255,10 @@ export default class FormFs extends Component {
       selectedFormF: Object.assign({}, row),
     });
   };
+
   onShowFormFAutoFill = (row) => {
-    axios.get(`http://localhost:5004/formf-autofill?id=${row.id}`);
+    const env = process.env.NODE_ENV;
+    axios.get(`${FORMF_API_URL[env]}/formf-autofill?id=${row.id}`);
   };
   deleteRow = () => {
     const { formfDetails, selectedFormF, isArchive, controller, totalRecords } =
