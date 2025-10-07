@@ -181,7 +181,6 @@ export default class Patients extends Component {
         label: row.taluka.name,
         name: row.taluka.name,
       };
-    if (row) row.age = row.calculatedAge;
     this.setState({
       editDialog: true,
       selectedPatient: Object.assign({}, row),
@@ -472,7 +471,7 @@ export default class Patients extends Component {
                 filterMatchMode="contains"
               />
               <Column
-                field="calculatedAge"
+                field="age"
                 style={{ width: "50px" }}
                 className="text-center"
                 header="Age"
