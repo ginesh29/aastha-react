@@ -295,11 +295,11 @@ export default class IpdForm extends React.Component {
           isValid = false;
           errors.operationDate = "Operation Date is required";
         }
-        if (!operationDiagnosis.length) {
+        if (!operationDiagnosis?.length) {
           isValid = false;
           errors.operationDiagnosis = "Operation Diagnosis is required";
         }
-        if (!typesOfOperation.length) {
+        if (!typesOfOperation?.length) {
           isValid = false;
           errors.typesOfOperation = "Types of Operation is required";
         }
@@ -308,7 +308,7 @@ export default class IpdForm extends React.Component {
         departmentType &&
         departmentType === departmentTypeEnum.GENERAL.value
       ) {
-        if (!generalDiagnosis.length) {
+        if (!generalDiagnosis?.length) {
           isValid = false;
           errors.generalDiagnosis = "General Diagnosis is required";
         }

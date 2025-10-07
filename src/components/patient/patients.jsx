@@ -181,7 +181,7 @@ export default class Patients extends Component {
         label: row.taluka.name,
         name: row.taluka.name,
       };
-
+    if (row) row.age = row.calculatedAge;
     this.setState({
       editDialog: true,
       selectedPatient: Object.assign({}, row),

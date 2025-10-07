@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import InputField from "../shared/input-field";
 import { helper } from "../../common/helpers";
 import { repository } from "../../common/repository";
