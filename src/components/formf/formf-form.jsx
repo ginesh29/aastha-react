@@ -29,6 +29,8 @@ export default class FormFForm extends React.Component {
       patient: null,
       diagnosisProcedure: "",
       diagnosisResult: "",
+      abhaId: "",
+      techoId: "",
       thumbImpression: false,
       relativeName: "",
       relativeAddress: "",
@@ -81,6 +83,8 @@ export default class FormFForm extends React.Component {
       patient,
       diagnosisProcedure,
       diagnosisResult,
+      abhaId,
+      techoId,
       thumbImpression,
       relativeName,
       relativeAddress,
@@ -99,6 +103,8 @@ export default class FormFForm extends React.Component {
         children: this.state.children,
         diagnosisProcedure: diagnosisProcedure,
         diagnosisResult: diagnosisResult,
+        abhaId: abhaId,
+        techoId: techoId,
         thumbImpression: thumbImpression,
         relativeName: relativeName,
         relativeAddress: relativeAddress,
@@ -221,6 +227,8 @@ export default class FormFForm extends React.Component {
       this.setState({
         noOfMaleChild: selectedFormF.noOfMaleChild,
         noOfFemaleChild: selectedFormF.noOfFemaleChild,
+        abhaId: selectedFormF.abhaId,
+        techoId: selectedFormF.techoId,
         children: selectedFormF.children,
         formFields: selectedFormF,
       });
@@ -284,6 +292,8 @@ export default class FormFForm extends React.Component {
       patient,
       diagnosisProcedure,
       diagnosisResult,
+      abhaId,
+      techoId,
       thumbImpression,
       relativeName,
       relativeAge,
@@ -378,6 +388,24 @@ export default class FormFForm extends React.Component {
                 keyfilter="pint"
                 maxLength={1}
                 className="text-right"
+              />
+            </div>
+            <div className="col-md-3">
+              <InputField
+                name="abhaId"
+                title="AbhaId"
+                value={abhaId || ""}
+                onChange={this.handleChange}
+                {...this.state}
+              />
+            </div>
+            <div className="col-md-3">
+              <InputField
+                name="techoId"
+                title="TechoId"
+                value={techoId || ""}
+                onChange={this.handleChange}
+                {...this.state}
               />
             </div>
           </div>

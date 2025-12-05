@@ -648,8 +648,16 @@ export default class FormFs extends Component {
                       {selectedFormF.patient.name}
                     </span>
                     Age :{" "}
-                    <span className="filled_answer">
+                    <span className="filled_answer mr-5">
                       {selectedFormF.patient.age} Year
+                    </span>
+                    AbhaId :{" "}
+                    <span className="filled_answer mr-5">
+                      {selectedFormF.abhaId}
+                    </span>
+                    TechoId :{" "}
+                    <span className="filled_answer">
+                      {selectedFormF.techoId}
                     </span>
                   </li>
                   <li key="list4">
