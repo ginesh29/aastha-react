@@ -436,7 +436,11 @@ export default class Prescription extends React.Component {
         let patients =
           res &&
           res.data.map(function (item) {
-            return { value: item.id, label: item.fullname, age: item.age };
+            return {
+              value: item.id,
+              label: item.id + " | " + item.fullname,
+              age: item.age,
+            };
           });
         this.setState({
           initialPatientOptions: patients,

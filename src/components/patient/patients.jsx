@@ -786,6 +786,7 @@ export default class Patients extends Component {
             dismissableMask={true}
           >
             <div className="A5" id="prescription-div">
+              <InvoiceHeader removeLogoButton={true} />
               <div className="invoice-detail">
                 <div className="d-flex justify-content-between">
                   <div>
@@ -891,6 +892,10 @@ export default class Patients extends Component {
                     </div>
                   </>
                 )}
+              </div>
+              <div className="d-flex mt-5 invoice-foot">
+                <div className="flex-grow-1">Rececived By</div>
+                <div className="font-weight-semi-bold">Dr. Bhaumik Tandel</div>
               </div>
             </div>
             <div className="modal-footer">

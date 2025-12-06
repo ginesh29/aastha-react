@@ -651,11 +651,11 @@ export default class FormFs extends Component {
                     <span className="filled_answer mr-5">
                       {selectedFormF.patient.age} Year
                     </span>
-                    AbhaId :{" "}
+                    ABHA ID :{" "}
                     <span className="filled_answer mr-5">
                       {selectedFormF.abhaId}
                     </span>
-                    TechoId :{" "}
+                    TECHO ID :{" "}
                     <span className="filled_answer">
                       {selectedFormF.techoId}
                     </span>

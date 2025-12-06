@@ -279,7 +279,7 @@ export default class PatientsHistoryReport extends Component {
                   <div className="invoice-detail">
                     <div className="d-flex justify-content-between">
                       <div>
-                        <label>Patient Name :</label>{" "}
+                        <label>Patient Name1 :</label>{" "}
                         {opdDetail.patient && opdDetail.patient.fullname}
                       </div>
                       <div>
@@ -521,6 +521,10 @@ export default class PatientsHistoryReport extends Component {
                     </div>
                   </>
                 )}
+              </div>
+              <div className="d-flex mt-5 invoice-foot">
+                <div className="flex-grow-1">Rececived By</div>
+                <div className="font-weight-semi-bold">Dr. Bhaumik Tandel</div>
               </div>
             </div>
             <div className="modal-footer">

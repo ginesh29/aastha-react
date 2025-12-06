@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";

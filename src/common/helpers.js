@@ -37,10 +37,19 @@ export class helper {
     name &&
       // eslint-disable-next-line
       name.map((item) => {
-        filterCondition.push(
-          `(firstname.contains({${item}}) or middlename.contains({${item}}) or fathername.contains({${item}}) or lastname.contains({${item}}))`
-        );
+        const isNumber = /^\d+$/.test(item);
+
+        if (isNumber) {
+          filterCondition.push(
+            `(id == ${item} or firstname.contains("${item}") or middlename.contains("${item}") or fathername.contains("${item}") or lastname.contains("${item}"))`
+          );
+        } else {
+          filterCondition.push(
+            `(firstname.contains("${item}") or middlename.contains("${item}") or fathername.contains("${item}") or lastname.contains("${item}"))`
+          );
+        }
       });
+
     let filter = filterCondition.join(" and ");
     filter = filter ? filter : "isdeleted-neq-{true}";
     this.repository
@@ -49,7 +58,11 @@ export class helper {
         let patients =
           res &&
           res.data.map(function (item) {
-            return { value: item.id, label: item.fullname, age: item.age };
+            return {
+              value: item.id,
+              label: item.id + " | " + item.fullname,
+              age: item.age,
+            };
           });
         callback(patients);
       });

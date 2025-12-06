@@ -241,7 +241,11 @@ export default class FormFForm extends React.Component {
         let patients =
           res &&
           res.data.map(function (item) {
-            return { value: item.id, label: item.fullname, age: item.age };
+            return {
+              value: item.id,
+              label: item.id + " | " + item.fullname,
+              age: item.age,
+            };
           });
         this.setState({
           initialPatientOptions: patients,
@@ -393,7 +397,7 @@ export default class FormFForm extends React.Component {
             <div className="col-md-3">
               <InputField
                 name="abhaId"
-                title="AbhaId"
+                title="ABHA ID"
                 value={abhaId || ""}
                 onChange={this.handleChange}
                 {...this.state}
@@ -402,7 +406,7 @@ export default class FormFForm extends React.Component {
             <div className="col-md-3">
               <InputField
                 name="techoId"
-                title="TechoId"
+                title="TECHO ID"
                 value={techoId || ""}
                 onChange={this.handleChange}
                 {...this.state}
