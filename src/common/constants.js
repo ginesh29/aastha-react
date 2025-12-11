@@ -1,7 +1,7 @@
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 export const BASE_API_URL = {
-  development: "http://localhost:5050/api",
+  development: "http://localhost:5051/api",
   production: "http://aastha2.api/api",
 };
 export const FORMF_API_URL = {

@@ -94,7 +94,7 @@ export default class Prescription extends React.Component {
     if (action)
       fields[action.name] =
         action !== SELECT2_ACTION_CLEAR_TEXT
-          ? e && { value: e.value, label: e.label, age: e.age }
+          ? e && { value: e.value, label: e.label.split("|")[1], age: e.age }
           : null;
     else {
       fields[e.target.name] = e.target.value;
