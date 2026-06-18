@@ -36,9 +36,13 @@ export const caseTypeOptions = [
 
 export const roomTypeOptions = [
   { value: 1, label: "General" },
-  { value: 2, label: "Special" },
+  { value: 2, label: "Special Non-A/C" },
   { value: 3, label: "Semi-Special" },
+  { value: 4, label: "Special A/C" },
+  { value: 5, label: "Deluxe Non-A/C" },
+  { value: 6, label: "Deluxe A/C" },
 ];
+
 export const paymentModeOptions = [
   { value: 1, label: "Cash" },
   { value: 2, label: "Non-cash" },
